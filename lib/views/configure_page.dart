@@ -33,13 +33,11 @@ class ConfigurePageState extends State<ConfigurePage> {
         loginRepo.isLoggedIn()
             .then((authUser) {
                 if (authUser.Success) {
-                  appBloc.add(UserLoggedInEvent(authUser.Id, authUser.Email, authUser.Username, authUser.Bearer, true));
+                  appBloc.add(UserLoggedInEvent(authUser.Id, authUser.Email, authUser.Username, authUser.Bearer, authUser.IsGuest));
                 }
                 else {
                   appBloc.add(UserLoggedOutEvent());
                 }
-
-                appBloc.add(AppInitializedEvent());
 
                 setState(() {
                   isInitialized = true;
@@ -68,15 +66,20 @@ class ConfigurePageState extends State<ConfigurePage> {
 
   @override
   Widget build(BuildContext context){
-    if(!isInitialized){
+    return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
+      if(!isInitialized){
+        return LoadingPage();
+      }
+
+      AppBloc appBloc = context.read<AppBloc>();
+      if(appBloc.state.Status == AppStatus.LoggedIn){
+        return UserHomeWidget();
+      }
+      else if(appBloc.state.Status == AppStatus.LoggedOut){
+        return LoginPageWidget();
+      }
+
       return LoadingPage();
-    }
-
-    AppBloc appBloc = context.read<AppBloc>();
-    if(appBloc.state.IsLoggedIn){
-      return UserHomeWidget();
-    }
-
-    return LoginPageWidget();
+    });
   }
 }

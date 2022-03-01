@@ -13,4 +13,11 @@ class ServerPaths{
   static String CHECK_AVAILABILITY = "api/accounts/checkAvailability";
   static String PASSWORD_RESET_REQUEST = "api/accounts/passwordResetRequest";
   static String PASSWORD_RESET_CONFIRM = "api/accounts/passwordResetConfirm";
+
+  /* User */
+  static String USER_PREFERENCES = "api/preferences/getPreferences";
+  static String TOGGLE_PREFERENCE = "api/preferences/togglePreference";
+
+  /* Peek */
+  static String GET_PEEKS = "api/peeks/getPeeks";
 }

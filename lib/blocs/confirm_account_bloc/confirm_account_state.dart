@@ -5,7 +5,7 @@ import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
 
 enum ConfirmAccountStatus {
   UserInput,
-  ComfirmRequested,
+  ConfirmRequested,
   Confirming,
   Confirmed,
   Error,
@@ -25,7 +25,7 @@ class ConfirmAccountState {
   bool get IsReadyToSubmit => IsEmailValid && isConfirmationCodeValid();
 
   bool isEmailValid(){
-    if(Status != ConfirmAccountStatus.ComfirmRequested){
+    if(Status != ConfirmAccountStatus.ConfirmRequested){
       return true;
     }
 
@@ -33,7 +33,7 @@ class ConfirmAccountState {
   }
 
   bool isConfirmationCodeValid(){
-    if(Status != ConfirmAccountStatus.ComfirmRequested){
+    if(Status != ConfirmAccountStatus.ConfirmRequested){
       return true;
     }
 

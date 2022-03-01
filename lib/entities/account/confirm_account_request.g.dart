@@ -7,12 +7,11 @@ part of 'confirm_account_request.dart';
 // **************************************************************************
 
 ConfirmAccountRequest _$ConfirmAccountRequestFromJson(
-    Map<String, dynamic> json) {
-  return ConfirmAccountRequest(
-    json['email'] as String,
-    json['confirmationCode'] as String,
-  );
-}
+        Map<String, dynamic> json) =>
+    ConfirmAccountRequest(
+      json['email'] as String,
+      json['confirmationCode'] as String,
+    );
 
 Map<String, dynamic> _$ConfirmAccountRequestToJson(
         ConfirmAccountRequest instance) =>

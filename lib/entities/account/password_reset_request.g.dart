@@ -6,11 +6,11 @@ part of 'password_reset_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PasswordResetRequest _$PasswordResetRequestFromJson(Map<String, dynamic> json) {
-  return PasswordResetRequest(
-    json['email'] as String,
-  );
-}
+PasswordResetRequest _$PasswordResetRequestFromJson(
+        Map<String, dynamic> json) =>
+    PasswordResetRequest(
+      json['email'] as String,
+    );
 
 Map<String, dynamic> _$PasswordResetRequestToJson(
         PasswordResetRequest instance) =>

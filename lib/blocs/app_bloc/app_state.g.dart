@@ -6,20 +6,17 @@ part of 'app_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-AppState _$AppStateFromJson(Map<String, dynamic> json) {
-  return AppState(
-    json['Id'] as String,
-    IsLoggedIn: json['IsLoggedIn'] as bool,
-    IsGuest: json['IsGuest'] as bool,
-    Email: json['Email'] as String,
-    Username: json['Username'] as String,
-    Bearer: json['Bearer'] as String,
-    Status: _$enumDecode(_$AppStatusEnumMap, json['Status']),
-  );
-}
+AppState _$AppStateFromJson(Map<String, dynamic> json) => AppState(
+      json['Id'] as String,
+      IsGuest: json['IsGuest'] as bool? ?? true,
+      Email: json['Email'] as String? ?? '',
+      Username: json['Username'] as String? ?? '',
+      Bearer: json['Bearer'] as String? ?? '',
+      Status: $enumDecodeNullable(_$AppStatusEnumMap, json['Status']) ??
+          AppStatus.Initializing,
+    );
 
 Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
-      'IsLoggedIn': instance.IsLoggedIn,
       'IsGuest': instance.IsGuest,
       'Id': instance.Id,
       'Email': instance.Email,
@@ -28,33 +25,9 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'Status': _$AppStatusEnumMap[instance.Status],
     };
 
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
-
 const _$AppStatusEnumMap = {
   AppStatus.Initializing: 'Initializing',
   AppStatus.Initialized: 'Initialized',
+  AppStatus.LoggedIn: 'LoggedIn',
+  AppStatus.LoggedOut: 'LoggedOut',
 };

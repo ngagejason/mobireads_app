@@ -16,15 +16,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future handleUserLoggedInEvent(UserLoggedInEvent event, Emitter<AppState> emit) async {
-    AppState newState = state.CopyWith(event.id, isGuest: event.isGuest, isLoggedIn: true, email: event.email, username: event.username, bearer: event.bearer);
-    emit(newState);
+    AppState newState = state.CopyWith(event.id, isGuest: event.isGuest, email: event.email, username: event.username, bearer: event.bearer, status: AppStatus.LoggedIn);
     await UserSecureStorage.storeAppStateAndSetCurrent(newState);
+    emit(newState);
   }
 
   Future handleUserLoggedOutEvent(UserLoggedOutEvent event, Emitter<AppState> emit) async {
-    await loginRepository.logout();
+    if(state.Id.length > 0){
+      await loginRepository.logout();
+    }
     await UserSecureStorage.clearAll();
-    emit(state.CopyWith('', isGuest: true, isLoggedIn: false, email: '', username: ''));
+    emit(state.CopyWith('', isGuest: true, email: '', username: '', status: AppStatus.LoggedOut));
   }
 
   Future handleAppInitializedEvent(AppInitializedEvent event, Emitter<AppState> emit ) async {

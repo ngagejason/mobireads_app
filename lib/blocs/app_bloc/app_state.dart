@@ -5,13 +5,13 @@ part 'app_state.g.dart';
 enum AppStatus {
   Initializing,
   Initialized,
+  LoggedIn,
   LoggedOut
 }
 
 @JsonSerializable()
 class AppState {
 
-  final bool IsLoggedIn;
   final bool IsGuest;
   final String Id;
   final String Email;
@@ -21,7 +21,6 @@ class AppState {
 
   AppState (
     this.Id, {
-    this.IsLoggedIn = false,
     this.IsGuest = true,
     this.Email = '',
     this.Username = '',
@@ -32,7 +31,6 @@ class AppState {
   AppState CopyWith(
       String id,
       {
-        bool? isLoggedIn,
         bool? isGuest,
         String? email,
         String? username,
@@ -41,7 +39,6 @@ class AppState {
       }) {
     return AppState(
         id,
-        IsLoggedIn: isLoggedIn ?? this.IsLoggedIn,
         IsGuest: isGuest ?? this.IsGuest,
         Email: email ?? this.Email,
         Username: username ?? this.Username,

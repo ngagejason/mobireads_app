@@ -9,14 +9,13 @@ part of 'RequestResult.dart';
 RequestResult<T> _$RequestResultFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
-) {
-  return RequestResult<T>(
-    json['success'] as bool? ?? false,
-    json['message'] as String?,
-    _$nullableGenericFromJson(json['data'], fromJsonT),
-    json['redirect'] as String?,
-  );
-}
+) =>
+    RequestResult<T>(
+      json['success'] as bool? ?? false,
+      json['message'] as String?,
+      _$nullableGenericFromJson(json['data'], fromJsonT),
+      json['redirect'] as String?,
+    );
 
 Map<String, dynamic> _$RequestResultToJson<T>(
   RequestResult<T> instance,

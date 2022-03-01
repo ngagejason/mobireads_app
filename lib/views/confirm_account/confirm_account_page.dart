@@ -41,7 +41,7 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
           create: (context) => ConfirmAccountBloc(RepositoryProvider.of<AccountRepository>(context), email),
           child:  BlocListener<ConfirmAccountBloc, ConfirmAccountState>(
             listener: (context, state){
-              if (state.Status == ConfirmAccountStatus.ComfirmRequested) {
+              if (state.Status == ConfirmAccountStatus.ConfirmRequested) {
                 _autoValidate = AutovalidateMode.always;
                 if (_formKeyLogin.currentState!.validate()) {
                   context.read<ConfirmAccountBloc>().add(ConfirmAccount());

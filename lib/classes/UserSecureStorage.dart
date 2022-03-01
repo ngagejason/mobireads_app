@@ -18,7 +18,8 @@ class UserSecureStorage {
   }
 
   static Future<AppState?> getAppState(String id) async {
-    String? appStateString = await _storage.read(key: getStorageKey(id));
+    String storageKey = getStorageKey(id);
+    String? appStateString = await _storage.read(key: storageKey);
     if(appStateString != null && appStateString.length > 0){
       var a = json.decode(appStateString);
       return AppState.fromJson(a);
@@ -32,7 +33,7 @@ class UserSecureStorage {
       await _storage.write(key:  getStorageKey(appState.Id), value: json.encode(appState));
     }
     else{
-      await _storage.delete(key: getStorageKey(appState.Id));
+      //await _storage.delete(key: getStorageKey(appState.Id));
       await _storage.write(key:  getStorageKey(appState.Id), value: json.encode(appState));
     }
   }

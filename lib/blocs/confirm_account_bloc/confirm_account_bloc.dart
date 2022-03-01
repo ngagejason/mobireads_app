@@ -26,7 +26,7 @@ class ConfirmAccountBloc extends Bloc<ConfirmAccountEvent, ConfirmAccountState> 
   }
 
   Future handleConfirmAccountRequestedEvent(Emitter<ConfirmAccountState> emit) async {
-    emit(state.CopyWith(status: ConfirmAccountStatus.ComfirmRequested));
+    emit(state.CopyWith(status: ConfirmAccountStatus.ConfirmRequested));
   }
 
   Future handleConfirmAccountEvent(Emitter<ConfirmAccountState> emit) async {

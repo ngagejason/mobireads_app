@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mobi_reads/blocs/peek_bloc/peek_block.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
+import 'package:mobi_reads/repositories/peek_repository.dart';
 import 'package:mobi_reads/views/configure_page.dart';
 import 'package:mobi_reads/views/confirm_account/confirm_account_page.dart';
 import 'package:mobi_reads/views/create_account/create_account_page.dart';
@@ -11,6 +13,7 @@ import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_p
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 import 'blocs/app_bloc/app_bloc.dart';
+import 'repositories/preferences_repository.dart';
 
 void main() async {
   runApp(MyApp());
@@ -36,7 +39,9 @@ class _MyAppState extends State<MyApp> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => LoginRepository()),
-        RepositoryProvider(create: (context) => AccountRepository())
+        RepositoryProvider(create: (context) => AccountRepository()),
+        RepositoryProvider(create: (context) => PreferencesRepository()),
+        RepositoryProvider(create: (context) => PeekRepository())
       ],
       child: appUI(),
     );
@@ -47,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
-//        BlocProvider<LoginBloc>(create: (context) => LoginBloc(RepositoryProvider.of<LoginRepository>(context))),
+//        BlocProvider<PeekBloc>(create: (context) => PeekBloc(RepositoryProvider.of<PeekRepository>(context))),
 //        BlocProvider<CreateAccountBloc>(create: (context) => CreateAccountBloc(RepositoryProvider.of<AccountRepository>(context))),
 //        BlocProvider<ConfirmAccountBloc>(create:(context) => ConfirmAccountBloc(RepositoryProvider.of<AccountRepository>(context), '')),
       ],

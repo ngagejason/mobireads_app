@@ -9,14 +9,13 @@ part of 'RequestResults.dart';
 RequestResults<T> _$RequestResultsFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
-) {
-  return RequestResults<T>(
-    json['success'] as bool? ?? false,
-    json['message'] as String?,
-    (json['data'] as List<dynamic>?)?.map(fromJsonT).toList(),
-    json['redirect'] as String?,
-  );
-}
+) =>
+    RequestResults<T>(
+      json['success'] as bool? ?? false,
+      json['message'] as String?,
+      (json['data'] as List<dynamic>?)?.map(fromJsonT).toList(),
+      json['redirect'] as String?,
+    );
 
 Map<String, dynamic> _$RequestResultsToJson<T>(
   RequestResults<T> instance,

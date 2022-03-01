@@ -6,13 +6,13 @@ part of 'create_account_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CreateAccountRequest _$CreateAccountRequestFromJson(Map<String, dynamic> json) {
-  return CreateAccountRequest(
-    json['email'] as String,
-    json['username'] as String,
-    json['password'] as String,
-  );
-}
+CreateAccountRequest _$CreateAccountRequestFromJson(
+        Map<String, dynamic> json) =>
+    CreateAccountRequest(
+      json['email'] as String,
+      json['username'] as String,
+      json['password'] as String,
+    );
 
 Map<String, dynamic> _$CreateAccountRequestToJson(
         CreateAccountRequest instance) =>
