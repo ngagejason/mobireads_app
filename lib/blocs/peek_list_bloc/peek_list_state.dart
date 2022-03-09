@@ -1,29 +1,31 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:mobi_reads/entities/peek/Peek.dart';
 
-enum PeekStatus {
-  Loading,
+enum PeekListStatus {
+  Constructed,
+  PeeksLoading,
+  PeeksLoaded,
   Loaded,
   Error
 }
 
-class PeekState {
+class PeekListState {
 
   final List<Peek> Peeks;
   final String Title;
-  final PeekStatus Status;
+  final PeekListStatus Status;
   final int? DisplayType;
 
-  PeekState ({ this.Peeks = const[], this.Title = '', this.Status = PeekStatus.Loading, this.DisplayType = 1 });
+  PeekListState ({ this.Peeks = const[], this.Title = '', this.Status = PeekListStatus.Constructed, this.DisplayType = 1 });
 
-  PeekState CopyWith(
+  PeekListState CopyWith(
       {
         List<Peek>? peeks,
         String? title,
-        PeekStatus? status,
+        PeekListStatus? status,
         int? displayType
       }) {
-    return PeekState(
+    return PeekListState(
       Peeks: peeks ?? this.Peeks,
       Title: title ?? this.Title,
       Status: status ?? this.Status,

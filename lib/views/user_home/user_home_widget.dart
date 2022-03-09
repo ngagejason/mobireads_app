@@ -1,22 +1,19 @@
-import 'dart:collection';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:flutter/material.dart';
-import 'package:mobi_reads/blocs/peek_bloc/peek_block.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/repositories/peek_repository.dart';
-import 'package:mobi_reads/repositories/preferences_repository.dart';
 import 'package:mobi_reads/views/loading_page.dart';
 import 'package:mobi_reads/views/user_home/search_area.dart';
-import 'package:mobi_reads/views/widgets/peek_factory.dart';
+import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
 import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
+import 'package:mobi_reads/views/widgets/preferences_expansion_tile.dart';
+
 
 class UserHomeWidget extends StatefulWidget {
   const UserHomeWidget({Key? key}) : super(key: key);
@@ -29,25 +26,37 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   String? choiceChipsValue;
   TextEditingController? textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  HashMap<int, PeekFactory> peeks = HashMap();
+  List<PeekListFactory> peeks = List.empty(growable: true);
+  bool preferencesOpen = false;
+  final GlobalKey<PreferencesExpansionTileState> preferencesExpansionTileKey = new GlobalKey();
 
   @override
   void initState() {
     super.initState();
     textController = TextEditingController();
+    PreferencesState state = context.read<PreferencesBloc>().state;
+    context.read<PreferencesBloc>().add(Initialize());
   }
 
   @override
   Widget build(BuildContext context) {
-    //return userHomeUI(context);
-    return BlocProvider(
-        create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))..add(Initialized()),
+    return BlocListener<PreferencesBloc, PreferencesState>(
+        listener: (context, state) {
+          if (state.Status == PreferencesStatus.PreferencesLoaded) {
+            for(int i = 0;  i < state.PreferenceChips.length; i++){
+              if(state.PreferenceChips[i].IsSelected){
+                peeks.add(PeekListFactory(Key(state.PreferenceChips[i].Label), state.PreferenceChips[i].Code, state.PreferenceChips[i].Label));
+              }
+            }
+            context.read<PreferencesBloc>().add(Loaded());
+          }
+        },
         child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
-          if(state.Status == PreferencesStatus.Loading){
-            return LoadingPage();
+          if(state.Status == PreferencesStatus.Loaded){
+            return userHomeUIListener(context);
           }
 
-          return userHomeUIListener(context);
+          return LoadingPage();
         })
     );
   }
@@ -71,20 +80,6 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
 
     return SafeArea(
       child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
-        HashMap<int, PeekFactory> toSet = HashMap();
-        for(int i = 0;  i < state.PreferenceChips.length; i++){
-          if(state.PreferenceChips[i].IsSelected){
-            if(peeks.containsKey(state.PreferenceChips[i].Code)){
-              toSet[state.PreferenceChips[i].Code] = peeks[state.PreferenceChips[i].Code] as PeekFactory;
-            }
-            else{
-              toSet[state.PreferenceChips[i].Code] = PeekFactory(Key(state.PreferenceChips[i].Label), state.PreferenceChips[i].Code, state.PreferenceChips[i].Label);
-            }
-          }
-        }
-
-        peeks = toSet;
-
         return Scaffold(
             key: scaffoldKey,
             drawer: NavDrawer(context),
@@ -131,11 +126,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                   ),
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                    child: ExpansionTile(
-                        collapsedIconColor: FlutterFlowTheme.of(context).secondaryColor,
-                        iconColor: FlutterFlowTheme.of(context).secondaryColor,
-                        textColor: FlutterFlowTheme.of(context).secondaryColor,
-                        collapsedTextColor: FlutterFlowTheme.of(context).secondaryColor,
+                    child: PreferencesExpansionTile(
+                        key: preferencesExpansionTileKey,
+                        collapsedIconColor: FlutterFlowTheme.of(context).primaryColor,
+                        iconColor: FlutterFlowTheme.of(context).primaryColor,
+                        textColor: FlutterFlowTheme.of(context).primaryColor,
+                        collapsedTextColor: FlutterFlowTheme.of(context).primaryColor,
                         title: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -152,7 +148,9 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                                       )
                                   ),
                                   selected: true,
-                                  onSelected: (bool selected) {},
+                                  onSelected: (bool selected) {
+                                    preferencesExpansionTileKey.currentState!.toggleExpanded();
+                                  },
                                   selectedColor: FlutterFlowTheme.of(context).secondaryColor,
                                   avatar:
                                   Padding(
@@ -172,7 +170,14 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                         children: <Widget>[
                           PreferenceChipList(
                             onChanged: (chipData) {
-                              print('made it');
+                              if(chipData.IsSelected){
+                                peeks.removeWhere((element) => element.code == chipData.Code);
+                              }
+                              else{
+                                peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
+                                peeks.sort((a,b) => a.code.compareTo(b.code));
+                              }
+
                               context.read<PreferencesBloc>().add(PreferenceToggled(chipData));
 
                             },
@@ -181,12 +186,8 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                         ]
                     ),
                   ),
-                  for(var p in peeks.entries)
-                    BlocProvider(
-                        create: (context) => PeekBloc(RepositoryProvider.of<PeekRepository>(context)),
-                        child: p.value as PeekFactory
-                    ),
-                    //p.value as PeekFactory
+                  for(var p in peeks)
+                    p,
                   /*// Popular Reads
                   Column(
                     mainAxisSize: MainAxisSize.max,
@@ -1893,4 +1894,3 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
     );
   }
 }
-

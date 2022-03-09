@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mobi_reads/blocs/peek_bloc/peek_block.dart';
+import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
+import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
 import 'package:mobi_reads/repositories/peek_repository.dart';
 import 'package:mobi_reads/views/configure_page.dart';
@@ -41,7 +42,8 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => LoginRepository()),
         RepositoryProvider(create: (context) => AccountRepository()),
         RepositoryProvider(create: (context) => PreferencesRepository()),
-        RepositoryProvider(create: (context) => PeekRepository())
+        RepositoryProvider(create: (context) => PeekRepository()),
+        RepositoryProvider(create: (context) => BookRepository())
       ],
       child: appUI(),
     );
@@ -53,6 +55,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
 //        BlocProvider<PeekBloc>(create: (context) => PeekBloc(RepositoryProvider.of<PeekRepository>(context))),
+        BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
 //        BlocProvider<CreateAccountBloc>(create: (context) => CreateAccountBloc(RepositoryProvider.of<AccountRepository>(context))),
 //        BlocProvider<ConfirmAccountBloc>(create:(context) => ConfirmAccountBloc(RepositoryProvider.of<AccountRepository>(context), '')),
       ],

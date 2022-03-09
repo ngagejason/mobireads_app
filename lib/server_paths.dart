@@ -20,4 +20,7 @@ class ServerPaths{
 
   /* Peek */
   static String GET_PEEKS = "api/peeks/getPeeks";
+
+  /* Book */
+  static String TOGGLE_BOOK_FOLLOW = "api/books/toggleBookFollow";
 }

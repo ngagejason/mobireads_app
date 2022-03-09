@@ -12,6 +12,9 @@ Peek _$PeekFromJson(Map<String, dynamic> json) => Peek(
       json['genre'] as String,
       json['frontCoverImageUrl'] as String,
       json['followCount'] as int,
+      json['summary'] as String,
+      json['bookId'] as String,
+      json['doesFollow'] as bool,
     );
 
 Map<String, dynamic> _$PeekToJson(Peek instance) => <String, dynamic>{
@@ -20,4 +23,7 @@ Map<String, dynamic> _$PeekToJson(Peek instance) => <String, dynamic>{
       'genre': instance.Genre,
       'frontCoverImageUrl': instance.FrontCoverImageUrl,
       'followCount': instance.FollowCount,
+      'summary': instance.Summary,
+      'bookId': instance.BookId,
+      'doesFollow': instance.DoesFollow,
     };

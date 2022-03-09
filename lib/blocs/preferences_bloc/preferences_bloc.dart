@@ -12,13 +12,19 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   PreferencesRepository preferencesRepository;
 
   PreferencesBloc(this.preferencesRepository) : super(PreferencesState()){
-    on<Initialized>((event, emit) async => await handleInitializedEvent(event, emit));
+    on<Initialize>((event, emit) async => await handleInitializeEvent(event, emit));
     on<PreferenceToggled>((event, emit) async => await handlePreferenceToggledEvent(event, emit));
+    on<Loaded>((event, emit) async => await handleLoadedEvent(event, emit));
   }
 
-  Future handleInitializedEvent(Initialized event, Emitter<PreferencesState> emit) async {
+  Future handleLoadedEvent(Loaded event, Emitter<PreferencesState> emit) async {
+    emit(state.CopyWith(status: PreferencesStatus.Loaded));
+  }
+
+  Future handleInitializeEvent(Initialize event, Emitter<PreferencesState> emit) async {
+    emit(state.CopyWith(status: PreferencesStatus.PreferencesLoading));
     PreferencesResponse response = await preferencesRepository.getUserPreferences();
-    emit(state.CopyWith(preferenceChips: response.PreferenceChips, status: PreferencesStatus.Loaded));
+    emit(state.CopyWith(preferenceChips: response.PreferenceChips, status: PreferencesStatus.PreferencesLoaded));
   }
 
   Future handlePreferenceToggledEvent(PreferenceToggled event, Emitter<PreferencesState> emit) async {

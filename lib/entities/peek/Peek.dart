@@ -15,8 +15,14 @@ class Peek {
   String FrontCoverImageUrl;
   @JsonKey(name: 'followCount')
   int FollowCount;
+  @JsonKey(name: 'summary')
+  String Summary;
+  @JsonKey(name: 'bookId')
+  String BookId;
+  @JsonKey(name: 'doesFollow')
+  bool DoesFollow;
 
-  Peek(this.Title, this.Author, this.Genre, this.FrontCoverImageUrl, this.FollowCount);
+  Peek(this.Title, this.Author, this.Genre, this.FrontCoverImageUrl, this.FollowCount, this.Summary, this.BookId, this.DoesFollow);
 
   factory Peek.fromJson(Map<String, dynamic> json) => _$PeekFromJson(json);
   Map<String, dynamic> toJson() => _$PeekToJson(this);
