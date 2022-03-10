@@ -23,7 +23,6 @@ class _StandardPeekState extends State<StandardPeek> {
   _StandardPeekState();
   Peek peek = DefaultEntities.EmptyPeek;
   PeekListBloc? peekListBloc;
-  bool doesFollow = false;
 
   @override
   void initState() {
@@ -39,7 +38,6 @@ class _StandardPeekState extends State<StandardPeek> {
           return Container();
         }
         this.peek = peek;
-        doesFollow = peek.DoesFollow;
         return Book(context);
     });
   }
@@ -73,12 +71,17 @@ class _StandardPeekState extends State<StandardPeek> {
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                mainAxisAlignment:MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   // Follow Heart
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
-                    child: Container(),
+                    child: Container(
+                        child: peek.DoesFollow ?
+                        Icon(Icons.favorite,color: Colors.red,size: 24) :
+                        Icon(Icons.favorite_border,color: Colors.white,size: 24)
+                    ),
                   ),
                 ],
               ),
@@ -195,14 +198,13 @@ class _StandardPeekState extends State<StandardPeek> {
                                                 GestureDetector(
                                                   onTap: () {
                                                     peekListBloc?.add(ToggleFollow(peek.BookId));
-                                                    setState(() => { follows =!follows });
+                                                    setState(() => { follows = !follows });
                                                   },
                                                   child: Padding(
-                                                      padding: EdgeInsets
-                                                          .fromLTRB(8, 8, 8, 8),
-                                                      child: (doesFollow) ?
-                                                      Icon(Icons.favorite,color: Colors.red,size: 24) :
-                                                      Icon(Icons.favorite_border,color: Colors.white,size: 24)
+                                                      padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                                      child: (follows) ?
+                                                        Icon(Icons.favorite,color: Colors.red,size: 24) :
+                                                        Icon(Icons.favorite_border,color: Colors.white,size: 24)
                                                   ),
                                                 ),
                                               ],

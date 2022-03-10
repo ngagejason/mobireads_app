@@ -78,7 +78,7 @@ class _StandardPeekState extends State<StandardPeek> {
                   // Follow Heart
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
-                    child: Container(),
+                    child: Container(child: Text('this is a test')),
                   ),
                 ],
               ),
