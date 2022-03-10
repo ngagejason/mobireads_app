@@ -4,16 +4,11 @@ import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
-import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/views/loading_page.dart';
-import 'package:mobi_reads/views/user_home/search_area.dart';
-import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
-import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
-import 'package:mobi_reads/views/widgets/preferences_expansion_tile.dart';
-
+import 'package:mobi_reads/views/user_follows/user_follows_widget.dart';
+import 'package:mobi_reads/views/user_home/user_home_widget.dart';
+import 'package:mobi_reads/views/user_library/user_library_widget.dart';
 
 class MasterScaffoldWidget extends StatefulWidget {
   const MasterScaffoldWidget({Key? key}) : super(key: key);
@@ -23,19 +18,13 @@ class MasterScaffoldWidget extends StatefulWidget {
 }
 
 class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
-  String? choiceChipsValue;
-  TextEditingController? textController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<PeekListFactory> peeks = List.empty(growable: true);
-  bool preferencesOpen = false;
-  final GlobalKey<PreferencesExpansionTileState> preferencesExpansionTileKey = new GlobalKey();
+  int _selectedIndex = 0;
+  static List<Widget> _widgetOptions = List.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController();
-    PreferencesState state = context.read<PreferencesBloc>().state;
-    context.read<PreferencesBloc>().add(Initialize());
   }
 
   @override
@@ -52,17 +41,49 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   }
 
   Widget masterScaffoldUI(BuildContext context) {
-    List<PreferenceChip> preferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'HOME').toList();
-    double _appBarHeight = 40;
-
-
     return SafeArea(
       child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
         return Scaffold(
             key: scaffoldKey,
             drawer: NavDrawer(context),
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
-            body: Container();
+            body: IndexedStack(
+              children: <Widget>[
+                UserHomeWidget(scaffoldKey: this.scaffoldKey),
+                UserLibraryWidget(scaffoldKey: this.scaffoldKey),
+                UserFollowsWidget(scaffoldKey: this.scaffoldKey),
+              ],
+              index: _selectedIndex,
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home,
+                    color: _selectedIndex == 0 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
+                  ),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.local_library,
+                    color: _selectedIndex == 1 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
+                  ),
+                  label: 'Library',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: _selectedIndex == 2 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
+                  ),
+                  label: 'Favorites',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: FlutterFlowTheme.of(context).secondaryColor,
+              backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+              onTap: _onItemTapped,
+            )
         );
       })
     );
@@ -144,4 +165,11 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
         )
     );
   }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
 }

@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
-import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart';
@@ -16,7 +15,9 @@ import 'package:mobi_reads/views/widgets/preferences_expansion_tile.dart';
 
 
 class UserHomeWidget extends StatefulWidget {
-  const UserHomeWidget({Key? key}) : super(key: key);
+  const UserHomeWidget({Key? key, required this.scaffoldKey}) : super(key: key);
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   _UserHomeWidgetState createState() => _UserHomeWidgetState();
@@ -25,7 +26,6 @@ class UserHomeWidget extends StatefulWidget {
 class _UserHomeWidgetState extends State<UserHomeWidget> {
   String? choiceChipsValue;
   TextEditingController? textController;
-  final scaffoldKey = GlobalKey<ScaffoldState>();
   List<PeekListFactory> peeks = List.empty(growable: true);
   bool preferencesOpen = false;
   final GlobalKey<PreferencesExpansionTileState> preferencesExpansionTileKey = new GlobalKey();
@@ -53,7 +53,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
         },
         child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
           if(state.Status == PreferencesStatus.Loaded){
-            return userHomeUIListener(context);
+            return userHomeUI(context);
           }
 
           return LoadingPage();
@@ -61,134 +61,115 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
     );
   }
 
-  Widget userHomeUIListener(BuildContext context) {
-    return BlocListener<AppBloc, AppState>(
-        listener: (context, state) {
-          if (state.Status == AppStatus.LoggedOut) {
-            context.read<AppBloc>().add(AppInitializingEvent());
-            Navigator.pushNamedAndRemoveUntil(context, "/login", (r) => false);
-          }
-        },
-        child: userHomeUI(context)
-    );
-  }
-
   Widget userHomeUI(BuildContext context) {
     List<PreferenceChip> preferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'HOME').toList();
     double _appBarHeight = 40;
 
-
-    return SafeArea(
-      child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
-        return Scaffold(
-            key: scaffoldKey,
-            drawer: NavDrawer(context),
-            backgroundColor: FlutterFlowTheme.of(context).primaryColor,
-            body: CustomScrollView(
-              physics: BouncingScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  floating: true,
-                    toolbarHeight: _appBarHeight,
-                  collapsedHeight: _appBarHeight,
-                  backgroundColor: FlutterFlowTheme.of(context).primaryColor,
-                  expandedHeight: 80,
-                  onStretchTrigger: () async => { print('stretched') },
-                  leading: Container(),
-                  actions: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
-                      child: IconButton(
-                        icon: const Icon(Icons.settings_outlined, color: Color(0xD8EACD29)),
-                        tooltip: 'Settings',
-                        onPressed: () => { scaffoldKey.currentState!.openDrawer() })
-                      )
-                    ],
-                  pinned: false,
-                  stretch: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    stretchModes: [
-                      StretchMode.fadeTitle,
-                      StretchMode.blurBackground,
-                      StretchMode.zoomBackground,
-                    ],
-                    background: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 10),
-                      child: Image.asset('assets/images/mobireads_logo_4.png'),
-                    )
-                  ),
-                ),
-                SliverList(delegate: SliverChildListDelegate([
-                  // Search
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 5),
-                    child: SearchArea(),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                    child: PreferencesExpansionTile(
-                        key: preferencesExpansionTileKey,
-                        collapsedIconColor: FlutterFlowTheme.of(context).primaryColor,
-                        iconColor: FlutterFlowTheme.of(context).primaryColor,
-                        textColor: FlutterFlowTheme.of(context).primaryColor,
-                        collapsedTextColor: FlutterFlowTheme.of(context).primaryColor,
-                        title: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ChoiceChip(
-                                  label: Padding(
-                                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                      child: Text(
-                                        'My Preferences',
-                                        style: const TextStyle(
-                                            fontFamily: 'Lexend Deca',
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal),
-                                      )
-                                  ),
-                                  selected: true,
-                                  onSelected: (bool selected) {
-                                    preferencesExpansionTileKey.currentState!.toggleExpanded();
-                                  },
-                                  selectedColor: FlutterFlowTheme.of(context).secondaryColor,
-                                  avatar:
-                                  Padding(
-                                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                      child: Icon(
-                                        Icons.room_preferences_outlined,
-                                        color: Colors.white,
-                                        size: 16,
-                                      )
-                                  ),
-                                  backgroundColor: const Color(0xFFEACD29),
-                                  labelPadding: EdgeInsets.zero,
-                                  elevation: 4
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(),
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          toolbarHeight: _appBarHeight,
+          collapsedHeight: _appBarHeight,
+          backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+          expandedHeight: 80,
+          onStretchTrigger: () async => { print('stretched') },
+          leading: Container(),
+          actions: [
+            Padding(
+                padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+                child: IconButton(
+                    icon: const Icon(Icons.settings_outlined, color: Color(0xD8EACD29)),
+                    tooltip: 'Settings',
+                    onPressed: () => { widget.scaffoldKey.currentState!.openDrawer() })
+            )
+          ],
+          pinned: false,
+          stretch: true,
+          flexibleSpace: FlexibleSpaceBar(
+              stretchModes: [
+                StretchMode.fadeTitle,
+                StretchMode.blurBackground,
+                StretchMode.zoomBackground,
+              ],
+              background: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 10),
+                child: Image.asset('assets/images/mobireads_logo_4.png'),
+              )
+          ),
+        ),
+        SliverList(delegate: SliverChildListDelegate([
+          // Search
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 5),
+            child: SearchArea(),
+          ),
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+            child: PreferencesExpansionTile(
+                key: preferencesExpansionTileKey,
+                collapsedIconColor: FlutterFlowTheme.of(context).primaryColor,
+                iconColor: FlutterFlowTheme.of(context).primaryColor,
+                textColor: FlutterFlowTheme.of(context).primaryColor,
+                collapsedTextColor: FlutterFlowTheme.of(context).primaryColor,
+                title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ChoiceChip(
+                          label: Padding(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: Text(
+                                'My Preferences',
+                                style: const TextStyle(
+                                    fontFamily: 'Lexend Deca',
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal),
                               )
-                            ]
-                        ),
-                        children: <Widget>[
-                          PreferenceChipList(
-                            onChanged: (chipData) {
-                              if(chipData.IsSelected){
-                                peeks.removeWhere((element) => element.code == chipData.Code);
-                              }
-                              else{
-                                peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
-                                peeks.sort((a,b) => a.code.compareTo(b.code));
-                              }
-
-                              context.read<PreferencesBloc>().add(PreferenceToggled(chipData));
-
-                            },
-                            options: preferences,
                           ),
-                        ]
-                    ),
+                          selected: true,
+                          onSelected: (bool selected) {
+                            preferencesExpansionTileKey.currentState!.toggleExpanded();
+                          },
+                          selectedColor: FlutterFlowTheme.of(context).secondaryColor,
+                          avatar:
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: Icon(
+                                Icons.room_preferences_outlined,
+                                color: Colors.white,
+                                size: 16,
+                              )
+                          ),
+                          backgroundColor: const Color(0xFFEACD29),
+                          labelPadding: EdgeInsets.zero,
+                          elevation: 4
+                      )
+                    ]
+                ),
+                children: <Widget>[
+                  PreferenceChipList(
+                    onChanged: (chipData) {
+                      if(chipData.IsSelected){
+                        peeks.removeWhere((element) => element.code == chipData.Code);
+                      }
+                      else{
+                        peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
+                        peeks.sort((a,b) => a.code.compareTo(b.code));
+                      }
+
+                      context.read<PreferencesBloc>().add(PreferenceToggled(chipData));
+
+                    },
+                    options: preferences,
                   ),
-                  for(var p in peeks)
-                    p,
-                  /*// Popular Reads
+                ]
+            ),
+          ),
+          for(var p in peeks)
+            p,
+          /*// Popular Reads
                   Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -1808,12 +1789,9 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                       ),
                     ],
                   ),*/
-                ]
-                ))
-              ],
-            )
-        );
-      })
+        ]
+        ))
+      ],
     );
   }
 

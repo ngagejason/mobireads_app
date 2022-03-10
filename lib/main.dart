@@ -10,6 +10,7 @@ import 'package:mobi_reads/views/configure_page.dart';
 import 'package:mobi_reads/views/confirm_account/confirm_account_page.dart';
 import 'package:mobi_reads/views/create_account/create_account_page.dart';
 import 'package:mobi_reads/views/login/login_page.dart';
+import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
 import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_page.dart';
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
@@ -73,7 +74,7 @@ class _MyAppState extends State<MyApp> {
           routes: {
             '/': (context) => ConfigurePage(),
             '/login': (context) => LoginPageWidget(),
-            '/userHome': (context) => UserHomeWidget(),
+            '/userHome': (context) => MasterScaffoldWidget(),
             '/createAccount': (context) => CreateAccountPageWidget(),
             '/confirmAccount': (context) => ConfirmAccountPageWidget(),
             '/passwordResetRequest': (context) => PasswordResetRequestWidget(),
