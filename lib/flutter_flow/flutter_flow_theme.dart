@@ -95,31 +95,31 @@ abstract class FlutterFlowTheme {
 
   TextStyle get title1 => GoogleFonts.getFont(
     'Poppins',
-    color: Color(0xFF303030),
+    color: Colors.white,
     fontWeight: FontWeight.w600,
     fontSize: 24,
   );
   TextStyle get title2 => GoogleFonts.getFont(
     'Poppins',
-    color: Color(0xFF303030),
+    color: Colors.white,
     fontWeight: FontWeight.w500,
     fontSize: 22,
   );
   TextStyle get title3 => GoogleFonts.getFont(
     'Poppins',
-    color: Color(0xFF303030),
+    color: Colors.white,
     fontWeight: FontWeight.w500,
     fontSize: 20,
   );
   TextStyle get subtitle1 => GoogleFonts.getFont(
     'Poppins',
-    color: Color(0xFF757575),
+    color: Colors.white70,
     fontWeight: FontWeight.w500,
     fontSize: 18,
   );
   TextStyle get subtitle2 => GoogleFonts.getFont(
     'Poppins',
-    color: Color(0xFF616161),
+    color: Colors.white70,
     fontWeight: FontWeight.normal,
     fontSize: 16,
   );

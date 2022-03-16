@@ -1,3 +1,4 @@
+import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowRequest.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowResponse.dart';
 import 'package:mobi_reads/entities/bool_response/bool_response.dart';
@@ -16,4 +17,5 @@ class DefaultEntities {
   static final ErrorPeekResponse = PeekResponse(List<Peek>.empty(growable: false), 0);
   static final ErrorToggleFollowResponse = ToggleBookFollowResponse(false, false, 'An error has occurred.');
   static final EmptyPeek = Peek('', '', '', '', 0, '', '', false);
+  static final EmptyAllBookFollowsResponse = AllBookFollowsResponse(List.empty(growable: false));
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
@@ -57,7 +58,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
 //        BlocProvider<PeekBloc>(create: (context) => PeekBloc(RepositoryProvider.of<PeekRepository>(context))),
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
-//        BlocProvider<CreateAccountBloc>(create: (context) => CreateAccountBloc(RepositoryProvider.of<AccountRepository>(context))),
+        BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
 //        BlocProvider<ConfirmAccountBloc>(create:(context) => ConfirmAccountBloc(RepositoryProvider.of<AccountRepository>(context), '')),
       ],
       child: MaterialApp(

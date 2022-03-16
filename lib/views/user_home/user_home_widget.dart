@@ -34,7 +34,6 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   void initState() {
     super.initState();
     textController = TextEditingController();
-    PreferencesState state = context.read<PreferencesBloc>().state;
     context.read<PreferencesBloc>().add(Initialize());
   }
 

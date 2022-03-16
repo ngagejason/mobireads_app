@@ -43,6 +43,7 @@ class _StandardPeek extends State<StandardPeekList> {
     );
   }
   Widget PeekUI(BuildContext context){
+
     PeekListState state = context.read<PeekListBloc>().state;
 
     if(state.Status != PeekListStatus.Loaded){

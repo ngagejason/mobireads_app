@@ -23,4 +23,6 @@ class ServerPaths{
 
   /* Book */
   static String TOGGLE_BOOK_FOLLOW = "api/books/toggleBookFollow";
+  static String ALL_BOOK_FOLLOWS = "api/books/allBookFollows";
+
 }

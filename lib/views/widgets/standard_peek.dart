@@ -98,32 +98,17 @@ class _StandardPeekState extends State<StandardPeek> {
                   topRight: Radius.circular(0),
                 ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding:
-                    EdgeInsetsDirectional
-                        .fromSTEB(
-                        8, 0, 0, 0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment .start,
-                      children: [
-                        Text(
-                          peek.Author,
-                          style: FlutterFlowTheme.of(context).bodyText1.override(
-                            fontFamily: 'Lexend Deca',
-                            color: Color(0xFFEE8B60),
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
+              child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    peek.Author,
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Lexend Deca',
+                      color: Color(0xFFEE8B60),
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
                     ),
-                  ),
-                ],
+                  )
               ),
             )
           ],

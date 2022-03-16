@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/views/user_follows/user_follows_widget.dart';
+import 'package:mobi_reads/views/user_follows/user_follows_master_widget.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 import 'package:mobi_reads/views/user_library/user_library_widget.dart';
 
@@ -51,7 +51,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
               children: <Widget>[
                 UserHomeWidget(scaffoldKey: this.scaffoldKey),
                 UserLibraryWidget(scaffoldKey: this.scaffoldKey),
-                UserFollowsWidget(scaffoldKey: this.scaffoldKey),
+                UserFollowsMasterWidget(scaffoldKey: scaffoldKey),
               ],
               index: _selectedIndex,
             ),
