@@ -4,7 +4,6 @@ import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
 
 enum PreferencesStatus {
   Constructed,
-  Loading,
   PreferencesLoading,
   PreferencesLoaded,
   Loaded,

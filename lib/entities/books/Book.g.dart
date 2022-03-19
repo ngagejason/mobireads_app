@@ -20,7 +20,6 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
       json['genreName'] as String,
       json['followCount'] as int,
       json['summary'] as String,
-      json['doesFollow'] as bool,
     );
 
 Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
@@ -37,5 +36,4 @@ Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
       'genreName': instance.GenreName,
       'followCount': instance.FollowCount,
       'summary': instance.Summary,
-      'doesFollow': instance.DoesFollow,
     };

@@ -2,8 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:flutter/material.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart' as book_follows_events;
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
-import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart';
+import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart' as preferences_events;
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
@@ -29,34 +32,54 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   List<PeekListFactory> peeks = List.empty(growable: true);
   bool preferencesOpen = false;
   final GlobalKey<PreferencesExpansionTileState> preferencesExpansionTileKey = new GlobalKey();
+  late PreferencesBloc preferencesBloc;
+  late BookFollowsBloc bookFollowsBloc;
 
   @override
   void initState() {
     super.initState();
     textController = TextEditingController();
-    context.read<PreferencesBloc>().add(Initialize());
+    preferencesBloc = context.read<PreferencesBloc>();
+    preferencesBloc.add(preferences_events.InitializePreferences());
+    bookFollowsBloc = context.read<BookFollowsBloc>();
+    bookFollowsBloc.add(book_follows_events.InitializeBookFollows());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PreferencesBloc, PreferencesState>(
-        listener: (context, state) {
-          if (state.Status == PreferencesStatus.PreferencesLoaded) {
-            for(int i = 0;  i < state.PreferenceChips.length; i++){
-              if(state.PreferenceChips[i].IsSelected){
-                peeks.add(PeekListFactory(Key(state.PreferenceChips[i].Label), state.PreferenceChips[i].Code, state.PreferenceChips[i].Label));
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PreferencesBloc, PreferencesState>(
+            listener: (context, state) {
+              if (state.Status == PreferencesStatus.PreferencesLoaded) {
+                for(int i = 0;  i < state.PreferenceChips.length; i++){
+                  if(state.PreferenceChips[i].IsSelected){
+                    peeks.add(PeekListFactory(Key(state.PreferenceChips[i].Label), state.PreferenceChips[i].Code, state.PreferenceChips[i].Label));
+                  }
+                }
+                context.read<PreferencesBloc>().add(preferences_events.Loaded());
               }
             }
-            context.read<PreferencesBloc>().add(Loaded());
-          }
-        },
-        child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
-          if(state.Status == PreferencesStatus.Loaded){
+        ),
+        BlocListener<BookFollowsBloc, BookFollowsState>(
+          listener: (context, state) {
+            if(state.Status == BookFollowsStatus.BookFollowsLoaded){
+              context.read<BookFollowsBloc>().add(book_follows_events.Loaded());
+            }
+          },
+        ),
+      ],
+
+      child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
+
+        return BlocBuilder<BookFollowsBloc, BookFollowsState>(builder: (context, state) {
+          if(preferencesBloc.state.Status == PreferencesStatus.Loaded){
             return userHomeUI(context);
           }
 
           return LoadingPage();
-        })
+        });
+      })
     );
   }
 
@@ -158,7 +181,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                         peeks.sort((a,b) => a.code.compareTo(b.code));
                       }
 
-                      context.read<PreferencesBloc>().add(PreferenceToggled(chipData));
+                      context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
 
                     },
                     options: preferences,

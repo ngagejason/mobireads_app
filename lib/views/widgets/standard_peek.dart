@@ -1,18 +1,20 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/peek_list_block.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/peek_list_event.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/peek_list_state.dart';
-import 'package:mobi_reads/entities/DefaultEntities.dart';
-import 'package:mobi_reads/entities/peek/Peek.dart';
-import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart';
+import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
+import 'package:mobi_reads/blocs/peek_list_bloc/trending_books_block.dart';
+import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
+import '../../blocs/peek_list_bloc/trending_books_event.dart';
 
 class StandardPeek extends StatefulWidget {
-  const StandardPeek(this.bookId) : super();
+  const StandardPeek(this.book) : super();
 
-  final String bookId;
+  final Book book;
 
   @override
   _StandardPeekState createState() => _StandardPeekState();
@@ -20,33 +22,23 @@ class StandardPeek extends StatefulWidget {
 
 class _StandardPeekState extends State<StandardPeek> {
 
-  _StandardPeekState();
-  Peek peek = DefaultEntities.EmptyPeek;
-  PeekListBloc? peekListBloc;
-
   @override
   void initState() {
     super.initState();
-    peekListBloc = context.read<PeekListBloc>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PeekListBloc, PeekListState>(builder: (context, state) {
-        Peek? peek = state.Peeks.firstWhereOrNull((e) => e.BookId == widget.bookId);
-        if(peek == null){
-          return Container();
-        }
-        this.peek = peek;
-        return Book(context);
+    return BlocBuilder<BookFollowsBloc, BookFollowsState>(builder: (context, state) {
+        return BookUI(context);
     });
   }
   
-  Widget Book(BuildContext context){
+  Widget BookUI(BuildContext context){
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
       child: GestureDetector(
-        onLongPress: () => openDialog(context, peek),
+        onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
         child: Column(
           children: [
             Container(
@@ -55,7 +47,7 @@ class _StandardPeekState extends State<StandardPeek> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.fitWidth,
-                  image: Image.network(peek.FrontCoverImageUrl).image,
+                  image: Image.network(widget.book.FrontCoverImageUrl).image,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -78,9 +70,7 @@ class _StandardPeekState extends State<StandardPeek> {
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
                     child: Container(
-                        child: peek.DoesFollow ?
-                        Icon(Icons.favorite,color: Colors.red,size: 24) :
-                        Icon(Icons.favorite_border,color: Colors.white,size: 24)
+                        child: getFollowsIcon(context)
                     ),
                   ),
                 ],
@@ -101,7 +91,7 @@ class _StandardPeekState extends State<StandardPeek> {
               child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    peek.Author,
+                    widget.book.AuthorName(),
                     style: FlutterFlowTheme.of(context).bodyText1.override(
                       fontFamily: 'Lexend Deca',
                       color: Color(0xFFEE8B60),
@@ -117,11 +107,18 @@ class _StandardPeekState extends State<StandardPeek> {
     );
   }
 
-  Future openDialog(BuildContext context,  Peek peek){
+  Widget getFollowsIcon(BuildContext context){
+    bool doesFollow = context.read<BookFollowsBloc>().state.isBookFollowed(widget.book.Id);
+    return doesFollow ?
+      Icon(Icons.favorite,color: Colors.red,size: 24) :
+      Icon(Icons.favorite_border,color: Colors.white,size: 24);
+  }
+
+  Future openDialog(BuildContext context, Book book, BookFollowsBloc bloc){
     return showDialog(
         context: context,
         builder: (context) {
-          bool follows = peek.DoesFollow;
+          bool follows = bloc.state.isBookFollowed(book.Id);
           return StatefulBuilder( builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Colors.transparent,
@@ -131,9 +128,7 @@ class _StandardPeekState extends State<StandardPeek> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fitWidth,
-                      image: Image
-                          .network(peek.FrontCoverImageUrl)
-                          .image,
+                      image: Image.network(book.FrontCoverImageUrl).image,
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -182,7 +177,7 @@ class _StandardPeekState extends State<StandardPeek> {
                                               children: [
                                                 GestureDetector(
                                                   onTap: () {
-                                                    peekListBloc?.add(ToggleFollow(peek.BookId));
+                                                    bloc.add(ToggleFollow(book));
                                                     setState(() => { follows = !follows });
                                                   },
                                                   child: Padding(
@@ -200,7 +195,7 @@ class _StandardPeekState extends State<StandardPeek> {
                                                     padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
                                                     child: SingleChildScrollView(
                                                         child: Text(
-                                                            peek.Summary,
+                                                            book.Summary,
                                                             style: GoogleFonts
                                                                 .getFont(
                                                               'Poppins',

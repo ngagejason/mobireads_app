@@ -2,7 +2,7 @@ import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
 
 abstract class PreferencesEvent {}
 
-class Initialize extends PreferencesEvent{}
+class InitializePreferences extends PreferencesEvent{}
 
 class Loaded extends PreferencesEvent{}
 

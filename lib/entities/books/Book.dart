@@ -1,5 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
+// ignore_for_file: non_constant_identifier_names
 
+import 'package:json_annotation/json_annotation.dart';
 part 'Book.g.dart';
 
 @JsonSerializable()
@@ -22,7 +23,7 @@ class Book {
   @JsonKey(name: 'authorLastName')
   String AuthorLastName;
   @JsonKey(name: 'authorMiddleName')
-  String AuthorMiddleName;
+  String? AuthorMiddleName;
   @JsonKey(name: 'genreCode')
   int GenreCode;
   @JsonKey(name: 'genreName')
@@ -31,9 +32,6 @@ class Book {
   int FollowCount;
   @JsonKey(name: 'summary')
   String Summary;
-  @JsonKey(name: 'doesFollow')
-  bool DoesFollow;
-
 
   Book(this.Id,
       this.GenreId,
@@ -47,8 +45,15 @@ class Book {
       this.GenreCode,
       this.GenreName,
       this.FollowCount,
-      this.Summary,
-      this.DoesFollow);
+      this.Summary);
+
+  String AuthorName() {
+    if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){
+      return AuthorFirstName + ' ' + AuthorLastName;
+    }
+
+    return AuthorFirstName + ' ' + AuthorMiddleName! + ' ' + AuthorLastName;
+  }
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
   Map<String, dynamic> toJson() => _$BookToJson(this);

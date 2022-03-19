@@ -18,11 +18,9 @@ class ServerPaths{
   static String USER_PREFERENCES = "api/preferences/getPreferences";
   static String TOGGLE_PREFERENCE = "api/preferences/togglePreference";
 
-  /* Peek */
-  static String GET_PEEKS = "api/peeks/getPeeks";
-
   /* Book */
   static String TOGGLE_BOOK_FOLLOW = "api/books/toggleBookFollow";
   static String ALL_BOOK_FOLLOWS = "api/books/allBookFollows";
+  static String TRENDING_BOOKS = "api/books/trendingBooks";
 
 }

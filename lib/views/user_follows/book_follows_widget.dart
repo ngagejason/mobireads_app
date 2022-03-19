@@ -28,19 +28,11 @@ class _BookFollowsWidgetState
   @override
   void initState() {
     super.initState();
-    context.read<BookFollowsBloc>().add(Initialize());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BookFollowsBloc, BookFollowsState>(
-        listener: (context, state) {
-          if(state.Status == BookFollowsStatus.BookFollowsLoaded){
-            context.read<BookFollowsBloc>().add(Loaded());
-          }
-        },
-        child: BookFollowsUI(context)
-    );
+    return BookFollowsUI(context);
   }
 
   Widget BookFollowsUI(BuildContext context){

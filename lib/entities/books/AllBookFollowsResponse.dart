@@ -2,7 +2,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
-import 'package:mobi_reads/entities/peek/Peek.dart';
 
 part 'AllBookFollowsResponse.g.dart';
 

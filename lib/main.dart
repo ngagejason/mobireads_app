@@ -6,7 +6,6 @@ import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
-import 'package:mobi_reads/repositories/peek_repository.dart';
 import 'package:mobi_reads/views/configure_page.dart';
 import 'package:mobi_reads/views/confirm_account/confirm_account_page.dart';
 import 'package:mobi_reads/views/create_account/create_account_page.dart';
@@ -14,7 +13,6 @@ import 'package:mobi_reads/views/login/login_page.dart';
 import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
 import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_page.dart';
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
-import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 import 'blocs/app_bloc/app_bloc.dart';
 import 'repositories/preferences_repository.dart';
 
@@ -44,7 +42,6 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => LoginRepository()),
         RepositoryProvider(create: (context) => AccountRepository()),
         RepositoryProvider(create: (context) => PreferencesRepository()),
-        RepositoryProvider(create: (context) => PeekRepository()),
         RepositoryProvider(create: (context) => BookRepository())
       ],
       child: appUI(),
