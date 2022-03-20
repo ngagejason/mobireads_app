@@ -1,8 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:mobi_reads/entities/books/Book.dart';
-import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
 
-enum TrendingBooksStatus {
+enum TrendingBooksListStatus {
   Constructed,
   PeeksLoading,
   PeeksLoaded,
@@ -10,23 +9,23 @@ enum TrendingBooksStatus {
   Error
 }
 
-class TrendingBooksState {
+class TrendingBooksListState {
 
   final List<Book> Books;
   final String Title;
-  final TrendingBooksStatus Status;
+  final TrendingBooksListStatus Status;
   final int? DisplayType;
 
-  TrendingBooksState ({ this.Books = const[], this.Title = '', this.Status = TrendingBooksStatus.Constructed, this.DisplayType = 1 });
+  TrendingBooksListState ({ this.Books = const[], this.Title = '', this.Status = TrendingBooksListStatus.Constructed, this.DisplayType = 1 });
 
-  TrendingBooksState CopyWith(
+  TrendingBooksListState CopyWith(
       {
         List<Book>? books,
         String? title,
-        TrendingBooksStatus? status,
+        TrendingBooksListStatus? status,
         int? displayType
       }) {
-    return TrendingBooksState(
+    return TrendingBooksListState(
         Books: books ?? this.Books,
         Title: title ?? this.Title,
         Status: status ?? this.Status,

@@ -45,6 +45,9 @@ class BookFollowsBloc extends Bloc<BookFollowsEvent, BookFollowsState> {
       books.add(event.book);
     }
 
+    // Sort by Title
+    books.sort((e, a) => e.Title.compareTo(a.Title));
+
     emit(state.CopyWith(books: books));
   }
 }

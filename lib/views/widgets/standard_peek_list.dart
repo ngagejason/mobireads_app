@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/trending_books_block.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/trending_books_state.dart';
+import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
+import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_state.dart';
+import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_event.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_peek.dart';
-
-import '../../blocs/peek_list_bloc/trending_books_event.dart';
 
 class StandardPeekList extends StatefulWidget {
   const StandardPeekList(this.code, this.title) : super();
@@ -28,16 +26,16 @@ class _StandardPeek extends State<StandardPeekList> {
   @override
   void initState() {
     super.initState();
-    context.read<TrendingBooksBloc>().add(Initialize(this.code, this.title));
+    context.read<TrendingBooksListBloc>().add(Initialize(this.code, this.title));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TrendingBooksBloc, TrendingBooksState>(builder: (context, state) {
-      return BlocListener<TrendingBooksBloc, TrendingBooksState>(
+    return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
+      return BlocListener<TrendingBooksListBloc, TrendingBooksListState>(
           listener: (context, state) {
-            if(state.Status == TrendingBooksStatus.PeeksLoaded){
-              context.read<TrendingBooksBloc>().add(Loaded());
+            if(state.Status == TrendingBooksListStatus.PeeksLoaded){
+              context.read<TrendingBooksListBloc>().add(Loaded());
             }
           },
           child: PeekUI(context)
@@ -46,9 +44,9 @@ class _StandardPeek extends State<StandardPeekList> {
   }
   Widget PeekUI(BuildContext context){
 
-    TrendingBooksState state = context.read<TrendingBooksBloc>().state;
+    TrendingBooksListState state = context.read<TrendingBooksListBloc>().state;
 
-    if(state.Status != TrendingBooksStatus.Loaded){
+    if(state.Status != TrendingBooksListStatus.Loaded){
       return Loading(context);
     }
 

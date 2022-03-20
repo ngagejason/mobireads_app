@@ -1,11 +1,7 @@
-
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/user_follows/book_follows_widget.dart';
-import 'package:mobi_reads/repositories/book_repository.dart';
-import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 
 class UserFollowsMasterWidget extends StatefulWidget {
   const UserFollowsMasterWidget({Key? key, required this.scaffoldKey}) : super(key: key);
@@ -52,10 +48,7 @@ class _UserFollowsMasterWidgetState extends State<UserFollowsMasterWidget> {
          ),*/
        ],
        views: [
-         BlocProvider<BookFollowsBloc>(
-             create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context)),
-             child: BookFollowsWidget(scaffoldKey: widget.scaffoldKey)
-         ),
+         BookFollowsWidget(scaffoldKey: widget.scaffoldKey),
          //UserFollowsAuthorsWidget(),
        ],
        tabBarViewProperties: TabBarViewProperties(

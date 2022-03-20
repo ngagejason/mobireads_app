@@ -13,9 +13,11 @@ class Book {
   @JsonKey(name: 'title')
   String Title;
   @JsonKey(name: 'subtitle')
-  String Subtitle;
+  String? Subtitle;
   @JsonKey(name: 'frontCoverImageUrl')
   String FrontCoverImageUrl;
+  @JsonKey(name: 'backCoverImageUrl')
+  String? BackCoverImageUrl;
   @JsonKey(name: 'wordCount')
   int WordCount;
   @JsonKey(name: 'authorFirstName')
@@ -32,12 +34,15 @@ class Book {
   int FollowCount;
   @JsonKey(name: 'summary')
   String Summary;
+  @JsonKey(name: 'additionalImages')
+  List<String>? AdditionalImages;
 
   Book(this.Id,
       this.GenreId,
       this.Title,
       this.Subtitle,
       this.FrontCoverImageUrl,
+      this.BackCoverImageUrl,
       this.WordCount,
       this.AuthorFirstName,
       this.AuthorLastName,
@@ -45,7 +50,8 @@ class Book {
       this.GenreCode,
       this.GenreName,
       this.FollowCount,
-      this.Summary);
+      this.Summary,
+      this.AdditionalImages);
 
   String AuthorName() {
     if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){

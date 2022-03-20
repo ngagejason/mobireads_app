@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/trending_books_block.dart';
-import 'package:mobi_reads/blocs/peek_list_bloc/trending_books_state.dart';
+import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
+import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_state.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/views/widgets/standard_peek_list.dart';
 
@@ -29,8 +29,8 @@ class _PeekListFactory extends State<PeekListFactory> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TrendingBooksBloc>(
-        create: (context) => TrendingBooksBloc(
+    return BlocProvider<TrendingBooksListBloc>(
+        create: (context) => TrendingBooksListBloc(
             RepositoryProvider.of<BookRepository>(context)
         ),
         child: PeekUI(context)
@@ -39,7 +39,7 @@ class _PeekListFactory extends State<PeekListFactory> {
   }
 
   Widget PeekUI(BuildContext context){
-    return BlocBuilder<TrendingBooksBloc, TrendingBooksState>(builder: (context, state) {
+    return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
       return StandardPeekList(this.code, this.title);
     });
   }

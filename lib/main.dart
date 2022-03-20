@@ -6,6 +6,7 @@ import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
+import 'package:mobi_reads/views/book_details/book_details_master.dart';
 import 'package:mobi_reads/views/configure_page.dart';
 import 'package:mobi_reads/views/confirm_account/confirm_account_page.dart';
 import 'package:mobi_reads/views/create_account/create_account_page.dart';
@@ -53,10 +54,8 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
-//        BlocProvider<PeekBloc>(create: (context) => PeekBloc(RepositoryProvider.of<PeekRepository>(context))),
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
         BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
-//        BlocProvider<ConfirmAccountBloc>(create:(context) => ConfirmAccountBloc(RepositoryProvider.of<AccountRepository>(context), '')),
       ],
       child: MaterialApp(
           title: 'MobiReads',
@@ -77,6 +76,7 @@ class _MyAppState extends State<MyApp> {
             '/confirmAccount': (context) => ConfirmAccountPageWidget(),
             '/passwordResetRequest': (context) => PasswordResetRequestWidget(),
             '/passwordResetConfirm': (context) => PasswordResetConfirmWidget(),
+            '/bookDetails': (context) => BookDetailsMasterWidget(),
           }),
     );
   }
