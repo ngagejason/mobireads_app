@@ -1,13 +1,11 @@
 import 'dart:convert';
-
 import 'package:mobi_reads/classes/IOFactory.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/RequestResult.dart';
 import 'package:mobi_reads/entities/bool_response/bool_response.dart';
 import 'package:mobi_reads/entities/login/LoginUserRequest.dart';
 import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
-
-import '../server_paths.dart';
 
 class LoginRepository {
 
@@ -38,7 +36,6 @@ class LoginRepository {
   }
 
   Future<LoginUserResponse> isLoggedIn() async {
-   //return DefaultEntities.ErrorLoginUserResponse;
 
     var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.IS_LOGGED_IN);
     if (response.statusCode == 200) {

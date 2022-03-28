@@ -31,7 +31,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   TextEditingController? textController;
   List<PeekListFactory> peeks = List.empty(growable: true);
   bool preferencesOpen = false;
-  final GlobalKey<PreferencesExpansionTileState> preferencesExpansionTileKey = new GlobalKey();
+  final GlobalKey<PreferencesExpansionTileState> genresExpansionTileKey = new GlobalKey();
   late PreferencesBloc preferencesBloc;
   late BookFollowsBloc bookFollowsBloc;
 
@@ -130,7 +130,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: PreferencesExpansionTile(
-                key: preferencesExpansionTileKey,
+                key: genresExpansionTileKey,
                 collapsedIconColor: FlutterFlowTheme.of(context).primaryColor,
                 iconColor: FlutterFlowTheme.of(context).primaryColor,
                 textColor: FlutterFlowTheme.of(context).primaryColor,
@@ -142,7 +142,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                           label: Padding(
                               padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                               child: Text(
-                                'My Preferences',
+                                'My Genres',
                                 style: const TextStyle(
                                     fontFamily: 'Lexend Deca',
                                     color: Colors.white,
@@ -152,7 +152,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                           ),
                           selected: true,
                           onSelected: (bool selected) {
-                            preferencesExpansionTileKey.currentState!.toggleExpanded();
+                            genresExpansionTileKey.currentState!.toggleExpanded();
                           },
                           selectedColor: FlutterFlowTheme.of(context).secondaryColor,
                           avatar:

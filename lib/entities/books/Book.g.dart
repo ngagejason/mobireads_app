@@ -24,6 +24,15 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
       (json['additionalImages'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      json['pubType'] as int,
+      json['seriesId'] as String?,
+      json['seriesTitle'] as String?,
+      json['seriesSubTitle'] as String?,
+      json['bookNumberInSeries'] as int,
+      json['bookCountInSeries'] as int,
+      (json['seriesFrontCoverUrls'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
@@ -42,4 +51,11 @@ Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
       'followCount': instance.FollowCount,
       'summary': instance.Summary,
       'additionalImages': instance.AdditionalImages,
+      'pubType': instance.PubType,
+      'seriesId': instance.SeriesId,
+      'seriesTitle': instance.SeriesTitle,
+      'seriesSubTitle': instance.SeriesSubTitle,
+      'bookNumberInSeries': instance.BookNumberInSeries,
+      'bookCountInSeries': instance.BookCountInSeries,
+      'seriesFrontCoverUrls': instance.SeriesFrontCoverUrls,
     };

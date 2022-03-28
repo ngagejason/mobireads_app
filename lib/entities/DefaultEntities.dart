@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowResponse.dart';
@@ -15,6 +17,6 @@ class DefaultEntities {
   static final Preferences = PreferencesResponse(List<PreferenceChip>.empty(growable: false));
   static final ErrorTrendingBooksResponse = TrendingBooksResponse(List<Book>.empty(growable: false), 0);
   static final ErrorToggleFollowResponse = ToggleBookFollowResponse(false, false, 'An error has occurred.');
-  static final EmptyBook = Book('','','', '', '', '', 0, '','','',0,'',0,'', []);
+  static final EmptyBook = Book('','','', '', '', '', 0, '','','',0,'',0,'', [], 1, null, null, null, 0, 0, []);
   static final EmptyAllBookFollowsResponse = AllBookFollowsResponse(List.empty(growable: false));
 }

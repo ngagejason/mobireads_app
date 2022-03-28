@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
@@ -37,68 +38,198 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
         onTap: () => {Navigator.pushNamed(context, "/bookDetails", arguments: widget.book)},
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 100,
-              height: 150,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: Image.network(widget.book.FrontCoverImageUrl).image,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 3,
-                    color: Color(0x64000000),
-                    offset: Offset(0, 2),
-                  )
-                ],
-                borderRadius:BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                ),
+            getBookImage(),
+            getBookInfo()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getBookImage(){
+    if(widget.book.SeriesId != null)
+      return getSeriesImage(widget.book);
+
+    return getSingleBookImage();
+  }
+
+  Widget getSingleBookImage(){
+    return Container(
+      width: 125,
+      height: 188,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.fitWidth,
+          image: Image.network(widget.book.FrontCoverImageUrl).image,
+        ),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 3,
+            color: Color(0x64000000),
+            offset: Offset(0, 2),
+          )
+        ],
+        borderRadius:BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment:MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Follow Heart
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
+            child: Container(
+                child: getFollowsIcon(context)
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getSeriesImage(Book book){
+    List<Widget> containers = List.empty(growable: true);
+    for(var i = 0; i < book.BookNumberInSeries-1; i++){
+      containers.add(getBookContainer(book, i));
+    }
+    for(var i = book.BookCountInSeries-1; i > book.BookNumberInSeries - 1; i--){
+      containers.add(getBookContainer(book, i));
+    }
+
+    return Stack(
+      children: [
+        for(var p in containers)
+          p,
+        Padding(
+          padding: EdgeInsets.fromLTRB(14.0*(book.BookNumberInSeries-1), 0, 0, 0),
+          child: Container(
+            width: 125,
+            height: 188,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fitWidth,
+                image: Image.network(widget.book.FrontCoverImageUrl).image,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment:MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Follow Heart
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
-                    child: Container(
-                        child: getFollowsIcon(context)
-                    ),
-                  ),
-                ],
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 3,
+                  color: Color(0x64000000),
+                  offset: Offset(0, 2),
+                )
+              ],
+              borderRadius:BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
               ),
             ),
-            Container(
-              width: 100,
-              height: 30,
-              decoration: BoxDecoration(
-                color: Color(0xFF090F13),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment:MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Follow Heart
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
+                  child: Container(
+                      child: getFollowsIcon(context)
+                  ),
                 ),
-              ),
-              child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    widget.book.AuthorName(),
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                      fontFamily: 'Lexend Deca',
-                      color: Color(0xFFEE8B60),
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
-                    ),
+              ],
+            ),
+          )
+        ),
+      ],
+    );
+  }
+
+  Widget getBookContainer(Book book, int index){
+    return Padding(
+      padding:
+        index > (book.BookNumberInSeries-1) ?
+          EdgeInsets.fromLTRB(14.0*index, (10.0 * (index - (book.BookNumberInSeries-1)))/2, 0, 0) :
+          EdgeInsets.fromLTRB(14.0*index, (10.0 * ((book.BookNumberInSeries-1) - index))/2, 0, 0),
+      child: Container(
+          width: 125,
+          height: index > (book.BookNumberInSeries-1) ?
+                188 - (10.0 * (index - (book.BookNumberInSeries-1))):
+                188 - (10.0 * ((book.BookNumberInSeries-1) - index)),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.fitWidth,
+              image: Image.network(book.SeriesFrontCoverUrls[index]).image,
+            ),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 3,
+                color: Color(0x64000000),
+                offset: Offset(0, 2),
+              )
+            ],
+            borderRadius:BorderRadius.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
+            ),
+          )
+      )
+    );
+  }
+
+  Widget getBookInfo(){
+
+    TextStyle style = FlutterFlowTheme.of(context).bodyText1.override(
+      fontFamily: 'Lexend Deca',
+      color: Color(0xFFEE8B60),
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+    );
+
+    double offset = widget.book.BookNumberInSeries != null &&
+                    widget.book.BookNumberInSeries > 0 ?
+      14 * (widget.book.BookNumberInSeries -1) : 0;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(offset, 0, 0, 0),
+      child: Container(
+        alignment: Alignment.center,
+        width: 125,
+        decoration: BoxDecoration(
+          color: Color(0xFF090F13),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+            topLeft: Radius.circular(0),
+            topRight: Radius.circular(0),
+          ),
+        ),
+        child: Column(
+            children: [
+              Padding(
+                  padding:EdgeInsets.fromLTRB(0, 4, 0, 0),
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        widget.book.AuthorName(),
+                        style: style,
+                      )
                   )
               ),
-            )
-          ],
+              Padding(
+                  padding:EdgeInsets.fromLTRB(0, 4, 0, 4),
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        getBookPubType(),
+                        style: style,
+                      )
+                  )
+              )
+            ]
         ),
       ),
     );
@@ -109,5 +240,16 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
     return doesFollow ?
       Icon(Icons.favorite,color: Colors.red,size: 24) :
       Icon(Icons.favorite_border,color: Colors.white,size: 24);
+  }
+
+  String getBookPubType(){
+    String text = 'Novel';
+    switch(widget.book.PubType){
+      case PubTypes.Novella:
+        text = 'Novella';
+        break;
+    }
+
+    return text;
   }
 }

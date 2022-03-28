@@ -1,7 +1,6 @@
 import 'dart:convert';
-
-import 'package:mobi_reads/blocs/login_bloc/login_event.dart';
 import 'package:mobi_reads/classes/IOFactory.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/RequestResult.dart';
 import 'package:mobi_reads/entities/account/confirm_account_request.dart';
@@ -10,8 +9,6 @@ import 'package:mobi_reads/entities/account/password_reset_confirm.dart';
 import 'package:mobi_reads/entities/account/password_reset_request.dart';
 import 'package:mobi_reads/entities/bool_response/bool_response.dart';
 import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
-
-import '../server_paths.dart';
 
 class AccountRepository {
 

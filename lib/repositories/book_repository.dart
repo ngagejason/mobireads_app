@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:mobi_reads/classes/IOFactory.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/RequestResult.dart';
 import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowRequest.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowResponse.dart';
 import 'package:mobi_reads/entities/books/TrendingBooksResponse.dart';
-import '../server_paths.dart';
 
 class BookRepository {
 
@@ -39,11 +39,16 @@ class BookRepository {
   Future<TrendingBooksResponse> getTrendingBooks(int code) async {
     var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.TRENDING_BOOKS, args: {'code': code.toString()});
     if (response.statusCode == 200) {
-      RequestResult<TrendingBooksResponse> result =  RequestResult<TrendingBooksResponse>.fromJson(jsonDecode(response.body), (data) => TrendingBooksResponse.fromJson(data as Map<String, dynamic>));
-      if(result.Success)
-        return result.Data ?? DefaultEntities.ErrorTrendingBooksResponse;
-      else
-        throw Exception(result.Message);
+      try{
+        RequestResult<TrendingBooksResponse> result =  RequestResult<TrendingBooksResponse>.fromJson(jsonDecode(response.body), (data) => TrendingBooksResponse.fromJson(data as Map<String, dynamic>));
+        if(result.Success)
+          return result.Data ?? DefaultEntities.ErrorTrendingBooksResponse;
+        else
+          throw Exception(result.Message);
+      }
+      on Exception catch (e) {
+        print(e.toString());
+      }
     }
 
     throw Exception('Failed to Load Data');

@@ -8,6 +8,7 @@ import 'package:mobi_reads/blocs/book_details_bloc/book_details_state.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 
 class BookDetailsWidget extends StatefulWidget {
   const BookDetailsWidget(this.book) : super();
@@ -30,6 +31,8 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
     bookImages = getBookImages();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<BookDetailsBloc, BookDetailsState>(
@@ -48,7 +51,6 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
 
     BookDetailsState state = context.read<BookDetailsBloc>().state;
 
-
     if(state.Status != BookDetailsStatus.Loaded){
       return StandardLoadingWidget();
     }
@@ -66,22 +68,55 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
         //3
         SliverList(
           delegate: SliverChildListDelegate([
-            Padding(
-              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: CarouselSlider(
-                options: CarouselOptions(height: 380.0),
-                items: bookImages.map((i) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return getCover(i);
-                    },
-                  );
-                }).toList(),
-              )
-            )
+            getCarousel(context),
+            getAuthor(context)
           ]),
         ),
       ],
+    );
+  }
+
+  Widget getCarousel(BuildContext context){
+    return Padding(
+        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+        child: CarouselSlider(
+          options: CarouselOptions(height: 380.0),
+          items: bookImages.map((i) {
+            return Builder(
+              builder: (BuildContext context) {
+                return getCover(i);
+              },
+            );
+          }).toList(),
+        )
+    );
+  }
+
+  Widget getAuthor(BuildContext buildContext){
+    TextStyle style = TextStyle(
+      color: FlutterFlowTheme.of(context).secondaryColor,
+      fontSize: 30,
+    );
+
+    return Padding(
+        padding: EdgeInsets.fromLTRB(5, 25, 5, 0),
+        child: Wrap(
+          children:[
+            FadeIn(
+              child: Container(
+                width: double.infinity,
+                child: Text(
+                  widget.book.AuthorName(),
+                  style: style,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              // Optional paramaters
+              duration: Duration(milliseconds: 2000),
+              curve: Curves.easeIn,
+            )
+          ]
+        )
     );
   }
 

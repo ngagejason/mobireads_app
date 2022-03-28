@@ -1,13 +1,11 @@
 import 'dart:convert';
-
 import 'package:mobi_reads/classes/IOFactory.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/RequestResult.dart';
 import 'package:mobi_reads/entities/bool_response/bool_response.dart';
 import 'package:mobi_reads/entities/preferences/TogglePreferenceRequest.dart';
 import 'package:mobi_reads/entities/preferences/PreferencesResponse.dart';
-
-import '../server_paths.dart';
 
 class PreferencesRepository {
 

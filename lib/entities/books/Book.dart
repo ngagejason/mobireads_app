@@ -36,6 +36,20 @@ class Book {
   String Summary;
   @JsonKey(name: 'additionalImages')
   List<String>? AdditionalImages;
+  @JsonKey(name: 'pubType')
+  int PubType;
+  @JsonKey(name: 'seriesId')
+  String? SeriesId;
+  @JsonKey(name: 'seriesTitle')
+  String? SeriesTitle;
+  @JsonKey(name: 'seriesSubTitle')
+  String? SeriesSubTitle;
+  @JsonKey(name: 'bookNumberInSeries')
+  int BookNumberInSeries;
+  @JsonKey(name: 'bookCountInSeries')
+  int BookCountInSeries;
+  @JsonKey(name: 'seriesFrontCoverUrls')
+  List<String> SeriesFrontCoverUrls;
 
   Book(this.Id,
       this.GenreId,
@@ -51,7 +65,14 @@ class Book {
       this.GenreName,
       this.FollowCount,
       this.Summary,
-      this.AdditionalImages);
+      this.AdditionalImages,
+      this.PubType,
+      this.SeriesId,
+      this.SeriesTitle,
+      this.SeriesSubTitle,
+      this.BookNumberInSeries,
+      this.BookCountInSeries,
+      this.SeriesFrontCoverUrls);
 
   String AuthorName() {
     if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){
