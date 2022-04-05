@@ -17,6 +17,6 @@ class DefaultEntities {
   static final Preferences = PreferencesResponse(List<PreferenceChip>.empty(growable: false));
   static final ErrorTrendingBooksResponse = TrendingBooksResponse(List<Book>.empty(growable: false), 0);
   static final ErrorToggleFollowResponse = ToggleBookFollowResponse(false, false, 'An error has occurred.');
-  static final EmptyBook = Book('','','', '', '', '', 0, '','','',0,'',0,'', [], 1, null, null, null, 0, 0, []);
+  static final EmptyBook = Book('','','', '', '', '', 0, '','','',0,'',0,'', [], 1, null, '', '', 0, 0, []);
   static final EmptyAllBookFollowsResponse = AllBookFollowsResponse(List.empty(growable: false));
 }

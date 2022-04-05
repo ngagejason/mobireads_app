@@ -19,7 +19,7 @@ class Book {
   @JsonKey(name: 'backCoverImageUrl')
   String? BackCoverImageUrl;
   @JsonKey(name: 'wordCount')
-  int WordCount;
+  int WordCount = 0;
   @JsonKey(name: 'authorFirstName')
   String AuthorFirstName;
   @JsonKey(name: 'authorLastName')
@@ -31,25 +31,25 @@ class Book {
   @JsonKey(name: 'genreName')
   String GenreName;
   @JsonKey(name: 'followCount')
-  int FollowCount;
+  int FollowCount = 0;
   @JsonKey(name: 'summary')
-  String Summary;
+  String Summary = '';
   @JsonKey(name: 'additionalImages')
-  List<String>? AdditionalImages;
+  List<String>? AdditionalImages = [];
   @JsonKey(name: 'pubType')
-  int PubType;
+  int PubType = 1;
   @JsonKey(name: 'seriesId')
-  String? SeriesId;
+  String? SeriesId = '';
   @JsonKey(name: 'seriesTitle')
-  String? SeriesTitle;
+  String SeriesTitle = '';
   @JsonKey(name: 'seriesSubTitle')
-  String? SeriesSubTitle;
+  String SeriesSubTitle = '';
   @JsonKey(name: 'bookNumberInSeries')
-  int BookNumberInSeries;
+  int BookNumberInSeries = 0;
   @JsonKey(name: 'bookCountInSeries')
-  int BookCountInSeries;
+  int BookCountInSeries = 0;
   @JsonKey(name: 'seriesFrontCoverUrls')
-  List<String> SeriesFrontCoverUrls;
+  List<String> SeriesFrontCoverUrls = [];
 
   Book(this.Id,
       this.GenreId,

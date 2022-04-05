@@ -26,8 +26,8 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
           .toList(),
       json['pubType'] as int,
       json['seriesId'] as String?,
-      json['seriesTitle'] as String?,
-      json['seriesSubTitle'] as String?,
+      json['seriesTitle'] as String,
+      json['seriesSubTitle'] as String,
       json['bookNumberInSeries'] as int,
       json['bookCountInSeries'] as int,
       (json['seriesFrontCoverUrls'] as List<dynamic>)

@@ -44,8 +44,7 @@ abstract class Peekable {
                               tween: Tween<double>(begin: 0.0, end: 1),
                               curve: Curves.easeInExpo,
                               duration: const Duration(milliseconds: 1500),
-                              builder: (BuildContext context, double opacity,
-                                  Widget? child) {
+                              builder: (BuildContext context, double opacity, Widget? child) {
                                 return
                                   Opacity(
                                       opacity: opacity,
@@ -62,7 +61,7 @@ abstract class Peekable {
                                             ),
                                           ),
                                           child:
-                                          Column(
+                                            Column(
                                             children: [
                                               Row(
                                                 mainAxisSize: MainAxisSize.max,
