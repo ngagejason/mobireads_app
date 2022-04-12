@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/views/user_follows/user_follows_master_widget.dart';
+import 'package:mobi_reads/views/user_follows/book_follows_widget2.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
-import 'package:mobi_reads/views/user_library/user_library_widget.dart';
 
 class MasterScaffoldWidget extends StatefulWidget {
   const MasterScaffoldWidget({Key? key}) : super(key: key);
@@ -50,33 +49,27 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
             body: IndexedStack(
               children: <Widget>[
                 UserHomeWidget(scaffoldKey: this.scaffoldKey),
-                UserLibraryWidget(scaffoldKey: this.scaffoldKey),
-                UserFollowsMasterWidget(scaffoldKey: scaffoldKey),
+                BookFollowsWidget2(scaffoldKey: this.scaffoldKey),
               ],
               index: _selectedIndex,
             ),
             bottomNavigationBar: BottomNavigationBar(
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(
                     Icons.home,
                     color: _selectedIndex == 0 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
                   ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.local_library,
-                    color: _selectedIndex == 1 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
-                  ),
-                  label: 'Library',
+                  label: '',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
                     Icons.favorite,
-                    color: _selectedIndex == 2 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
+                    color: _selectedIndex == 1 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
                   ),
-                  label: 'Favorites',
+                  label: '',
                 ),
               ],
               currentIndex: _selectedIndex,
@@ -118,7 +111,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 title: Text('User Accounts'),
                 onTap: () => {Navigator.pushNamed(context, "/userAccounts")},
               ),
-              ListTile(
+              /*ListTile(
                 leading: Icon(Icons.stacked_line_chart),
                 title: Text('Writers Block'),
                 onTap: () =>
@@ -135,7 +128,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 leading: Icon(Icons.border_color),
                 title: Text('Feedback'),
                 onTap: () => {Navigator.of(context).pop()},
-              ),
+              ),*/
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Logout'),

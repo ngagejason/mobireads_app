@@ -2,6 +2,7 @@
 
 import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/entities/books/SeriesDetailsResponse.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowResponse.dart';
 import 'package:mobi_reads/entities/books/TrendingBooksResponse.dart';
 import 'package:mobi_reads/entities/bool_response/bool_response.dart';
@@ -19,4 +20,5 @@ class DefaultEntities {
   static final ErrorToggleFollowResponse = ToggleBookFollowResponse(false, false, 'An error has occurred.');
   static final EmptyBook = Book('','','', '', '', '', 0, '','','',0,'',0,'', [], 1, null, '', '', 0, 0, []);
   static final EmptyAllBookFollowsResponse = AllBookFollowsResponse(List.empty(growable: false));
+  static final EmptySeriesDetailsResponse = SeriesDetailsResponse('', '', '', 0, '', 0, '', '', []);
 }

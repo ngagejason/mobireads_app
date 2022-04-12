@@ -36,7 +36,14 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
       padding: EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
       child: GestureDetector(
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
-        onTap: () => {Navigator.pushNamed(context, "/bookDetails", arguments: widget.book)},
+        onTap: () => {
+          if(widget.book.SeriesId != null && widget.book.SeriesId!.length > 0){
+            Navigator.pushNamed(context, "/bookSeriesDetails", arguments: widget.book)
+          }
+          else{
+            Navigator.pushNamed(context, "/bookDetails", arguments: widget.book)
+          }
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

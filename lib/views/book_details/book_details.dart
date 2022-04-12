@@ -129,7 +129,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        widget.book.SeriesTitle + ': ' + widget.book.SeriesSubTitle,
+                        widget.book.SeriesTitle + ': ' + widget.book.SeriesSubtitle,
                         style: TextStyle(
                           color: FlutterFlowTheme.of(context).secondaryColor,
                           fontSize: 16,

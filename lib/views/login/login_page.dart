@@ -6,6 +6,7 @@ import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/login_bloc/login_bloc.dart';
 import 'package:mobi_reads/blocs/login_bloc/login_event.dart';
 import 'package:mobi_reads/blocs/login_bloc/login_state.dart';
+import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_widgets.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
@@ -53,7 +54,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
               }
               else if(state.Status == LoginStatus.LoggedIn && state.Login != null){
                 listenerContext.read<AppBloc>().add(UserLoggedInEvent(state.Login!.Id, state.Login!.Email, state.Login!.Username, state.Login!.Bearer, state.Login!.IsGuest));
-                listenerContext.read<LoginBloc>().add(RedirectToHome());
+                listenerContext.read<LoginBloc>().add(RedirectToHome(state.Login!.Id));
               }
               else if(state.Status == LoginStatus.RedirectToHome){
                 Navigator.pushNamedAndRemoveUntil(context, "/userHome", (r) => false);
@@ -136,7 +137,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   child: FFButtonWidget(
                                     onPressed: () {
                                       Navigator.pushNamedAndRemoveUntil(context, "/createAccount", (r) => false);
-                                      print('ButtonCreateAccount pressed ...');
                                     },
                                     text: 'Create Account',
                                     options: FFButtonOptions(

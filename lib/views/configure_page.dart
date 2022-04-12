@@ -43,12 +43,13 @@ class ConfigurePageState extends State<ConfigurePage> {
                 setState(() {
                   isInitialized = true;
                 });
-                },
+            },
             onError:(error, stackTrace) {
               print(error);
               print('here!!!!!!!!!!!!!!!');
               appBloc.add(AppInitializedEvent());
               setState(() {
+                appBloc.add(UserLoggedOutEvent());
                 isInitialized = true;
               });
             });
@@ -80,7 +81,8 @@ class ConfigurePageState extends State<ConfigurePage> {
         return LoginPageWidget();
       }
 
-      return LoadingPage();
+      return
+        LoadingPage();
     });
   }
 }

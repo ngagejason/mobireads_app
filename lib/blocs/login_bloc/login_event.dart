@@ -14,6 +14,9 @@ class LoginRequested extends LoginEvent {}
 
 class Login extends LoginEvent {}
 
-class RedirectToHome extends LoginEvent {}
+class RedirectToHome extends LoginEvent {
+  String userId;
+  RedirectToHome(this.userId);
+}
 
 class ContinueAsGuest extends LoginEvent {}

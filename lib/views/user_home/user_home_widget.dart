@@ -15,6 +15,7 @@ import 'package:mobi_reads/views/user_home/search_area.dart';
 import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
 import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
 import 'package:mobi_reads/views/widgets/preferences_expansion_tile.dart';
+import 'package:mobi_reads/views/widgets/preferences_tile.dart';
 
 
 class UserHomeWidget extends StatefulWidget {
@@ -30,7 +31,9 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   String? choiceChipsValue;
   TextEditingController? textController;
   List<PeekListFactory> peeks = List.empty(growable: true);
-  bool preferencesOpen = false;
+  bool genresOpen = false;
+  bool agesOpen = false;
+  bool pubTypesOpen = false;
   final GlobalKey<PreferencesExpansionTileState> genresExpansionTileKey = new GlobalKey();
   late PreferencesBloc preferencesBloc;
   late BookFollowsBloc bookFollowsBloc;
@@ -84,7 +87,6 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   }
 
   Widget userHomeUI(BuildContext context) {
-    List<PreferenceChip> preferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'HOME').toList();
     double _appBarHeight = 40;
 
     return CustomScrollView(
@@ -129,7 +131,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           ),
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-            child: PreferencesExpansionTile(
+            child: getPrefsRow(), /*PreferencesExpansionTile(
                 key: genresExpansionTileKey,
                 collapsedIconColor: FlutterFlowTheme.of(context).primaryColor,
                 iconColor: FlutterFlowTheme.of(context).primaryColor,
@@ -167,7 +169,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                           backgroundColor: const Color(0xFFEACD29),
                           labelPadding: EdgeInsets.zero,
                           elevation: 4
-                      )
+                      ),
                     ]
                 ),
                 children: <Widget>[
@@ -187,7 +189,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                     options: preferences,
                   ),
                 ]
-            ),
+            ),*/
           ),
           for(var p in peeks)
             p,
@@ -1891,6 +1893,124 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
               color: Colors.black54
           ),
         )
+    );
+  }
+
+  Widget getPrefsRow(){
+    List<PreferenceChip> genrePreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'HOME').toList();
+    List<PreferenceChip> ageGroupsPreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'AGE_GROUP').toList();
+    List<PreferenceChip> pubTypesPreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'PUB_TYPE').toList();
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+      child: Column(
+          children: [
+            Row(
+                children: [
+                  getPreferenceChip('Genres', (selected) { setState(() { genresOpen = !genresOpen; }); }, () { return genresOpen; }),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      child: getPreferenceChip('Ages', (selected) { setState(() { agesOpen = !agesOpen; }); }, () { return agesOpen; })
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5,0,0,0),
+                    child: getPreferenceChip('Pub Types', (selected) { setState(() { pubTypesOpen = !pubTypesOpen; }); }, () { return pubTypesOpen; })
+                  )
+                ]
+            ),
+            ExpandedSection(
+                expand: genresOpen,
+                child: PreferenceChipList(
+                  onChanged: (chipData) {
+                    if(chipData.IsSelected){
+                      peeks.removeWhere((element) => element.code == chipData.Code);
+                    }
+                    else{
+                      peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
+                      peeks.sort((a,b) => a.code.compareTo(b.code));
+                    }
+
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
+
+                  },
+                  options: genrePreferences,
+                )
+            ),
+            ExpandedSection(
+                expand: agesOpen,
+                child: PreferenceChipList(
+                  onChanged: (chipData) {
+                    if(chipData.IsSelected){
+                      peeks.removeWhere((element) => element.code == chipData.Code);
+                    }
+                    else{
+                      peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
+                      peeks.sort((a,b) => a.code.compareTo(b.code));
+                    }
+
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
+
+                  },
+                  options: ageGroupsPreferences,
+                )
+            ),
+            ExpandedSection(
+                expand: pubTypesOpen,
+                child: PreferenceChipList(
+                  onChanged: (chipData) {
+                    if(chipData.IsSelected){
+                      peeks.removeWhere((element) => element.code == chipData.Code);
+                    }
+                    else{
+                      peeks.add(PeekListFactory(Key(chipData.Label), chipData.Code, chipData.Label));
+                      peeks.sort((a,b) => a.code.compareTo(b.code));
+                    }
+
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
+
+                  },
+                  options: pubTypesPreferences,
+                )
+            )
+          ]
+      )
+    );
+  }
+
+  Widget getPreferenceChip(String label, void Function(bool selected) onSelected, bool Function() isSelected){
+
+    PreferenceChipStyle selectedChipStyle = const PreferenceChipStyle(
+      backgroundColor: const Color(0xFFEACD29),
+      textStyle: const TextStyle(fontFamily: 'Lexend Deca', color: Colors.white, fontSize: 14, fontWeight: FontWeight.normal),
+      elevation: 4,
+    );
+    PreferenceChipStyle unselectedChipStyle = const PreferenceChipStyle(
+      backgroundColor: Colors.black,
+      textStyle: const TextStyle(fontFamily: 'Lexend Deca', color: Colors.white, fontSize: 14, fontWeight: FontWeight.normal),
+      elevation: 4,
+    );
+
+    return ChoiceChip(
+        label: Padding(
+            padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Text(
+              label,
+              style: const TextStyle(
+                  fontFamily: 'Lexend Deca',
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal),
+            )
+        ),
+        selected: isSelected(),
+        labelPadding: isSelected() ? selectedChipStyle.labelPadding : unselectedChipStyle.labelPadding,
+        onSelected: (bool selected) {
+          onSelected(selected);
+        },
+        // selectedColor:  FlutterFlowTheme.of(context).secondaryColor,
+        selectedColor: isSelected() ? selectedChipStyle.backgroundColor : null,
+        backgroundColor: isSelected() ? null : unselectedChipStyle.backgroundColor,
+        elevation: isSelected() ? selectedChipStyle.elevation : unselectedChipStyle.elevation,
     );
   }
 }

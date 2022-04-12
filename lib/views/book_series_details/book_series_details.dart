@@ -7,6 +7,7 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/blocs/book_series_details_bloc/book_series_details_bloc.dart';
 import 'package:mobi_reads/blocs/book_series_details_bloc/book_series_details_event.dart';
 import 'package:mobi_reads/blocs/book_series_details_bloc/book_series_details_state.dart';
+import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
@@ -24,13 +25,14 @@ class BookSeriesDetailsWidget extends StatefulWidget {
 class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<String> bookImages = List.empty(growable: true);
+  int currentPos = 0;
+  Book currentBook = DefaultEntities.EmptyBook;
 
   @override
   void initState() {
     super.initState();
-    context.read<BookSeriesDetailsBloc>().add(InitializeBookSeriesDetails());
-    bookImages = getBookImages();
+    context.read<BookSeriesDetailsBloc>().add(InitializeBookSeriesDetails(widget.book));
+    currentPos = widget.book.BookNumberInSeries - 1; // 0 indexed
   }
 
   @override
@@ -38,6 +40,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     return BlocListener<BookSeriesDetailsBloc, BookSeriesDetailsState>(
       listener: (context, state) {
         if (state.Status == BookSeriesDetailsStatus.BookSeriesDetailsLoaded) {
+          currentBook = state.Books[widget.book.BookNumberInSeries-1];
           context.read<BookSeriesDetailsBloc>().add(SeriesLoaded());
         }
       },
@@ -52,7 +55,6 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
   Widget BookDetailsUI(BuildContext context) {
 
     BookSeriesDetailsState state = context.read<BookSeriesDetailsBloc>().state;
-
     if(state.Status != BookSeriesDetailsStatus.Loaded){
       return StandardLoadingWidget();
     }
@@ -71,9 +73,10 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
         //3
         SliverList(
           delegate: SliverChildListDelegate([
-            getCover(widget.book.FrontCoverImageUrl),
+            getCarousel(context, state),
+            getDots(context, state),
             getAuthor(context),
-            getSeries(context),
+            getSeries(context, state),
             getMetadata(context),
             getAbout()
           ]),
@@ -82,19 +85,48 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     );
   }
 
-  Widget getCarousel(BuildContext context){
-    return Padding(
-        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-        child: CarouselSlider(
-          options: CarouselOptions(height: 380.0),
-          items: bookImages.map((i) {
-            return Builder(
-              builder: (BuildContext context) {
-                return getCover(i);
-              },
-            );
-          }).toList(),
-        )
+  Widget getDots(BuildContext context, BookSeriesDetailsState state){
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+          for(int i = 0; i < state.BookCountInSeries; i++)
+            Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: currentPos == i
+                      ? FlutterFlowTheme.of(context).secondaryColor.withOpacity(.9)
+                      : FlutterFlowTheme.of(context).secondaryColor.withOpacity(.4)
+              ),
+            )
+        ]
+    );
+  }
+
+  Widget getCarousel(BuildContext context, BookSeriesDetailsState state){
+    return CarouselSlider(
+      options: CarouselOptions(
+          height: 300.0,
+          enlargeCenterPage: true,
+          initialPage: widget.book.BookNumberInSeries - 1,
+          onPageChanged: (index, reason) {
+            BookSeriesDetailsBloc bloc = context.read<BookSeriesDetailsBloc>();
+            setState(() {
+              currentPos = index;
+              currentBook = bloc.state.Books[index];
+            });
+          }
+      ),
+
+      items: state.Books.map((book) {
+        return Builder(
+          builder: (BuildContext context) {
+            return getCover(book.FrontCoverImageUrl);
+          },
+        );
+      }).toList(),
     );
   }
 
@@ -112,7 +144,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
               child: Container(
                 width: double.infinity,
                 child: Text(
-                  widget.book.AuthorName(),
+                  currentBook.AuthorName(),
                   style: style,
                   textAlign: TextAlign.center,
                 ),
@@ -126,10 +158,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     );
   }
 
-  Widget getSeries(BuildContext buildContext){
-    if(widget.book.SeriesId == null){
-      return Container();
-    }
+  Widget getSeries(BuildContext buildContext, BookSeriesDetailsState state){
 
     TextStyle style = TextStyle(
       color: FlutterFlowTheme.of(context).secondaryColor,
@@ -146,16 +175,25 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                   child: Column(
                     children: [
                       Text(
-                        '# ' + widget.book.BookNumberInSeries.toString() + ' of ' + widget.book.BookCountInSeries.toString() + ' in the ',
+                        'Book #' + currentBook.BookNumberInSeries.toString() + ' of ' + currentBook.BookCountInSeries.toString() + ' in the ',
                         style: style,
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        widget.book.SeriesTitle + ': ' + widget.book.SeriesSubTitle,
+                        currentBook.SeriesTitle,
                         style: TextStyle(
                           color: FlutterFlowTheme.of(context).secondaryColor,
                           fontSize: 16,
                           decoration: TextDecoration.underline
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        currentBook.SeriesSubtitle,
+                        style: TextStyle(
+                            color: FlutterFlowTheme.of(context).secondaryColor,
+                            fontSize: 14,
+                            decoration: TextDecoration.underline
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -203,12 +241,12 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                       )
                   ),
                   Text(
-                    widget.book.WordCount != null && widget.book.WordCount > 0 ? widget.book.WordCount.toString() : "0",
+                    currentBook.WordCount != null && currentBook.WordCount > 0 ? currentBook.WordCount.toString() : "0",
                     style: style,
                   ),
                 ],
               ),
-              Column(
+              /*Column(
                 children: [
                   Icon(
                       Icons.question_answer,
@@ -228,7 +266,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                     style: style,
                   )
                 ]
-              ),
+              ),*/
               Column(
                 children:[
                   Icon(
@@ -244,7 +282,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                       )
                   ),
                   Text(
-                    widget.book.FollowCount != null && widget.book.FollowCount > 0 ? widget.book.FollowCount.toString() : "0",
+                    currentBook.FollowCount != null && currentBook.FollowCount > 0 ? currentBook.FollowCount.toString() : "0",
                     style: style,
                   )
                 ]
@@ -258,7 +296,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
       child: Text(
-        widget.book.Summary,
+        currentBook.Summary,
         style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -270,47 +308,26 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
   }
 
   Widget getCover(String url){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 200,
-          height: 300,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: Image.network(url).image,
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 3,
-                color: Color(0x64000000),
-                offset: Offset(0, 2),
-              )
-            ],
-            borderRadius:BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-          )
+    return Container(
+        width: 200,
+        height: 300,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.fitWidth,
+            image: Image.network(url).image,
+          ),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 3,
+              color: Color(0x64000000),
+              offset: Offset(0, 2),
+            )
+          ],
+          borderRadius:BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
         )
-      ],
     );
-  }
-
-  List<String> getBookImages(){
-    List<String> bookImages = new List.empty(growable: true);
-    bookImages.add(widget.book.FrontCoverImageUrl);
-    if(widget.book.BackCoverImageUrl != null && widget.book.BackCoverImageUrl!.isNotEmpty){
-      bookImages.add(widget.book.BackCoverImageUrl ?? '');
-    }
-
-    if(widget.book.AdditionalImages != null && widget.book.AdditionalImages!.length > 0){
-      for(String s in widget.book.AdditionalImages!){
-        bookImages.add(s);
-      }
-    }
-
-    return bookImages;
   }
 }

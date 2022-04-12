@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unnecessary_null_comparison
 
 import 'package:json_annotation/json_annotation.dart';
 part 'Book.g.dart';
@@ -13,7 +13,7 @@ class Book {
   @JsonKey(name: 'title')
   String Title;
   @JsonKey(name: 'subtitle')
-  String? Subtitle;
+  String Subtitle;
   @JsonKey(name: 'frontCoverImageUrl')
   String FrontCoverImageUrl;
   @JsonKey(name: 'backCoverImageUrl')
@@ -42,8 +42,8 @@ class Book {
   String? SeriesId = '';
   @JsonKey(name: 'seriesTitle')
   String SeriesTitle = '';
-  @JsonKey(name: 'seriesSubTitle')
-  String SeriesSubTitle = '';
+  @JsonKey(name: 'seriesSubtitle')
+  String SeriesSubtitle = '';
   @JsonKey(name: 'bookNumberInSeries')
   int BookNumberInSeries = 0;
   @JsonKey(name: 'bookCountInSeries')
@@ -69,7 +69,7 @@ class Book {
       this.PubType,
       this.SeriesId,
       this.SeriesTitle,
-      this.SeriesSubTitle,
+      this.SeriesSubtitle,
       this.BookNumberInSeries,
       this.BookCountInSeries,
       this.SeriesFrontCoverUrls);
@@ -80,6 +80,17 @@ class Book {
     }
 
     return AuthorFirstName + ' ' + AuthorMiddleName! + ' ' + AuthorLastName;
+  }
+
+  bool ContainsText(String text){
+    if(text.trim().length == 0){
+      return true;
+    }
+    return
+      Title.toUpperCase().contains(text) ||
+          (Subtitle != null && Subtitle.toUpperCase().contains(text)) ||
+          (SeriesTitle != null && SeriesTitle.toUpperCase().contains(text)) ||
+          (SeriesSubtitle != null && SeriesSubtitle.toUpperCase().contains(text));
   }
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);

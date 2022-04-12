@@ -33,7 +33,7 @@ class UserSecureStorage {
       await _storage.write(key:  getStorageKey(appState.Id), value: json.encode(appState));
     }
     else{
-      //await _storage.delete(key: getStorageKey(appState.Id));
+      await _storage.delete(key: getStorageKey(appState.Id));
       await _storage.write(key:  getStorageKey(appState.Id), value: json.encode(appState));
     }
   }
@@ -53,8 +53,8 @@ class UserSecureStorage {
   }
 
   static Future storeAppStateAndSetCurrent(AppState appState) async {
-    await storeAppState(appState);
     await setCurrentUser(appState.Id);
+    await storeAppState(appState);
   }
 
   static Future<String?> getBearer() async{
