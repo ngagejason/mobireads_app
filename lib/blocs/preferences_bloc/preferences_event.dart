@@ -1,4 +1,4 @@
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
+import 'package:mobi_reads/entities/preferences/Preference.dart';
 
 abstract class PreferencesEvent {}
 
@@ -7,8 +7,8 @@ class InitializePreferences extends PreferencesEvent{}
 class Loaded extends PreferencesEvent{}
 
 class PreferenceToggled extends PreferencesEvent {
-  PreferenceChip preferenceChip;
+  Preference preference;
   List<void Function()>? functions;
 
-  PreferenceToggled(this.preferenceChip, { this.functions });
+  PreferenceToggled(this.preference, { this.functions });
 }

@@ -5,7 +5,7 @@ import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_state.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_event.dart';
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
+import 'package:mobi_reads/entities/preferences/Preference.dart';
 import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_peek.dart';
@@ -66,7 +66,7 @@ class StandardPeekState extends State<StandardPeekList> {
     }
 
     PreferencesState preferencesState = context.read<PreferencesBloc>().state;
-    PreferenceChip? chip = preferencesState.PreferenceChips.firstWhereOrNull((element) => element.Code == this.code);
+    Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == this.code);
     if(chip != null && !chip.IsSelected){
       return Container();
     }

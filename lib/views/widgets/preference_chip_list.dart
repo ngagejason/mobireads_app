@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
+import 'package:mobi_reads/entities/preferences/Preference.dart';
 
 class PreferenceChipStyle {
   const PreferenceChipStyle(
@@ -19,11 +19,13 @@ class PreferenceChipList extends StatefulWidget {
     required this.options,
     required this.onChanged,
     this.chipSpacing = 6,
+
     this.selectedChipStyle = const PreferenceChipStyle(
       backgroundColor: const Color(0xFFEACD29),
       textStyle: const TextStyle(fontFamily: 'Lexend Deca', color: Colors.white, fontSize: 14, fontWeight: FontWeight.normal),
       elevation: 4,
     ),
+
     this.unselectedChipStyle = const PreferenceChipStyle(
       backgroundColor: Colors.black,
       textStyle: const TextStyle(fontFamily: 'Lexend Deca', color: Colors.white, fontSize: 14, fontWeight: FontWeight.normal),
@@ -31,8 +33,8 @@ class PreferenceChipList extends StatefulWidget {
     )
   });
 
-  final List<PreferenceChip> options;
-  final void Function(PreferenceChip) onChanged;
+  final List<Preference> options;
+  final void Function(Preference) onChanged;
   final PreferenceChipStyle selectedChipStyle;
   final PreferenceChipStyle unselectedChipStyle;
   final double chipSpacing;
@@ -43,8 +45,8 @@ class PreferenceChipList extends StatefulWidget {
 
 class _PreferenceChipListState extends State<PreferenceChipList> {
   String choiceChipValue = 'Unknown Chip Value';
-  List<PreferenceChip> options = List.empty(growable: true);
-  void Function(PreferenceChip) onChanged;
+  List<Preference> options = List.empty(growable: true);
+  void Function(Preference) onChanged;
 
   _PreferenceChipListState(this.options, this.onChanged): super();
 

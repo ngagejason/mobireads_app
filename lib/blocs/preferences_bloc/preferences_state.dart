@@ -1,6 +1,6 @@
 
 
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
+import 'package:mobi_reads/entities/preferences/Preference.dart';
 
 enum PreferencesStatus {
   Constructed,
@@ -12,19 +12,19 @@ enum PreferencesStatus {
 
 class PreferencesState {
 
-  final List<PreferenceChip> PreferenceChips;
+  final List<Preference> Preferences;
   final PreferencesStatus Status;
 
-  PreferencesState({this.PreferenceChips = const [], this.Status = PreferencesStatus.Constructed});
+  PreferencesState({this.Preferences = const [], this.Status = PreferencesStatus.Constructed});
 
   PreferencesState CopyWith(
       {
         PreferencesStatus? status,
-        List<PreferenceChip>? preferenceChips
+        List<Preference>? preferences
       }) {
     return PreferencesState(
       Status: status ?? this.Status,
-      PreferenceChips: preferenceChips ?? this.PreferenceChips
+      Preferences: preferences ?? this.Preferences
     );
   }
 }

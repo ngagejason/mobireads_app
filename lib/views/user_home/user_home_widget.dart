@@ -9,7 +9,7 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart' as preferences_events;
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
-import 'package:mobi_reads/entities/preferences/PreferenceChip.dart';
+import 'package:mobi_reads/entities/preferences/Preference.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/loading_page.dart';
 import 'package:mobi_reads/views/user_home/search_area.dart';
@@ -51,7 +51,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
         BlocListener<PreferencesBloc, PreferencesState>(
             listener: (context, state) {
               if (state.Status == PreferencesStatus.PreferencesLoaded) {
-                Iterable<PreferenceChip> chips = state.PreferenceChips.where((element) => element.Context == "HOME");
+                Iterable<Preference> chips = state.Preferences.where((element) => element.Context == "GENRE");
                 for(var chip in chips) {
                     GlobalKey<StandardPeekState> key = new GlobalKey();
                     peekKeys[chip.Id] = key;
@@ -215,9 +215,9 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   }
 
   Widget getPrefsRow(){
-    List<PreferenceChip> genrePreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'HOME').toList();
-    List<PreferenceChip> ageGroupsPreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'AGE_GROUP').toList();
-    List<PreferenceChip> pubTypesPreferences = context.read<PreferencesBloc>().state.PreferenceChips.where((element) => element.Context == 'PUB_TYPE').toList();
+    List<Preference> genrePreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'HOME').toList();
+    List<Preference> ageGroupsPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'AGE_GROUP').toList();
+    List<Preference> pubTypesPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'PUB_TYPE').toList();
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),

@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'PreferenceChip.dart';
+part of 'Preference.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-PreferenceChip _$PreferenceChipFromJson(Map<String, dynamic> json) =>
-    PreferenceChip(
+Preference _$PreferenceFromJson(Map<String, dynamic> json) => Preference(
       json['id'] as String,
       json['context'] as String,
       json['label'] as String,
@@ -15,7 +14,7 @@ PreferenceChip _$PreferenceChipFromJson(Map<String, dynamic> json) =>
       json['code'] as int,
     );
 
-Map<String, dynamic> _$PreferenceChipToJson(PreferenceChip instance) =>
+Map<String, dynamic> _$PreferenceToJson(Preference instance) =>
     <String, dynamic>{
       'id': instance.Id,
       'context': instance.Context,
