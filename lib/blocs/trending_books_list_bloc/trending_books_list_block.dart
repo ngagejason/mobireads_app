@@ -11,13 +11,30 @@ class TrendingBooksListBloc extends Bloc<TrendingBooksListEvent, TrendingBooksLi
 
   TrendingBooksListBloc(this.bookRepository) : super(TrendingBooksListState()){
     on<Initialize>((event, emit) async => await handleInitializedEvent(event, emit));
+    on<Refresh>((event, emit) async => await handleRefreshEvent(event, emit));
     on<Loaded>((event, emit) async => await handleLoadedEvent(event, emit));
   }
 
   Future handleInitializedEvent(Initialize event, Emitter<TrendingBooksListState> emit) async {
-    emit(state.CopyWith(status: TrendingBooksListStatus.PeeksLoading));
-    TrendingBooksResponse response = await bookRepository.getTrendingBooks(event.code);
-    emit(state.CopyWith(title: event.title, books: response.Books, status: TrendingBooksListStatus.PeeksLoaded, displayType: response.DisplayType));
+    try{
+      emit(state.CopyWith(status: TrendingBooksListStatus.PeeksLoading));
+      TrendingBooksResponse response = await bookRepository.getTrendingBooks(event.code);
+      emit(state.CopyWith(title: event.title, books: response.Books, status: TrendingBooksListStatus.PeeksLoaded, displayType: response.DisplayType));
+    }
+    on Exception catch(ex){
+      emit(state.CopyWith(status: TrendingBooksListStatus.Error, errorMessage: ex.toString()));
+    }
+  }
+
+  Future handleRefreshEvent(Refresh event, Emitter<TrendingBooksListState> emit) async {
+    try{
+      emit(state.CopyWith(status: TrendingBooksListStatus.PeeksRefreshing));
+      TrendingBooksResponse response = await bookRepository.getTrendingBooks(event.code);
+      emit(state.CopyWith(title: event.title, books: response.Books, status: TrendingBooksListStatus.PeeksLoaded, displayType: response.DisplayType));
+    }
+    on Exception catch(ex){
+      emit(state.CopyWith(status: TrendingBooksListStatus.Error, errorMessage: ex.toString()));
+    }
   }
 
   Future handleLoadedEvent(Loaded event, Emitter<TrendingBooksListState> emit) async {

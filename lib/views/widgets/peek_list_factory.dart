@@ -6,19 +6,21 @@ import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/views/widgets/standard_peek_list.dart';
 
 class PeekListFactory extends StatefulWidget {
-  const PeekListFactory(Key? key, this.code, this.title) : super(key: key);
+  const PeekListFactory(this.key2, this.code, this.title) : super();
 
+  final Key key2;
   final int code;
   final String title;
 
   @override
-  _PeekListFactory createState() => _PeekListFactory(code, title);
+  _PeekListFactory createState() => _PeekListFactory(key2, code, title);
 }
 
 class _PeekListFactory extends State<PeekListFactory> {
 
-  _PeekListFactory(this.code, this.title);
+  _PeekListFactory(this.key2, this.code, this.title);
 
+  final Key key2;
   final int code;
   final String title;
 
@@ -40,7 +42,7 @@ class _PeekListFactory extends State<PeekListFactory> {
 
   Widget PeekUI(BuildContext context){
     return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
-      return StandardPeekList(this.code, this.title);
+      return StandardPeekList(this.key2, this.code, this.title);
     });
   }
 }

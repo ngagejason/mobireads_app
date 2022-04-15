@@ -33,7 +33,7 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
   
   Widget BookUI(BuildContext context){
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
+      padding: EdgeInsetsDirectional.fromSTEB(0, 8, 16, 8),
       child: GestureDetector(
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
         onTap: () => {
