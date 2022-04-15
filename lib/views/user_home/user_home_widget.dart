@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
@@ -16,7 +15,7 @@ import 'package:mobi_reads/views/loading_page.dart';
 import 'package:mobi_reads/views/user_home/search_area.dart';
 import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
 import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
-import 'package:mobi_reads/views/widgets/preferences_tile.dart';
+import 'package:mobi_reads/views/widgets/expandable_section.dart';
 import 'package:mobi_reads/views/widgets/standard_peek_list.dart';
 import 'package:mobi_reads/views/widgets/standard_preference_chip.dart';
 
@@ -31,18 +30,16 @@ class UserHomeWidget extends StatefulWidget {
 }
 
 class _UserHomeWidgetState extends State<UserHomeWidget> {
-  String? choiceChipsValue;
-  TextEditingController? textController;
-  List<PeekListFactory> peeks = List.empty(growable: true);
+
   bool genresOpen = false;
   bool agesOpen = false;
   bool pubTypesOpen = false;
-  HashMap<String, GlobalKey<StandardPeekState>> standardPeekKeys = new HashMap();
+  List<PeekListFactory> peeks = List.empty(growable: true);
+  HashMap<String, GlobalKey<StandardPeekState>> peekKeys = new HashMap();
 
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController();
     context.read<PreferencesBloc>().add(preferences_events.InitializePreferences());
     context.read<BookFollowsBloc>().add(book_follows_events.InitializeBookFollows());
   }
@@ -54,12 +51,11 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
         BlocListener<PreferencesBloc, PreferencesState>(
             listener: (context, state) {
               if (state.Status == PreferencesStatus.PreferencesLoaded) {
-                for(int i = 0;  i < state.PreferenceChips.length; i++){
-                 // if(state.PreferenceChips[i].IsSelected){
+                Iterable<PreferenceChip> chips = state.PreferenceChips.where((element) => element.Context == "HOME");
+                for(var chip in chips) {
                     GlobalKey<StandardPeekState> key = new GlobalKey();
-                    standardPeekKeys[state.PreferenceChips[i].Id] = key;
-                    peeks.add(PeekListFactory(key, state.PreferenceChips[i].Code, state.PreferenceChips[i].Label));
-                //  }
+                    peekKeys[chip.Id] = key;
+                    peeks.add(PeekListFactory(key, chip.Code, chip.Label));
                 }
                 context.read<PreferencesBloc>().add(preferences_events.Loaded());
               }
@@ -252,7 +248,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                   )
                 ]
             ),
-            ExpandedSection(
+            ExpandableSection(
                 expand: genresOpen,
                 child: PreferenceChipList(
                   onChanged: (chipData) {
@@ -261,20 +257,28 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                   options: genrePreferences,
                 )
             ),
-            ExpandedSection(
+            ExpandableSection(
                 expand: agesOpen,
                 child: PreferenceChipList(
                   onChanged: (chipData) {
-                    standardPeekKeys.forEach((key, value) { value.currentState?.DoRefresh(); });
+                    // Create a list of functions to call
+                    List<void Function()> refreshFunctions = List.empty(growable: true);
+                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
+                    // toggle the preference chip, and when done each function will be called
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
                   },
                   options: ageGroupsPreferences,
                 )
             ),
-            ExpandedSection(
+            ExpandableSection(
                 expand: pubTypesOpen,
                 child: PreferenceChipList(
                   onChanged: (chipData) {
-                    standardPeekKeys.forEach((key, value) { value.currentState?.DoRefresh(); });
+                    // Create a list of functions to call
+                    List<void Function()> refreshFunctions = List.empty(growable: true);
+                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
+                    // toggle the preference chip, and when done each function will be called
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
                   },
                   options: pubTypesPreferences,
                 )

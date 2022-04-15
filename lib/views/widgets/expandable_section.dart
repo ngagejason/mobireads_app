@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ExpandedSection extends StatefulWidget {
+class ExpandableSection extends StatefulWidget {
   final Widget child;
   final bool expand;
-  ExpandedSection({this.expand = false, required this.child});
+  ExpandableSection({this.expand = false, required this.child});
 
   @override
-  _ExpandedSectionState createState() => _ExpandedSectionState();
+  _ExpandableSectionState createState() => _ExpandableSectionState();
 }
 
-class _ExpandedSectionState extends State<ExpandedSection>
+class _ExpandableSectionState extends State<ExpandableSection>
     with SingleTickerProviderStateMixin {
   late AnimationController expandController;
   late Animation<double> animation;
@@ -35,7 +35,7 @@ class _ExpandedSectionState extends State<ExpandedSection>
   }
 
   @override
-  void didUpdateWidget(ExpandedSection oldWidget) {
+  void didUpdateWidget(ExpandableSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.expand) {
       expandController.forward();

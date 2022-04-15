@@ -8,6 +8,7 @@ class Loaded extends PreferencesEvent{}
 
 class PreferenceToggled extends PreferencesEvent {
   PreferenceChip preferenceChip;
+  List<void Function()>? functions;
 
-  PreferenceToggled(this.preferenceChip);
+  PreferenceToggled(this.preferenceChip, { this.functions });
 }

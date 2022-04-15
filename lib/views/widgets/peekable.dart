@@ -6,7 +6,6 @@ import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 
 abstract class Peekable {
-
   Future openDialog(BuildContext context, Book book, BookFollowsBloc bloc){
     return showDialog(
         context: context,

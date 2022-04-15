@@ -246,11 +246,11 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
 
     if (context.read<LoginBloc>().state.Status == LoginStatus.LoggingIn) {
       return Padding(
-          padding: EdgeInsets.fromLTRB(0, 25, 70, 28),
-          child: SizedBox(
+          padding: EdgeInsets.fromLTRB(0, 10, 70, 28),
+          child: Container(
             child: CircularProgressIndicator(color: FlutterFlowTheme.of(context).secondaryColor),
-            height: 25.0,
-            width: 25.0,
+            height: 15.0,
+            width: 15.0,
           )
       );
     }

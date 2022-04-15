@@ -32,5 +32,8 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     await preferencesRepository.togglePreference(TogglePreferenceRequest(data.Id, data.IsSelected));
     data.IsSelected = !data.IsSelected;
     emit(state.CopyWith(preferenceChips: state.PreferenceChips));
+    if(event.functions != null){
+      event.functions!.forEach((element) {element();});
+    }
   }
 }

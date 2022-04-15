@@ -34,7 +34,7 @@ class StandardPeekState extends State<StandardPeekList> {
     this.localContext = context;
   }
 
-  DoRefresh(){
+  doRefresh(){
     localContext.read<TrendingBooksListBloc>().add(Refresh(this.code, this.title));
   }
 
@@ -101,7 +101,7 @@ class StandardPeekState extends State<StandardPeekList> {
 
   Widget getBooks(BuildContext context, TrendingBooksListState state){
 
-    if(state.Status != TrendingBooksListStatus.Loaded){
+    if(state.Status == TrendingBooksListStatus.PeeksLoading){
       return loading(context);
     }
 
@@ -130,13 +130,17 @@ class StandardPeekState extends State<StandardPeekList> {
   }
 
   Widget loading(BuildContext context){
-    return SizedBox(
-      height: 16,
-      width: 16,
-      child: CircularProgressIndicator(
-        semanticsLabel: 'Loading...',
-        color: FlutterFlowTheme.of(context).secondaryColor,
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children:[SizedBox(
+        height: 16,
+        width: 16,
+        child: CircularProgressIndicator(
+          semanticsLabel: 'Loading...',
+          color: FlutterFlowTheme.of(context).secondaryColor,
+        ),
+      )]
     );
   }
 }
