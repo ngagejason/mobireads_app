@@ -164,7 +164,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child: Image.network(
-                                              'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                              'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                               width: 74,
                                               height: 74,
                                               fit: BoxFit.cover
@@ -287,7 +287,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child: Image.network(
-                                              'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                              'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                               width: 74,
                                               height: 74,
                                               fit: BoxFit.cover
@@ -410,7 +410,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child: Image.network(
-                                              'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                              'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                               width: 74,
                                               height: 74,
                                               fit: BoxFit.cover
@@ -533,7 +533,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child:Image.network(
-                                              'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                              'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                               width: 74,
                                               height: 74,
                                               fit: BoxFit.cover
@@ -656,7 +656,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child: Image.network(
-                                              'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                              'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                               width: 74,
                                               height: 74,
                                               fit: BoxFit.cover
@@ -779,7 +779,7 @@ class _AuthorFollowsWidgetState
                                           borderRadius:
                                           BorderRadius.circular(8),
                                           child: Image.network(
-                                            'http://10.0.2.2:3000/images/HeraHope/InfernalRescue_200x300.png',
+                                            'http://10.0.2.2:4000/images/HeraHope/InfernalRescue_200x300.png',
                                             width: 74,
                                             height: 74,
                                             fit: BoxFit.cover

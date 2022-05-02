@@ -33,6 +33,8 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
       (json['seriesFrontCoverUrls'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      json['version'] as int,
+      json['status'] as int,
     );
 
 Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
@@ -58,4 +60,6 @@ Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
       'bookNumberInSeries': instance.BookNumberInSeries,
       'bookCountInSeries': instance.BookCountInSeries,
       'seriesFrontCoverUrls': instance.SeriesFrontCoverUrls,
+      'version': instance.Version,
+      'status': instance.Status,
     };

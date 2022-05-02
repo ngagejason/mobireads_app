@@ -50,6 +50,10 @@ class Book {
   int BookCountInSeries = 0;
   @JsonKey(name: 'seriesFrontCoverUrls')
   List<String> SeriesFrontCoverUrls = [];
+  @JsonKey(name: 'version')
+  int Version = 1;
+  @JsonKey(name: 'status')
+  int Status = 0;
 
   Book(this.Id,
       this.GenreId,
@@ -72,7 +76,9 @@ class Book {
       this.SeriesSubtitle,
       this.BookNumberInSeries,
       this.BookCountInSeries,
-      this.SeriesFrontCoverUrls);
+      this.SeriesFrontCoverUrls,
+      this.Version,
+      this.Status);
 
   String AuthorName() {
     if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){

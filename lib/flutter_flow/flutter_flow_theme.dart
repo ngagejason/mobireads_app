@@ -84,7 +84,7 @@ extension TextStyleHelper on TextStyle {
 abstract class FlutterFlowTheme {
   static FlutterFlowTheme of(BuildContext context) => LightModeTheme();
 
-  Color primaryColor = Color(0x00008000); // Color(0xFF113e82);
+  Color primaryColor = Color(0xFF062149); // Color(0x00008000);
   Color secondaryColor = Color(0xFFEACD29);
   Color tertiaryColor = Color(0xFFA7A7A7);
   Color alternate = const Color(0x00000000);
@@ -138,7 +138,7 @@ abstract class FlutterFlowTheme {
 }
 
 class LightModeTheme extends FlutterFlowTheme {
-  Color primaryColor = const Color(0xFF113E82);
+  Color primaryColor = const Color(0xFF062149);
   Color secondaryColor = const Color(0xFFEACD29);
   Color tertiaryColor = const Color(0xFFA7A7A7);
   Color alternate = const Color(0x00000000);

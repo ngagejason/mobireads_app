@@ -49,7 +49,7 @@ class BookSeriesDetailsBloc extends Bloc<BookSeriesDetailsEvent, BookSeriesDetai
             details.GenreId, //this.GenreId,
             "Coming Soon", //this.Title,
             "", //this.Subtitle,
-            dotenv.env['COMING_SOON_IMAGE'] ?? "http://10.0.2.2:3000/images/ComingSoon/ComingSoon_2_200x300.png", //this.FrontCoverImageUrl,
+            dotenv.env['COMING_SOON_IMAGE'] ?? "http://10.0.2.2:4000/images/ComingSoon/ComingSoon_2_200x300.png", //this.FrontCoverImageUrl,
             "", //this.BackCoverImageUrl,
             0, //this.WordCount,
             "Coming", //this.AuthorFirstName,
@@ -67,6 +67,8 @@ class BookSeriesDetailsBloc extends Bloc<BookSeriesDetailsEvent, BookSeriesDetai
             i+1, //this.BookNumberInSeries,
             details.BookCountInSeries, //this.BookCountInSeries,
             [], //this.SeriesFrontCoverUrls
+            1,
+            0
           ));
     }
 

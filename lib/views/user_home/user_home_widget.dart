@@ -215,7 +215,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   }
 
   Widget getPrefsRow(){
-    List<Preference> genrePreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'HOME').toList();
+    List<Preference> genrePreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'GENRE').toList();
     List<Preference> ageGroupsPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'AGE_GROUP').toList();
     List<Preference> pubTypesPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'PUB_TYPE').toList();
 
