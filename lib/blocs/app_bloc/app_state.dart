@@ -18,6 +18,7 @@ class AppState {
   final String Username;
   final String Bearer;
   final AppStatus Status;
+  final String CurrentBook;
 
   AppState (
     this.Id, {
@@ -25,7 +26,8 @@ class AppState {
     this.Email = '',
     this.Username = '',
     this.Bearer = '',
-    this.Status = AppStatus.Initializing
+    this.Status = AppStatus.Initializing,
+    this.CurrentBook = ''
   });
 
   AppState CopyWith(
@@ -35,7 +37,8 @@ class AppState {
         String? email,
         String? username,
         String? bearer,
-        AppStatus? status
+        AppStatus? status,
+        String? currentBook,
       }) {
     return AppState(
         id,
@@ -43,7 +46,8 @@ class AppState {
         Email: email ?? this.Email,
         Username: username ?? this.Username,
         Bearer: bearer ?? this.Bearer,
-        Status: status ?? this.Status
+        Status: status ?? this.Status,
+        CurrentBook: currentBook ?? this.CurrentBook
     );
   }
 

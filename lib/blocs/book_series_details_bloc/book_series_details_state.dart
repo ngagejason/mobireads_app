@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
-import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
-import 'package:mobi_reads/entities/books/SeriesDetailsResponse.dart';
 
 enum BookSeriesDetailsStatus {
   Constructed,

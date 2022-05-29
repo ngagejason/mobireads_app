@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
-import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
-import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/views/widgets/peekable.dart';
 
 class StandardBook extends StatefulWidget {
   const StandardBook(this.book) : super();

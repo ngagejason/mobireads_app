@@ -23,6 +23,9 @@ class ServerPaths{
   static const String ALL_BOOK_FOLLOWS = "api/books/allBookFollows";
   static const String TRENDING_BOOKS = "api/books/trendingBooks";
 
+  /* Chapters */
+  static const String GET_CHAPTERS = "api/outlines/getOutlineChapters";
+
   /* Series */
   static const String SERIES_DETAILS = "api/books/seriesDetails";
 

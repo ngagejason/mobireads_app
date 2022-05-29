@@ -5,7 +5,10 @@ import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
+import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
+import 'package:mobi_reads/views/reader/reader.dart';
+import 'package:mobi_reads/views/reader/reader.dart';
 import 'package:mobi_reads/views/user_follows/book_follows_widget2.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 
@@ -18,6 +21,7 @@ class MasterScaffoldWidget extends StatefulWidget {
 
 class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = List.empty(growable: true);
 
@@ -48,8 +52,9 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             body: IndexedStack(
               children: <Widget>[
-                UserHomeWidget(scaffoldKey: this.scaffoldKey),
-                BookFollowsWidget2(scaffoldKey: this.scaffoldKey),
+                UserHomeWidget(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey),
+                BookFollowsWidget2(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey),
+                ReaderPageWidget(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey)
               ],
               index: _selectedIndex,
             ),
@@ -71,6 +76,13 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                   ),
                   label: '',
                 ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.menu_book_outlined,
+                    color: _selectedIndex == 2 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
+                  ),
+                  label: '',
+                )
               ],
               currentIndex: _selectedIndex,
               selectedItemColor: FlutterFlowTheme.of(context).secondaryColor,
@@ -137,10 +149,20 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                   context.read<AppBloc>().add(UserLoggedOutEvent())
                 },
               ),
+              ListTile(
+                leading: Icon(Icons.ramen_dining),
+                title: Text('Clear Memory'),
+                onTap: () => {ClearAll(context)},
+              ),
             ],
           ),
         )
     );
+  }
+
+  ClearAll(BuildContext context){
+    UserSecureStorage.clearAll();
+    context.read<AppBloc>().add(UserLoggedOutEvent());
   }
 
   Widget getAvatar(String username) {

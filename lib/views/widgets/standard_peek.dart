@@ -1,9 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
+import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
-import 'package:mobi_reads/constants.dart';
+import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
@@ -36,6 +38,9 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
       padding: EdgeInsetsDirectional.fromSTEB(0, 8, 16, 8),
       child: GestureDetector(
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
+        onDoubleTap: () => {
+          context.read<AppBloc>().add(BookSelectedEvent(widget.book.Id))
+        },
         onTap: () => {
           if(widget.book.SeriesId != null && widget.book.SeriesId!.length > 0){
             Navigator.pushNamed(context, "/bookSeriesDetails", arguments: widget.book)
@@ -196,9 +201,10 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
       fontWeight: FontWeight.normal,
     );
 
-    double offset = widget.book.BookNumberInSeries != null &&
-                    widget.book.BookNumberInSeries > 0 ?
-      14 * (widget.book.BookNumberInSeries -1) : 0;
+    double offset = 0;
+    if(widget.book.BookNumberInSeries != null){
+      offset = widget.book.BookNumberInSeries > 0 ? 14 * (widget.book.BookNumberInSeries -1) : 0;
+    }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(offset, 0, 0, 0),
@@ -231,7 +237,7 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
                   child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        getBookPubType(),
+                        NumberFormatterFactory.CreateNumberFormatter().format(widget.book.WordCount).toString() + ' Words',
                         style: style,
                       )
                   )
@@ -247,16 +253,5 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
     return doesFollow ?
       Icon(Icons.favorite,color: Colors.red,size: 24) :
       Icon(Icons.favorite_border,color: Colors.white,size: 24);
-  }
-
-  String getBookPubType(){
-    String text = 'Novel';
-    switch(widget.book.PubType){
-      case PubTypes.Novella:
-        text = 'Novella';
-        break;
-    }
-
-    return text;
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
+import 'package:mobi_reads/repositories/outline_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
 import 'package:mobi_reads/views/book_details/book_details_master.dart';
 import 'package:mobi_reads/views/book_series_details/book_series_details_master.dart';
@@ -15,6 +17,7 @@ import 'package:mobi_reads/views/login/login_page.dart';
 import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
 import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_page.dart';
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
+import 'package:mobi_reads/views/reader/reader.dart';
 import 'blocs/app_bloc/app_bloc.dart';
 import 'repositories/preferences_repository.dart';
 
@@ -44,7 +47,8 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => LoginRepository()),
         RepositoryProvider(create: (context) => AccountRepository()),
         RepositoryProvider(create: (context) => PreferencesRepository()),
-        RepositoryProvider(create: (context) => BookRepository())
+        RepositoryProvider(create: (context) => BookRepository()),
+        RepositoryProvider(create: (context) => OutlineRepository())
       ],
       child: appUI(),
     );
@@ -57,6 +61,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
         BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
+        BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(RepositoryProvider.of<OutlineRepository>(context))),
       ],
       child: MaterialApp(
           title: 'MobiReads',
@@ -78,7 +83,7 @@ class _MyAppState extends State<MyApp> {
             '/passwordResetRequest': (context) => PasswordResetRequestWidget(),
             '/passwordResetConfirm': (context) => PasswordResetConfirmWidget(),
             '/bookDetails': (context) => BookDetailsMasterWidget(),
-            '/bookSeriesDetails': (context) => BookSeriesDetailsMasterWidget(),
+            '/bookSeriesDetails': (context) => BookSeriesDetailsMasterWidget()
           }),
     );
   }

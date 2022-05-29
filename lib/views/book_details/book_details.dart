@@ -6,6 +6,7 @@ import 'package:mobi_reads/blocs/book_details_bloc/book_details_event.dart' as b
 import 'package:mobi_reads/blocs/book_details_bloc/book_details_state.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart';
+import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
@@ -181,12 +182,12 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                       )
                   ),
                   Text(
-                    widget.book.WordCount != null && widget.book.WordCount > 0 ? widget.book.WordCount.toString() : "0",
+                    widget.book.WordCount > 0 ? NumberFormatterFactory.CreateNumberFormatter().format(widget.book.WordCount).toString() : "0",
                     style: style,
                   ),
                 ],
               ),
-              Column(
+              /*Column(
                 children: [
                   Icon(
                       Icons.question_answer,
@@ -207,6 +208,8 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                   )
                 ]
               ),
+
+               */
               Column(
                 children:[
                   Icon(
@@ -222,7 +225,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                       )
                   ),
                   Text(
-                    widget.book.FollowCount != null && widget.book.FollowCount > 0 ? widget.book.FollowCount.toString() : "0",
+                    widget.book.FollowCount > 0 ? widget.book.FollowCount.toString() : "0",
                     style: style,
                   )
                 ]

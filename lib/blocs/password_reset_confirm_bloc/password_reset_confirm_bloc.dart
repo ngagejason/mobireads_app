@@ -3,7 +3,6 @@ import 'package:mobi_reads/blocs/password_reset_confirm_bloc/password_reset_conf
 import 'package:mobi_reads/blocs/password_reset_confirm_bloc/password_reset_confirm_state.dart';
 import 'package:mobi_reads/classes/ExceptionFormatter.dart';
 import 'package:mobi_reads/entities/account/password_reset_confirm.dart';
-import 'package:mobi_reads/entities/bool_response/bool_response.dart';
 import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 

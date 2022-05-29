@@ -43,33 +43,7 @@ class BookSeriesDetailsBloc extends Bloc<BookSeriesDetailsEvent, BookSeriesDetai
     // Setup Default Book List
     // This ensures that series with missing books still show coming soon data
     for(int i = 0; i < details.BookCountInSeries; i++){
-      allBooks.add(
-          Book(
-            "", //this.Id,
-            details.GenreId, //this.GenreId,
-            "Coming Soon", //this.Title,
-            "", //this.Subtitle,
-            dotenv.env['COMING_SOON_IMAGE'] ?? "http://10.0.2.2:4000/images/ComingSoon/ComingSoon_2_200x300.png", //this.FrontCoverImageUrl,
-            "", //this.BackCoverImageUrl,
-            0, //this.WordCount,
-            "Coming", //this.AuthorFirstName,
-            "Soon", //this.AuthorLastName,
-            "", //this.AuthorMiddleName,
-            details.GenreCode, //this.GenreCode,
-            details.GenreName, //this.GenreName,
-            0, //this.FollowCount,
-            "", //this.Summary,
-            [], //this.AdditionalImages,
-            0,  // this.pubType
-            details.Id, //this.SeriesId,
-            details.Title, //this.SeriesTitle,
-            details.Subtitle, //this.SeriesSubtitle,
-            i+1, //this.BookNumberInSeries,
-            details.BookCountInSeries, //this.BookCountInSeries,
-            [], //this.SeriesFrontCoverUrls
-            1,
-            0
-          ));
+      allBooks.add(getDefaultSeriesBook(details, i));
     }
 
     // Replace defaults with actual books.
@@ -78,5 +52,33 @@ class BookSeriesDetailsBloc extends Bloc<BookSeriesDetailsEvent, BookSeriesDetai
     }
 
     return allBooks;
+  }
+
+  Book getDefaultSeriesBook(SeriesDetailsResponse details, int numberInSeries){
+    return Book(
+        "", //this.Id,
+        "Coming Soon", //this.Title,
+        "", //this.Subtitle,
+        dotenv.env['COMING_SOON_IMAGE'] ?? "http://10.0.2.2:4000/images/ComingSoon/ComingSoon_2_200x300.png", //this.FrontCoverImageUrl,
+        "image/png", //FrontCoverImageMimeType
+        "", //BackCoverImageUrl,
+        "", //BackCoverImageMimeType
+        "Coming", //AuthorFirstName,
+        "Soon", //AuthorLastName,
+        "", //AuthorMiddleName,
+        "", //Summary,
+        0, //Status,
+        0, //version
+        0, //WordCount,
+        0, //ChapterCount,
+        0, //this.FollowCount,
+        details.Id, //this.SeriesId,
+        details.Title, //this.SeriesTitle,
+        details.Subtitle, //this.SeriesSubtitle,
+        details.BookCountInSeries, //this.BookCountInSeries,
+        numberInSeries+1, //this.BookNumberInSeries,
+        [], //this.SeriesFrontCoverUrls
+        [] //this.preferences
+    );
   }
 }

@@ -13,6 +13,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<UserLoggedOutEvent>((event, emit) async => await handleUserLoggedOutEvent(event, emit));
     on<AppInitializedEvent>((event, emit) async => await handleAppInitializedEvent(event, emit));
     on<AppInitializingEvent>((event, emit) async => await handleAppInitializingEvent(event, emit));
+    on<BookSelectedEvent>((event, emit) async => await handleBookSelectedEvent(event, emit));
   }
 
   Future handleUserLoggedInEvent(UserLoggedInEvent event, Emitter<AppState> emit) async {
@@ -25,16 +26,20 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     if(state.Id.length > 0){
       await loginRepository.logout();
     }
-    await UserSecureStorage.clearAll();
+    await UserSecureStorage.clearKey(state);
     emit(state.CopyWith('', isGuest: true, email: '', username: '', status: AppStatus.LoggedOut));
   }
 
   Future handleAppInitializedEvent(AppInitializedEvent event, Emitter<AppState> emit ) async {
-    await UserSecureStorage.clearAll();
+    await UserSecureStorage.clearKey(state);
     emit(state.CopyWith(state.Id, status: AppStatus.Initialized));
   }
 
   Future handleAppInitializingEvent(AppInitializingEvent event, Emitter<AppState> emit ) async {
     emit(state.CopyWith(state.Id, status: AppStatus.Initializing));
+  }
+
+  Future handleBookSelectedEvent(BookSelectedEvent event, Emitter<AppState> emit ) async {
+    emit(state.CopyWith(state.Id, currentBook: event.bookId));
   }
 }

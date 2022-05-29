@@ -15,3 +15,8 @@ class UserLoggedOutEvent extends AppEvent {}
 class AppInitializedEvent extends AppEvent {}
 
 class AppInitializingEvent extends AppEvent {}
+
+class BookSelectedEvent extends AppEvent {
+  String bookId;
+  BookSelectedEvent(this.bookId);
+}

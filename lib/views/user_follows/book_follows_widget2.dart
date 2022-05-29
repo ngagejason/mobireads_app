@@ -6,15 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
-import 'package:mobi_reads/flutter_flow/flutter_flow_icon_button.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 
 class BookFollowsWidget2 extends StatefulWidget {
-  const BookFollowsWidget2({Key? key, required this.scaffoldKey}) : super(key: key);
+  const BookFollowsWidget2({Key? key, required this.scaffoldKey, required this.bottomNavbarKey}) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey bottomNavbarKey;
 
   @override
   _BookFollowsWidgetState2 createState() => _BookFollowsWidgetState2();

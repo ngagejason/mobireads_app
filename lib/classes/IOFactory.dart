@@ -45,7 +45,7 @@ class IOFactory {
   static Future<Response> doPost<T>({ required String urlExtension, required T data }) async {
     return await http.post(
         IOFactory.getPath(urlExtension, null),
-        headers: await IOFactory.getPostHeaders(),
+        headers: IOFactory.getPostHeaders(),
         body: jsonEncode(data)
     ).timeout(Duration(seconds: TimeoutSeconds));
   }

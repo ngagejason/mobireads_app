@@ -241,7 +241,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                       )
                   ),
                   Text(
-                    currentBook.WordCount != null && currentBook.WordCount > 0 ? currentBook.WordCount.toString() : "0",
+                    currentBook.WordCount > 0 ? currentBook.WordCount.toString() : "0",
                     style: style,
                   ),
                 ],
@@ -282,7 +282,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                       )
                   ),
                   Text(
-                    currentBook.FollowCount != null && currentBook.FollowCount > 0 ? currentBook.FollowCount.toString() : "0",
+                    currentBook.FollowCount > 0 ? currentBook.FollowCount.toString() : "0",
                     style: style,
                   )
                 ]

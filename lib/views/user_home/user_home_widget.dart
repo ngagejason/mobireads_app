@@ -21,9 +21,10 @@ import 'package:mobi_reads/views/widgets/standard_preference_chip.dart';
 
 
 class UserHomeWidget extends StatefulWidget {
-  const UserHomeWidget({Key? key, required this.scaffoldKey}) : super(key: key);
+  const UserHomeWidget({Key? key, required this.scaffoldKey, required this.bottomNavbarKey}) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey bottomNavbarKey;
 
   @override
   _UserHomeWidgetState createState() => _UserHomeWidgetState();
@@ -34,6 +35,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   bool genresOpen = false;
   bool agesOpen = false;
   bool pubTypesOpen = false;
+  bool categoriesOpen = false;
   List<PeekListFactory> peeks = List.empty(growable: true);
   HashMap<String, GlobalKey<StandardPeekState>> peekKeys = new HashMap();
 
@@ -218,35 +220,48 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
     List<Preference> genrePreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'GENRE').toList();
     List<Preference> ageGroupsPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'AGE_GROUP').toList();
     List<Preference> pubTypesPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'PUB_TYPE').toList();
+    List<Preference> categoryPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'CATEGORY').toList();
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: Column(
           children: [
-            Row(
-                children: [
-                  StandardPreferenceChip(
-                      'Genres',
-                      (selected) { setState(() { genresOpen = !genresOpen; }); },
-                      () { return genresOpen; }
-                  ),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: StandardPreferenceChip(
-                        'Ages',
-                        (selected) { setState(() { agesOpen = !agesOpen; }); },
-                        () { return agesOpen; }
-                      )
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(5,0,0,0),
-                    child: StandardPreferenceChip(
-                      'Pub Types',
-                      (selected) { setState(() { pubTypesOpen = !pubTypesOpen; }); },
-                      () { return pubTypesOpen; }
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    StandardPreferenceChip(
+                        'Genres',
+                            (selected) { setState(() { genresOpen = !genresOpen; }); },
+                            () { return genresOpen; }
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        child: StandardPreferenceChip(
+                            'Ages',
+                                (selected) { setState(() { agesOpen = !agesOpen; }); },
+                                () { return agesOpen; }
+                        )
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(5,0,0,0),
+                        child: StandardPreferenceChip(
+                            'Pub Types',
+                                (selected) { setState(() { pubTypesOpen = !pubTypesOpen; }); },
+                                () { return pubTypesOpen; }
+                        )
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(5,0,0,0),
+                        child: StandardPreferenceChip(
+                            'Category',
+                                (selected) { setState(() { categoriesOpen = !categoriesOpen; }); },
+                                () { return categoriesOpen; }
+                        )
                     )
-                  )
-                ]
+                  ]
+              ),
             ),
             ExpandableSection(
                 expand: genresOpen,
@@ -276,11 +291,24 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                   onChanged: (chipData) {
                     // Create a list of functions to call
                     List<void Function()> refreshFunctions = List.empty(growable: true);
-                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
+                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
                     // toggle the preference chip, and when done each function will be called
                     context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
                   },
                   options: pubTypesPreferences,
+                )
+            ),
+            ExpandableSection(
+                expand: categoriesOpen,
+                child: PreferenceChipList(
+                  onChanged: (chipData) {
+                    // Create a list of functions to call
+                    List<void Function()> refreshFunctions = List.empty(growable: true);
+                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
+                    // toggle the preference chip, and when done each function will be called
+                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
+                  },
+                  options: categoryPreferences,
                 )
             )
           ]

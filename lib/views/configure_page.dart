@@ -7,7 +7,6 @@ import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
 import 'package:mobi_reads/views/login/login_page.dart';
 import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
-import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 import 'loading_page.dart';
 
 class ConfigurePage extends StatefulWidget {
