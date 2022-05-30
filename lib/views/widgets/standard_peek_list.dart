@@ -11,10 +11,11 @@ import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_peek.dart';
 
 class StandardPeekList extends StatefulWidget {
-  const StandardPeekList(Key key, this.code, this.title) : super(key: key);
+  const StandardPeekList(Key key, this.code, this.title, this.bottomNavbarKey) : super(key: key);
 
   final int code;
   final String title;
+  final GlobalKey bottomNavbarKey;
 
   @override
   StandardPeekState createState() => StandardPeekState(code, title);
@@ -124,7 +125,7 @@ class StandardPeekState extends State<StandardPeekList> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        children: state.Books.map((e) => StandardPeek(e)).toList(growable: false)
+        children: state.Books.map((e) => StandardPeek(e, widget.bottomNavbarKey)).toList(growable: false)
       ),
     );
   }

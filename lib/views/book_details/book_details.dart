@@ -239,7 +239,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
       child: Text(
-        widget.book.Summary,
+        widget.book.Summary ?? '',
         style: TextStyle(
             color: Colors.white,
             fontSize: 20,

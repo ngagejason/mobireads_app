@@ -1,19 +1,23 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
 
 class StandardPeek extends StatefulWidget {
-  const StandardPeek(this.book) : super();
+  const StandardPeek(this.book, this.bottomNavbarKey) : super();
 
   final Book book;
+  final GlobalKey bottomNavbarKey;
 
   @override
   _StandardPeekState createState() => _StandardPeekState();
@@ -38,8 +42,10 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
       padding: EdgeInsetsDirectional.fromSTEB(0, 8, 16, 8),
       child: GestureDetector(
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
-        onDoubleTap: () => {
-          context.read<AppBloc>().add(BookSelectedEvent(widget.book.Id))
+        onDoubleTap: () {
+          context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
+          var a = this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar;
+          a.onTap!(2);
         },
         onTap: () => {
           if(widget.book.SeriesId != null && widget.book.SeriesId!.length > 0){

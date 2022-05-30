@@ -296,7 +296,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
       child: Text(
-        currentBook.Summary,
+        currentBook.Summary ?? '',
         style: TextStyle(
             color: Colors.white,
             fontSize: 20,

@@ -9,14 +9,21 @@ part of 'reader_state.dart';
 ReaderState _$ReaderStateFromJson(Map<String, dynamic> json) => ReaderState(
       status: $enumDecodeNullable(_$ReaderStatusEnumMap, json['status']) ??
           ReaderStatus.Constructed,
-    )..allChapters = (json['allChapters'] as List<dynamic>)
-        .map((e) => OutlineChapter.fromJson(e as Map<String, dynamic>))
-        .toList();
+      book: json['book'] == null
+          ? null
+          : Book.fromJson(json['book'] as Map<String, dynamic>),
+    )
+      ..allChapters = (json['allChapters'] as List<dynamic>)
+          .map((e) => OutlineChapter.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..reachedEnd = json['reachedEnd'] as bool;
 
 Map<String, dynamic> _$ReaderStateToJson(ReaderState instance) =>
     <String, dynamic>{
       'status': _$ReaderStatusEnumMap[instance.status],
       'allChapters': instance.allChapters,
+      'book': instance.book,
+      'reachedEnd': instance.reachedEnd,
     };
 
 const _$ReaderStatusEnumMap = {

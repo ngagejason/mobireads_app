@@ -23,13 +23,13 @@ class Book {
   @JsonKey(name: 'backCoverImageMimeType')
   String BackCoverImageMimeType;
   @JsonKey(name: 'authorFirstName')
-  String AuthorFirstName = '';
+  String? AuthorFirstName = '';
   @JsonKey(name: 'authorMiddleName')
   String? AuthorMiddleName;
   @JsonKey(name: 'authorLastName')
-  String AuthorLastName = '';
+  String? AuthorLastName = '';
   @JsonKey(name: 'summary')
-  String Summary = '';
+  String? Summary = '';
   @JsonKey(name: 'status')
   int Status = 0;
   @JsonKey(name: 'version')
@@ -62,10 +62,10 @@ class Book {
       this.FrontCoverImageMimeType,
       this.BackCoverImageUrl,
       this.BackCoverImageMimeType,
-      String? authorFirstName,
-      String? authorMiddleName,
-      String? authorLastName,
-      String? summary,
+      this.AuthorFirstName,
+      this.AuthorMiddleName,
+      this.AuthorLastName,
+      this.Summary,
       this.Status,
       this.Version,
       this.WordCount,
@@ -79,18 +79,18 @@ class Book {
       this.SeriesFrontCoverUrls,
       this.Preferences)
   {
-    this.AuthorFirstName = authorFirstName ?? '';
-    this.AuthorMiddleName = authorMiddleName ?? '';
-    this.AuthorLastName = authorLastName ?? '';
-    this.Summary = summary ?? '';
+    this.AuthorFirstName = this.AuthorFirstName ?? '';
+    this.AuthorMiddleName = this.AuthorMiddleName ?? '';
+    this.AuthorLastName = this.AuthorLastName ?? '';
+    this.Summary = this.Summary ?? '';
   }
 
   String AuthorName() {
     if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){
-      return AuthorFirstName + ' ' + AuthorLastName;
+      return (AuthorFirstName ?? '') + ' ' + (AuthorLastName ?? '');
     }
 
-    return AuthorFirstName + ' ' + AuthorMiddleName! + ' ' + AuthorLastName;
+    return (AuthorFirstName ?? '') + ' ' + (AuthorMiddleName ?? '') + ' ' + (AuthorLastName ?? '');
   }
 
   bool ContainsText(String text){

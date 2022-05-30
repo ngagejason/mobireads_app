@@ -86,7 +86,7 @@ abstract class Peekable {
                                                       padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
                                                       child: SingleChildScrollView(
                                                           child: Text(
-                                                              book.Summary,
+                                                              book.Summary ?? '',
                                                               style: GoogleFonts.getFont('Poppins', color: Colors .white, fontWeight: FontWeight.w500, fontSize: 18,)
                                                           )
                                                       )

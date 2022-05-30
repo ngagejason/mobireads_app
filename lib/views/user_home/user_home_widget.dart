@@ -57,7 +57,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                 for(var chip in chips) {
                     GlobalKey<StandardPeekState> key = new GlobalKey();
                     peekKeys[chip.Id] = key;
-                    peeks.add(PeekListFactory(key, chip.Code, chip.Label));
+                    peeks.add(PeekListFactory(key, chip.Code, chip.Label, widget.bottomNavbarKey));
                 }
                 context.read<PreferencesBloc>().add(preferences_events.Loaded());
               }
@@ -136,67 +136,6 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
         ])
         )
       ],
-    );
-  }
-
-  Widget NavDrawer(BuildContext context) {
-    var appBloc = context.read<AppBloc>();
-    return Drawer(
-        child: Container(
-          color: FlutterFlowTheme
-              .of(context)
-              .secondaryColor,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme
-                        .of(context)
-                        .secondaryColor,
-                  ),
-                  child: getAvatar(appBloc.state.Username)
-              ),
-              ListTile(
-                leading: Icon(Icons.verified_user),
-                title: Text('Profile'),
-                onTap: () => {Navigator.of(context).pop()},
-              ),
-              ListTile(
-                leading: Icon(Icons.supervised_user_circle_sharp),
-                title: Text('User Accounts'),
-                onTap: () => {Navigator.pushNamed(context, "/userAccounts")},
-              ),
-              ListTile(
-                leading: Icon(Icons.stacked_line_chart),
-                title: Text('Writers Block'),
-                onTap: () =>
-                {
-                  Navigator.pushNamed(context, "/linkedInstitutions")
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Publishing'),
-                onTap: () => {Navigator.of(context).pop()},
-              ),
-              ListTile(
-                leading: Icon(Icons.border_color),
-                title: Text('Feedback'),
-                onTap: () => {Navigator.of(context).pop()},
-              ),
-              ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Logout'),
-                onTap: () =>
-                {
-                  context.read<AppBloc>().add(UserLoggedOutEvent())
-                },
-              ),
-            ],
-          ),
-        )
     );
   }
 

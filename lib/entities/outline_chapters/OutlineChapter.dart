@@ -13,7 +13,7 @@ class OutlineChapter {
   String Title;
   @JsonKey(name: 'writing')
   String Writing;
-  @JsonKey(name: 'chapterIndex')
+  @JsonKey(name: 'chapterNumber')
   int ChapterNumber;
   @JsonKey(name: 'deletedDateTimeUTC')
   DateTime? DeletedDateTimeUTC;

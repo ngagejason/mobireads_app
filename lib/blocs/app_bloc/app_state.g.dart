@@ -14,6 +14,7 @@ AppState _$AppStateFromJson(Map<String, dynamic> json) => AppState(
       Bearer: json['Bearer'] as String? ?? '',
       Status: $enumDecodeNullable(_$AppStatusEnumMap, json['Status']) ??
           AppStatus.Initializing,
+      CurrentBook: json['CurrentBook'] as String? ?? '',
     );
 
 Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
@@ -23,6 +24,7 @@ Map<String, dynamic> _$AppStateToJson(AppState instance) => <String, dynamic>{
       'Username': instance.Username,
       'Bearer': instance.Bearer,
       'Status': _$AppStatusEnumMap[instance.Status],
+      'CurrentBook': instance.CurrentBook,
     };
 
 const _$AppStatusEnumMap = {
