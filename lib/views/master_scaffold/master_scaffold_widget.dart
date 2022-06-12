@@ -12,7 +12,6 @@ import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/reader.dart';
-import 'package:mobi_reads/views/reader/reader.dart';
 import 'package:mobi_reads/views/user_follows/book_follows_widget2.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
 

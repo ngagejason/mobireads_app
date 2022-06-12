@@ -14,7 +14,6 @@ class UserSecureStorage {
   static Future clearAll() async =>
       await _storage.deleteAll();
 
-
   static Future clearKey(AppState appState) async =>
       await _storage.delete(key: getAppStorageKey(appState.Id));
 
@@ -24,27 +23,6 @@ class UserSecureStorage {
 
   static Future<String?> getCurrentUserId() async {
     return await _storage.read(key: _currentStorageKey);
-  }
-
-  static Future<AppState?> getAppState(String id) async {
-    String storageKey = getAppStorageKey(id);
-    String? appStateString = await _storage.read(key: storageKey);
-    if(appStateString != null && appStateString.length > 0){
-      var a = json.decode(appStateString);
-      return AppState.fromJson(a);
-    }
-
-    return null;
-  }
-
-  static Future storeAppState(AppState appState) async {
-    if(!(await _storage.containsKey(key: getAppStorageKey(appState.Id)))){
-      await _storage.write(key:  getAppStorageKey(appState.Id), value: json.encode(appState));
-    }
-    else{
-      await _storage.delete(key: getAppStorageKey(appState.Id));
-      await _storage.write(key:  getAppStorageKey(appState.Id), value: json.encode(appState));
-    }
   }
 
   static Future<List<AppState>> GetAllAppStates() async {
@@ -84,6 +62,27 @@ class UserSecureStorage {
     return userId + ":" + bookId;
   }
 
+  static Future<AppState?> getAppState(String id) async {
+    String storageKey = getAppStorageKey(id);
+    String? appStateString = await _storage.read(key: storageKey);
+    if(appStateString != null && appStateString.length > 0){
+      var a = json.decode(appStateString);
+      return AppState.fromJson(a);
+    }
+
+    return null;
+  }
+
+  static Future storeAppState(AppState appState) async {
+    if(!(await _storage.containsKey(key: getAppStorageKey(appState.Id)))){
+      await _storage.write(key:  getAppStorageKey(appState.Id), value: json.encode(appState));
+    }
+    else{
+      await _storage.delete(key: getAppStorageKey(appState.Id));
+      await _storage.write(key:  getAppStorageKey(appState.Id), value: json.encode(appState));
+    }
+  }
+
   static Future storeReaderState(String bookId, ReaderState readerState) async {
 
     String currentUserId = await getCurrentUserId() ?? '';
@@ -117,5 +116,29 @@ class UserSecureStorage {
     return null;
   }
 
+  static Future storeScrollOffset(String bookId, double scrollOffset) async {
+
+    String currentUserId = await getCurrentUserId() ?? '';
+    if(currentUserId == ''){
+      return;
+    }
+
+    String storageKey = bookId + '_scrollOffset';
+    await _storage.write(key:  storageKey, value: scrollOffset.toString());
+  }
+
+  static Future<double> getScrollOffset(String bookId) async {
+
+    String currentUserId = await getCurrentUserId() ?? '';
+    if(currentUserId != ''){
+      String storageKey = bookId + '_scrollOffset';
+      String? readerStateString = await _storage.read(key: storageKey);
+      if(readerStateString != null && readerStateString.length > 0){
+        return double.parse(readerStateString);
+      }
+    }
+
+    return 0;
+  }
 
 }

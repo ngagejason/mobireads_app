@@ -16,7 +16,9 @@ ReaderState _$ReaderStateFromJson(Map<String, dynamic> json) => ReaderState(
       ..allChapters = (json['allChapters'] as List<dynamic>)
           .map((e) => OutlineChapter.fromJson(e as Map<String, dynamic>))
           .toList()
-      ..reachedEnd = json['reachedEnd'] as bool;
+      ..reachedEnd = json['reachedEnd'] as bool
+      ..scrollOffset = (json['scrollOffset'] as num).toDouble()
+      ..fontSize = (json['fontSize'] as num?)?.toDouble();
 
 Map<String, dynamic> _$ReaderStateToJson(ReaderState instance) =>
     <String, dynamic>{
@@ -24,6 +26,8 @@ Map<String, dynamic> _$ReaderStateToJson(ReaderState instance) =>
       'allChapters': instance.allChapters,
       'book': instance.book,
       'reachedEnd': instance.reachedEnd,
+      'scrollOffset': instance.scrollOffset,
+      'fontSize': instance.fontSize,
     };
 
 const _$ReaderStatusEnumMap = {

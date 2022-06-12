@@ -32,6 +32,7 @@
 .packages
 .pub-cache/
 .pub/
+./pubspec.lock
 /build/
 
 # Firebase – this is necessary if you use Firebase since it could otherwise 

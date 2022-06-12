@@ -35,3 +35,7 @@ class PubTypes {
   static const int Novel = 1;
   static const int Novella = 2;
 }
+
+class FontSizes {
+  static const double DEFAULT_FONT_SIZE = 14;
+}

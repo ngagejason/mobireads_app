@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobi_reads/entities/DefaultEntities.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
 import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
@@ -23,10 +23,16 @@ class ReaderState extends Equatable {
   final Book? book;
   bool reachedEnd = false;
   double scrollOffset = 0;
+  double? fontSize = FontSizes.DEFAULT_FONT_SIZE;
 
   ReaderState ({ this.status = ReaderStatus.Constructed, this.book });
 
-  ReaderState CopyWith({ReaderStatus? status, Book? book, List<OutlineChapter>? updateChapters }) {
+  ReaderState CopyWith({
+    ReaderStatus? status,
+    Book? book, List<OutlineChapter>?
+    updateChapters,
+    double? scrollOffset,
+    double? fontSize }) {
 
     // New list after all updates
     List<OutlineChapter>? newChapters = List.empty(growable: true);
@@ -61,8 +67,9 @@ class ReaderState extends Equatable {
     );
 
     state.reachedEnd = book?.ChapterCount == newChapters.length;
+    state.fontSize = fontSize ?? FontSizes.DEFAULT_FONT_SIZE;
+    state.scrollOffset = scrollOffset ?? this.scrollOffset;
     state.allChapters = newChapters;
-    state.scrollOffset = this.scrollOffset;
     return state;
   }
 

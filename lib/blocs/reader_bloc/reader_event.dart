@@ -20,3 +20,8 @@ class ScrollChanged extends ReaderEvent{
   double offset;
   ScrollChanged(this.offset);
 }
+
+class FontSizeChanged extends ReaderEvent{
+  double fontSize;
+  FontSizeChanged(this.fontSize);
+}

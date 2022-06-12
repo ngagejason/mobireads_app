@@ -10,6 +10,7 @@ import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
+import 'package:mobi_reads/views/reader/reader_settings.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 
 class ReaderPageWidget extends StatefulWidget {
@@ -36,7 +37,6 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     _readerBloc = context.read<ReaderBloc>();
     _scrollController.addListener(_onScroll);
     context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
-
   }
 
   @override
@@ -53,10 +53,19 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
         listener: (context, state) {
           if (state.status == ReaderStatus.ChaptersLoaded) {
             _readerBloc.add(Loaded());
+            Timer(const Duration(milliseconds: 500), () async {
+              _scrollController.animateTo(_readerBloc.state.scrollOffset, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+            });
           }
         },
         child: userHomeUI(context)
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Widget userHomeUI(BuildContext context) {
@@ -74,9 +83,21 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             expandedHeight: 40,
             onStretchTrigger: () async => { print('stretched') },
-            leading: Container(),
             pinned: false,
             stretch: true,
+            leading: Padding(
+                padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+                child: IconButton(
+                    icon: const Icon(Icons.menu, color: Color(0xD8EACD29)),
+                    tooltip: 'Menu',
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: ReaderSettingsSnackbar(message: 'this is a test'),
+                          duration: Duration(minutes:5),
+                       ));
+                    })
+            ),
             actions: [
               Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
@@ -84,7 +105,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                       icon: const Icon(Icons.settings_outlined, color: Color(0xD8EACD29)),
                       tooltip: 'Settings',
                       onPressed: () => { widget.scaffoldKey.currentState!.openDrawer() })
-              )
+              ),
             ],
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [
@@ -105,11 +126,6 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
               childCount: _readerBloc.state.allChapters.length+1,
             ),
           )
-          /*SliverList(delegate: SliverChildListDelegate([
-          // Search
-          for(int i = 0; i < _readerBloc.state.allChapters.length; i++)
-              ChapterWidget(chapter: _readerBloc.state.allChapters[i])
-        ]))*/
         ],
       );
     });
@@ -150,12 +166,6 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     }
 
     return Container();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   void _onScroll() {
