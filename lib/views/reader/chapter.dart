@@ -77,14 +77,15 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
       customRender: {
         "span": (RenderContext context, Widget child) {
           var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
-          print('selectedFontSize = ' + selectedFontSize.toString() + ', context.style.fontSize = ' + (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE).toString() + ', fs = ' + fs.toString());
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
         },
         "p": (RenderContext context, Widget child) {
@@ -92,10 +93,12 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
         },
         "em": (RenderContext context, Widget child) {
@@ -103,10 +106,12 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
+            context.style.fontFamily = 'Poppins';
           }
         }
       },
@@ -137,6 +142,7 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                             widget.chapter?.Title ?? '',
                             textAlign: TextAlign.left,
                             style: TextStyle(
+                                fontFamily: 'Poppins',
                                 fontWeight: FontWeight.bold,
                                 fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
                             ),

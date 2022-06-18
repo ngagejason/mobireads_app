@@ -95,7 +95,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   Future handleRefreshEvent(Refresh event, Emitter<ReaderState> emit) async {
 
     if(state.book != null){
-      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 5);
+      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 1);
       if(chapters.Chapters.length > 0){
         ReaderState newState = state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded);
         emit(newState);

@@ -1,18 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
-import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
-import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
-import 'package:mobi_reads/views/reader/reader_settings.dart';
-import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ReaderPageWidget extends StatefulWidget {
 
@@ -28,19 +26,27 @@ class ReaderPageWidget extends StatefulWidget {
 class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   final _scrollController = ScrollController();
   late ReaderBloc _readerBloc;
-  late AppBloc _appBloc;
   bool loading = false, allLoaded = false;
   bool needsScroll = true;
-  double scrollOffset = 0;
+  late double scrollOffset = 0;
+  late int selectedChapter;
+  late AutoScrollController controller;
 
   @override initState(){
     super.initState();
-    _appBloc = context.read<AppBloc>();
     _readerBloc = context.read<ReaderBloc>();
     _scrollController.addListener(_onScroll);
     context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
     _readerBloc.setScrollOffset = this.setScrollOffset;
+    selectedChapter = 0;
+    scrollOffset = 0;
 
+    controller = AutoScrollController(
+        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: Axis.vertical,
+    );
+
+    controller.parentController = _scrollController;
   }
 
   void setScrollOffset(double scrollOffset){
@@ -84,11 +90,10 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   Widget userHomeUI(BuildContext context) {
     double _appBarHeight = 50;
 
-
     return BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
       return CustomScrollView(
         physics: BouncingScrollPhysics(),
-        controller: _scrollController,
+        controller: controller, // _scrollController,
         slivers: [
           SliverAppBar(
             floating: true,
@@ -105,12 +110,39 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                     icon: const Icon(Icons.menu, color: Color(0xD8EACD29)),
                     tooltip: 'Menu',
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: ReaderSettingsSnackbar(message: 'this is a test'),
-                          duration: Duration(minutes:5),
-                       ));
-                    })
+                      setState(() => selectedChapter = 0);
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) =>
+                              Theme(
+                                data: ThemeData.dark(),
+                                child: CupertinoActionSheet(
+                                  actions: [
+                                    buildPicker(),
+                                    CupertinoActionSheetAction(
+                                      child: const Text('Go'),
+                                      onPressed: () {
+                                        if(selectedChapter == 1){
+                                          controller.scrollToIndex(0, preferPosition: AutoScrollPosition.begin);
+                                        }
+                                        else{
+                                          controller.scrollToIndex(selectedChapter+1, preferPosition: AutoScrollPosition.begin);
+                                        }
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    CupertinoActionSheetAction(
+                                      child: const Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                      );
+                    }
+                )
             ),
             actions: [
               Padding(
@@ -127,15 +159,25 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                 StretchMode.blurBackground,
                 StretchMode.zoomBackground,
               ],
-
             ),
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                 if(index == 0){
-                  return getCover();
+                  return AutoScrollTag(
+                      key: ValueKey(index),
+                      controller: controller,
+                      index: index,
+                      child: getCover()
+                  );
                 }
-                return ChapterWidget(chapter: _readerBloc.state.allChapters[index-1]);
+
+                return AutoScrollTag(
+                    key: ValueKey(index),
+                    controller: controller,
+                    index: index,
+                    child: ChapterWidget(chapter: _readerBloc.state.allChapters[index-1])
+                );
               },
               childCount: _readerBloc.state.allChapters.length+1,
             ),
@@ -197,27 +239,35 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     return currentScroll >= (maxScroll * .9);
   }
 
-  Widget ChaptersUI(BuildContext context){
-    if(_readerBloc.state.book == null || _readerBloc.state.book?.Id.length == 0){
-      return Text(
-        'No book loaded'
-      );
-    }
+  Widget buildPicker () => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        getPicker()
+      ],
+    )
+  );
 
-    return Padding(
-          padding: EdgeInsets.all(10),
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              if(_readerBloc.state.status == ReaderStatus.ChaptersLoading){
-                return StandardLoadingWidget();
-              }
-              else {
-                return ChapterWidget(chapter: _readerBloc.state.allChapters[index]);
-              }
+  Widget getPicker(){
+    return SizedBox(
+        height:250,
+        child: CupertinoPicker(
+            onSelectedItemChanged: (int value) {
+              setState(() => selectedChapter = value);
             },
-            itemCount: _readerBloc.state.allChapters.length,
-            controller: _scrollController,
-          ),
+            itemExtent: 48,
+            children: _readerBloc.state.allChapters.map((element) =>
+                Text(
+                  element.Title.guarantee(),
+                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                    fontFamily: 'Poppins',
+                    color: FlutterFlowTheme.of(context).secondaryColor,
+                    fontSize: 24,
+                  ),
+                ),
+            ).toList()
+        )
     );
   }
+
 }

@@ -46,6 +46,7 @@ dependencies:
   flutter_html: ^2.2.1
   path_provider:
   shared_preferences:
+  scroll_to_index:
 
   # flutter_html: ^3.0.0-alpha.3
 
