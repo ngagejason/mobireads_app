@@ -58,10 +58,6 @@ class UserSecureStorage {
     return _appStorageKey + ":" + id;
   }
 
-  static String getReaderStorageKey(String userId, String bookId){
-    return userId + ":" + bookId;
-  }
-
   static Future<AppState?> getAppState(String id) async {
     String storageKey = getAppStorageKey(id);
     String? appStateString = await _storage.read(key: storageKey);
@@ -81,64 +77,6 @@ class UserSecureStorage {
       await _storage.delete(key: getAppStorageKey(appState.Id));
       await _storage.write(key:  getAppStorageKey(appState.Id), value: json.encode(appState));
     }
-  }
-
-  static Future storeReaderState(String bookId, ReaderState readerState) async {
-
-    String currentUserId = await getCurrentUserId() ?? '';
-    if(currentUserId == ''){
-      return;
-    }
-
-    String storageKey = getReaderStorageKey(currentUserId, bookId);
-    if(!(await _storage.containsKey(key: storageKey))){
-      await _storage.write(key:  storageKey, value: json.encode(readerState));
-    }
-    else{
-      await _storage.delete(key: storageKey);
-      await _storage.write(key:  storageKey, value: json.encode(readerState));
-    }
-  }
-
-  static Future<ReaderState?> getReaderState(String bookId) async {
-    String currentUserId = await getCurrentUserId() ?? '';
-    if(currentUserId == ''){
-      return null;
-    }
-
-    String storageKey = getReaderStorageKey(currentUserId, bookId);
-    String? readerStateString = await _storage.read(key: storageKey);
-    if(readerStateString != null && readerStateString.length > 0){
-      var a = json.decode(readerStateString);
-      return ReaderState.fromJson(a);
-    }
-
-    return null;
-  }
-
-  static Future storeScrollOffset(String bookId, double scrollOffset) async {
-
-    String currentUserId = await getCurrentUserId() ?? '';
-    if(currentUserId == ''){
-      return;
-    }
-
-    String storageKey = bookId + '_scrollOffset';
-    await _storage.write(key:  storageKey, value: scrollOffset.toString());
-  }
-
-  static Future<double> getScrollOffset(String bookId) async {
-
-    String currentUserId = await getCurrentUserId() ?? '';
-    if(currentUserId != ''){
-      String storageKey = bookId + '_scrollOffset';
-      String? readerStateString = await _storage.read(key: storageKey);
-      if(readerStateString != null && readerStateString.length > 0){
-        return double.parse(readerStateString);
-      }
-    }
-
-    return 0;
   }
 
 }

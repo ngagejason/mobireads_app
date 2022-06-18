@@ -9,6 +9,8 @@ import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
+import 'package:mobi_reads/classes/UserFileStorage.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/reader.dart';
@@ -141,24 +143,6 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 title: Text('User Accounts'),
                 onTap: () => {Navigator.pushNamed(context, "/userAccounts")},
               ),
-              /*ListTile(
-                leading: Icon(Icons.stacked_line_chart),
-                title: Text('Writers Block'),
-                onTap: () =>
-                {
-                  Navigator.pushNamed(context, "/linkedInstitutions")
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Publishing'),
-                onTap: () => {Navigator.of(context).pop()},
-              ),
-              ListTile(
-                leading: Icon(Icons.border_color),
-                title: Text('Feedback'),
-                onTap: () => {Navigator.of(context).pop()},
-              ),*/
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Logout'),
@@ -196,6 +180,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                     // cancel after 10 minutes
                     if(this._timerCounter > 120 || stopTimer){
                       this._timerCounter = 0;
+                      _timer!.cancel();
                       stopTimer = false;
                       return;
                     }
@@ -209,6 +194,8 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                   setState(() {
                     _timer = a;
                   });
+
+                  scaffoldKey.currentState!.openEndDrawer();
                 },
               ),
               ListTile(
@@ -219,6 +206,8 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                   setState(() {
                     stopTimer = true;
                   });
+
+                  scaffoldKey.currentState!.openEndDrawer();
                 },
               ),
             ],
@@ -229,6 +218,8 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
 
   Future ClearAll(BuildContext context) async {
     await UserSecureStorage.clearAll();
+    await UserFileStorage.clearAll();
+    await UserKvpStorage.clearAll();
     context.read<AppBloc>().add(UserLoggedOutEvent());
   }
 

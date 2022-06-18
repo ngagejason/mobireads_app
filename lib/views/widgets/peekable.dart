@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 
 abstract class Peekable {
@@ -20,7 +21,7 @@ abstract class Peekable {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fitWidth,
-                        image: Image.network(book.FrontCoverImageUrl).image,
+                        image: Image.network(book.FrontCoverImageUrl.guarantee()).image,
                       ),
                       boxShadow: [
                         BoxShadow(

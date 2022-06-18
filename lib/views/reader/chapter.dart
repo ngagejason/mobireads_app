@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
 import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
@@ -22,7 +25,7 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
   GlobalKey key = GlobalKey(debugLabel: '_html');
   String writing = '';
   bool disposeCalled = false;
-  double selectedFontSize = 30;
+  double selectedFontSize = 0;
 
   @override
   void initState() {
@@ -30,13 +33,19 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
     _readerBloc = context.read<ReaderBloc>();
     _readerBloc.AddSetState(widget.chapter?.Id ?? '', doSetState);
     writing = widget.chapter?.Writing ?? '';
-    selectedFontSize = _readerBloc.state.fontSize ?? 14;
+    selectedFontSize = _readerBloc.currentFontSize;
     disposeCalled = false;
+  }
+
+  @override
+  void dispose() {
+    disposeCalled = true;
+    _readerBloc.RemoveSetState(widget.chapter?.Id ?? '');
+    super.dispose();
   }
 
   void doSetState(String? a, double? fontSize){
     if(!disposeCalled){
-
       var state = () {
         key = new GlobalKey();
         writing = a ?? writing;
@@ -47,14 +56,6 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
     }
   }
 
-  @override
-  void dispose() {
-    disposeCalled = true;
-    _readerBloc.RemoveSetState(widget.chapter?.Id ?? '');
-    super.dispose();
-  }
-
-
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
       el.markNeedsBuild();
@@ -62,25 +63,57 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
     }
     (context as Element).visitChildren(rebuild);
   }
-/*
-  CustomRenderMatcher birdMatcher() => (context) {
-    return context.tree.element?.localName == 'bird';
-  };
-
-  CustomRenderMatcher flutterMatcher() => (context) {
-    return context.tree.element?.localName == 'flutter';
-  };
-
-  CustomRenderMatcher modifyFontSize() => (context) {
-    return context.style.fontSize != null && context.style.fontSize?.size != null && context.style.fontSize?.size != selectedFontSize;
-  };*/
-
-  double GetFontSize(double existingFontSize){
-    return existingFontSize + ((_readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE)  - FontSizes.DEFAULT_FONT_SIZE);
-  }
 
   @override
   Widget build(BuildContext context) {
+    return getGestureContainer(context);
+  }
+
+  Widget getHtml(BuildContext context){
+    return Html(
+      key: key,
+      data: writing,
+
+      customRender: {
+        "span": (RenderContext context, Widget child) {
+          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          print('selectedFontSize = ' + selectedFontSize.toString() + ', context.style.fontSize = ' + (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE).toString() + ', fs = ' + fs.toString());
+          if(context.style.fontSize != null){
+            context.style.fontSize = FontSize(fs);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+          else{
+            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+        },
+        "p": (RenderContext context, Widget child) {
+          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          if(context.style.fontSize != null){
+            context.style.fontSize = FontSize(fs);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+          else{
+            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+        },
+        "em": (RenderContext context, Widget child) {
+          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          if(context.style.fontSize != null){
+            context.style.fontSize = FontSize(fs);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+          else{
+            context.style.fontSize = FontSize(selectedFontSize);
+            context.style.lineHeight = LineHeight(1.5);
+          }
+        }
+      },
+    );
+  }
+
+  Widget getGestureContainer(BuildContext context){
     return Padding(
       padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
       child: Container(
@@ -99,26 +132,29 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children:[
-                      Text(
-                        widget.chapter?.Title ?? '',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: selectedFontSize + 5
-                        ),
+                      Flexible(
+                          child: Text(
+                            widget.chapter?.Title ?? '',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
+                            ),
+                          )
                       )
                     ]
                 ),
               ),
-              Html(
-                key: key,
-                data: writing,
-                style: {
-                  "span": Style(
-                    fontSize: FontSize(selectedFontSize),
-                  )
-                },
-               /* customTextStyle: (dom.Node node, TextStyle baseStyle) {
+              getHtml(context)
+            ],
+          )
+      ),
+    );
+  }
+}
+
+
+/* customTextStyle: (dom.Node node, TextStyle baseStyle) {
                   if (node is dom.Element) {
                     switch (node.localName) {
                       case "p":
@@ -127,13 +163,12 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                   }
                   return baseStyle;
                 },*/
-
+/*
                 customRender: {
 
                   "span": (RenderContext context, Widget child) {
                     return child;
                   },
-                  /*
                   tagMatcher("span"): CustomRender.inlineSpan(inlineSpan: (context, buildChildren) =>
                     TextSpan(
                       style: TextStyle(
@@ -143,6 +178,7 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                         GetFontSize(_readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE))
                     )
                   ),
+
                   tagMatcher("p"): CustomRender.inlineSpan(inlineSpan: (context, buildChildren) =>
                       TextSpan(
                           style: TextStyle(
@@ -153,8 +189,8 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                           ),
                       )
                   )
-                  */
-                   /* style: (context.tree.element!.attributes['horizontal'] != null)
+*/
+/* style: (context.tree.element!.attributes['horizontal'] != null)
                         ? FlutterLogoStyle.horizontal
                         : FlutterLogoStyle.markOnly,
                     textColor: context.style.color!,
@@ -173,13 +209,3 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                     textColor: context.style.color!,
                     size: context.style.fontSize!.size! * 5,
                   )),*/
-                },
-              ),
-            ],
-          )
-      ),
-    );
-  }
-}
-
-

@@ -10,6 +10,8 @@ import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/int_extensions.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
 
@@ -80,7 +82,7 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitWidth,
-          image: Image.network(widget.book.FrontCoverImageUrl).image,
+          image: Image.network(widget.book.FrontCoverImageUrl.guarantee()).image,
         ),
         boxShadow: [
           BoxShadow(
@@ -113,10 +115,10 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
 
   Widget getSeriesImage(Book book){
     List<Widget> containers = List.empty(growable: true);
-    for(var i = 0; i < book.BookNumberInSeries-1; i++){
+    for(var i = 0; i < book.BookNumberInSeries.guarantee()-1; i++){
       containers.add(getBookContainer(book, i));
     }
-    for(var i = book.BookCountInSeries-1; i > book.BookNumberInSeries - 1; i--){
+    for(var i = book.BookCountInSeries.guarantee()-1; i > book.BookNumberInSeries.guarantee() - 1; i--){
       containers.add(getBookContainer(book, i));
     }
 
@@ -125,14 +127,14 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
         for(var p in containers)
           p,
         Padding(
-          padding: EdgeInsets.fromLTRB(14.0*(book.BookNumberInSeries-1), 0, 0, 0),
+          padding: EdgeInsets.fromLTRB(14.0*(book.BookNumberInSeries.guarantee()-1), 0, 0, 0),
           child: Container(
             width: 125,
             height: 188,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.fitWidth,
-                image: Image.network(widget.book.FrontCoverImageUrl).image,
+                image: Image.network(widget.book.FrontCoverImageUrl.guarantee()).image,
               ),
               boxShadow: [
                 BoxShadow(
@@ -169,14 +171,14 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
   Widget getBookContainer(Book book, int index){
     return Padding(
       padding:
-        index > (book.BookNumberInSeries-1) ?
-          EdgeInsets.fromLTRB(14.0*index, (10.0 * (index - (book.BookNumberInSeries-1)))/2, 0, 0) :
-          EdgeInsets.fromLTRB(14.0*index, (10.0 * ((book.BookNumberInSeries-1) - index))/2, 0, 0),
+        index > (book.BookNumberInSeries.guarantee()-1) ?
+          EdgeInsets.fromLTRB(14.0*index, (10.0 * (index - (book.BookNumberInSeries.guarantee()-1)))/2, 0, 0) :
+          EdgeInsets.fromLTRB(14.0*index, (10.0 * ((book.BookNumberInSeries.guarantee()-1) - index))/2, 0, 0),
       child: Container(
           width: 125,
-          height: index > (book.BookNumberInSeries-1) ?
-                188 - (10.0 * (index - (book.BookNumberInSeries-1))):
-                188 - (10.0 * ((book.BookNumberInSeries-1) - index)),
+          height: index > (book.BookNumberInSeries.guarantee()-1) ?
+                188 - (10.0 * (index - (book.BookNumberInSeries.guarantee()-1))):
+                188 - (10.0 * ((book.BookNumberInSeries.guarantee()-1) - index)),
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.fitWidth,
@@ -209,7 +211,7 @@ class _StandardPeekState extends State<StandardPeek> with Peekable {
 
     double offset = 0;
     if(widget.book.BookNumberInSeries != null){
-      offset = widget.book.BookNumberInSeries > 0 ? 14 * (widget.book.BookNumberInSeries -1) : 0;
+      offset = widget.book.BookNumberInSeries.guarantee() > 0 ? 14 * (widget.book.BookNumberInSeries.guarantee() -1) : 0;
     }
 
     return Padding(

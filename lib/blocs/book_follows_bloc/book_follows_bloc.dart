@@ -6,6 +6,7 @@ import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowRequest.dart';
 import 'package:mobi_reads/entities/books/ToggleBookFollowResponse.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
 
 class BookFollowsBloc extends Bloc<BookFollowsEvent, BookFollowsState> {
@@ -45,7 +46,7 @@ class BookFollowsBloc extends Bloc<BookFollowsEvent, BookFollowsState> {
     }
 
     // Sort by Title
-    books.sort((e, a) => e.Title.compareTo(a.Title));
+    books.sort((e, a) => e.Title.guarantee().compareTo(a.Title.guarantee()));
 
     emit(state.CopyWith(books: books));
   }

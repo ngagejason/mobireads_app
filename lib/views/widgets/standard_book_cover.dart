@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 
 class StandardBook extends StatefulWidget {
   const StandardBook(this.book) : super();
@@ -29,7 +30,7 @@ class _StandardBookState extends State<StandardBook> {
   }
 
   Widget BookUI(BuildContext context){
-    if(widget.book.FrontCoverImageUrl.length == 0){
+    if(widget.book.FrontCoverImageUrl.guarantee().length == 0){
 
     }
 
@@ -43,7 +44,7 @@ class _StandardBookState extends State<StandardBook> {
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.fitWidth,
-            image: Image.network(widget.book.FrontCoverImageUrl).image,
+            image: Image.network(widget.book.FrontCoverImageUrl.guarantee()).image,
           ),
           boxShadow: [
             BoxShadow(

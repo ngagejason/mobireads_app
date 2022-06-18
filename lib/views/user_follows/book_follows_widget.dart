@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_icon_button.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
@@ -82,7 +83,7 @@ class _BookFollowsWidgetState
         child: Padding(
             padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
             child: Image.network(
-              book.FrontCoverImageUrl,
+              book.FrontCoverImageUrl.guarantee(),
               width: 125,
               height: 188,
               fit: BoxFit.cover,

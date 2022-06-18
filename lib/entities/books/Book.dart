@@ -1,27 +1,27 @@
 // ignore_for_file: non_constant_identifier_names, unnecessary_null_comparison
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 
 import '../preferences/Preference.dart';
 part 'Book.g.dart';
 
 @JsonSerializable()
 class Book {
-
   @JsonKey(name: 'id')
   String Id;
   @JsonKey(name: 'title')
-  String Title;
+  String? Title = '';
   @JsonKey(name: 'subtitle')
-  String Subtitle;
+  String? Subtitle = '';
   @JsonKey(name: 'frontCoverImageUrl')
-  String FrontCoverImageUrl;
+  String? FrontCoverImageUrl = '';
   @JsonKey(name: 'frontCoverImageMimeType')
-  String FrontCoverImageMimeType;
+  String? FrontCoverImageMimeType = '';
   @JsonKey(name: 'backCoverImageUrl')
-  String? BackCoverImageUrl;
+  String? BackCoverImageUrl = '';
   @JsonKey(name: 'backCoverImageMimeType')
-  String BackCoverImageMimeType;
+  String? BackCoverImageMimeType = '';
   @JsonKey(name: 'authorFirstName')
   String? AuthorFirstName = '';
   @JsonKey(name: 'authorMiddleName')
@@ -39,23 +39,24 @@ class Book {
   @JsonKey(name: 'chapterCount')
   int ChapterCount = 0;
   @JsonKey(name: 'followCount')
-  int FollowCount = 0;
+  int? FollowCount = 0;
   @JsonKey(name: 'seriesId')
   String? SeriesId = '';
   @JsonKey(name: 'seriesTitle')
-  String SeriesTitle = '';
+  String? SeriesTitle = '';
   @JsonKey(name: 'seriesSubtitle')
-  String SeriesSubtitle = '';
+  String? SeriesSubtitle = '';
   @JsonKey(name: 'bookCountInSeries')
-  int BookCountInSeries = 0;
+  int? BookCountInSeries = 0;
   @JsonKey(name: 'bookNumberInSeries')
-  int BookNumberInSeries = 0;
+  int? BookNumberInSeries = 0;
   @JsonKey(name: 'seriesFrontCoverUrls')
   List<String> SeriesFrontCoverUrls = [];
   @JsonKey(name: 'preferences')
   List<Preference> Preferences = [];
 
-  Book(this.Id,
+  Book(
+      this.Id,
       this.Title,
       this.Subtitle,
       this.FrontCoverImageUrl,
@@ -77,34 +78,33 @@ class Book {
       this.BookCountInSeries,
       this.BookNumberInSeries,
       this.SeriesFrontCoverUrls,
-      this.Preferences)
-  {
-    this.AuthorFirstName = this.AuthorFirstName ?? '';
-    this.AuthorMiddleName = this.AuthorMiddleName ?? '';
-    this.AuthorLastName = this.AuthorLastName ?? '';
-    this.Summary = this.Summary ?? '';
-  }
+      this.Preferences);
 
   String AuthorName() {
-    if(AuthorMiddleName == null || AuthorMiddleName!.isEmpty){
-      return (AuthorFirstName ?? '') + ' ' + (AuthorLastName ?? '');
+    if (AuthorMiddleName == null || AuthorMiddleName!.isEmpty) {
+      return AuthorFirstName.guarantee() + ' ' + AuthorLastName.guarantee();
     }
 
-    return (AuthorFirstName ?? '') + ' ' + (AuthorMiddleName ?? '') + ' ' + (AuthorLastName ?? '');
+    return (AuthorFirstName ?? '') +
+        ' ' +
+        AuthorMiddleName! +
+        ' ' +
+        (AuthorLastName ?? '');
   }
 
-  bool ContainsText(String text){
-    if(text.trim().length == 0){
+  bool ContainsText(String text) {
+    if (text.trim().length == 0) {
       return true;
     }
-    return
-      Title.toUpperCase().contains(text) ||
-          (Subtitle != null && Subtitle.toUpperCase().contains(text)) ||
-          (SeriesTitle != null && SeriesTitle.toUpperCase().contains(text)) ||
-          (SeriesSubtitle != null && SeriesSubtitle.toUpperCase().contains(text));
+    return Title.guarantee().contains(text) ||
+        (Subtitle != null &&
+            Subtitle.guarantee().toUpperCase().contains(text)) ||
+        (SeriesTitle != null &&
+            SeriesTitle.guarantee().toUpperCase().contains(text)) ||
+        (SeriesSubtitle != null &&
+            SeriesSubtitle.guarantee().toUpperCase().contains(text));
   }
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
   Map<String, dynamic> toJson() => _$BookToJson(this);
-
 }

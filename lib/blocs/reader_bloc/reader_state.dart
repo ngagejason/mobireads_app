@@ -5,8 +5,6 @@ import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
 import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'reader_state.g.dart';
-
 enum ReaderStatus {
   Constructed,
   ChaptersLoading,
@@ -22,8 +20,6 @@ class ReaderState extends Equatable {
   List<OutlineChapter> allChapters = List.empty(growable: true);
   final Book? book;
   bool reachedEnd = false;
-  double scrollOffset = 0;
-  double? fontSize = FontSizes.DEFAULT_FONT_SIZE;
 
   ReaderState ({ this.status = ReaderStatus.Constructed, this.book });
 
@@ -31,8 +27,7 @@ class ReaderState extends Equatable {
     ReaderStatus? status,
     Book? book, List<OutlineChapter>?
     updateChapters,
-    double? scrollOffset,
-    double? fontSize }) {
+    double? scrollOffset }) {
 
     // New list after all updates
     List<OutlineChapter>? newChapters = List.empty(growable: true);
@@ -67,8 +62,6 @@ class ReaderState extends Equatable {
     );
 
     state.reachedEnd = book?.ChapterCount == newChapters.length;
-    state.fontSize = fontSize ?? FontSizes.DEFAULT_FONT_SIZE;
-    state.scrollOffset = scrollOffset ?? this.scrollOffset;
     state.allChapters = newChapters;
     return state;
   }
@@ -85,7 +78,4 @@ class ReaderState extends Equatable {
 
   @override
   List<Object?> get props => [status, allChapters];
-
-  factory ReaderState.fromJson(Map<String, dynamic> json) => _$ReaderStateFromJson(json);
-  Map<String, dynamic> toJson() => _$ReaderStateToJson(this);
 }

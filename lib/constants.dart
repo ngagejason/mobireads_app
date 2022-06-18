@@ -38,4 +38,7 @@ class PubTypes {
 
 class FontSizes {
   static const double DEFAULT_FONT_SIZE = 14;
+  static const double DEFAULT_TITLE_SIZE = 18;
+  static const double MIN_FONT_SIZE = 8;
+  static const double MAX_FONT_SIZE = 40;
 }

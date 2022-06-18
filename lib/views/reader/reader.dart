@@ -7,6 +7,7 @@ import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
+import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
@@ -30,6 +31,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   late AppBloc _appBloc;
   bool loading = false, allLoaded = false;
   bool needsScroll = true;
+  double scrollOffset = 0;
 
   @override initState(){
     super.initState();
@@ -37,28 +39,39 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     _readerBloc = context.read<ReaderBloc>();
     _scrollController.addListener(_onScroll);
     context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
+    _readerBloc.setScrollOffset = this.setScrollOffset;
+
   }
+
+  void setScrollOffset(double scrollOffset){
+    this.scrollOffset = scrollOffset;
+    Timer(const Duration(milliseconds: 500), () async {
+      _scrollController.animateTo(this.scrollOffset, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
 
-    if(needsScroll){
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _scrollController.animateTo(_readerBloc.state.scrollOffset, duration: Duration(milliseconds: 50), curve: Curves.ease);
-        needsScroll = false;
-      });
-    }
-
-    return BlocListener<ReaderBloc, ReaderState>(
-        listener: (context, state) {
-          if (state.status == ReaderStatus.ChaptersLoaded) {
-            _readerBloc.add(Loaded());
-            Timer(const Duration(milliseconds: 500), () async {
-              _scrollController.animateTo(_readerBloc.state.scrollOffset, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-            });
+    return GestureDetector(
+        onScaleUpdate: (details) {
+          // print('onScaleUpdate ' + details.scale.toString() + ", " + _readerBloc.currentFontSize.toString() + ", " + (details.scale * _readerBloc.currentFontSize).toString());
+          if(details.scale > 1){
+            _readerBloc.add(FontSizeChanged(1.05 * _readerBloc.currentFontSize));
+          }
+          else{
+            _readerBloc.add(FontSizeChanged(.95 * _readerBloc.currentFontSize));
           }
         },
-        child: userHomeUI(context)
+        child: BlocListener<ReaderBloc, ReaderState>(
+            listener: (context, state) {
+              if (state.status == ReaderStatus.ChaptersLoaded) {
+                _readerBloc.add(Loaded());
+              }
+            },
+            child: userHomeUI(context)
+        )
     );
   }
 
@@ -70,6 +83,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
 
   Widget userHomeUI(BuildContext context) {
     double _appBarHeight = 50;
+
 
     return BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
       return CustomScrollView(
@@ -206,9 +220,4 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
           ),
     );
   }
-
- /* void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: DefaultError(message: message)));
-  }*/
-
 }

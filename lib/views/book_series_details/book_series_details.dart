@@ -9,6 +9,8 @@ import 'package:mobi_reads/blocs/book_series_details_bloc/book_series_details_ev
 import 'package:mobi_reads/blocs/book_series_details_bloc/book_series_details_state.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/int_extensions.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
@@ -32,7 +34,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
   void initState() {
     super.initState();
     context.read<BookSeriesDetailsBloc>().add(InitializeBookSeriesDetails(widget.book));
-    currentPos = widget.book.BookNumberInSeries - 1; // 0 indexed
+    currentPos = widget.book.BookNumberInSeries.guarantee() - 1; // 0 indexed
   }
 
   @override
@@ -40,7 +42,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
     return BlocListener<BookSeriesDetailsBloc, BookSeriesDetailsState>(
       listener: (context, state) {
         if (state.Status == BookSeriesDetailsStatus.BookSeriesDetailsLoaded) {
-          currentBook = state.Books[widget.book.BookNumberInSeries-1];
+          currentBook = state.Books[widget.book.BookNumberInSeries.guarantee()-1];
           context.read<BookSeriesDetailsBloc>().add(SeriesLoaded());
         }
       },
@@ -110,7 +112,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
       options: CarouselOptions(
           height: 300.0,
           enlargeCenterPage: true,
-          initialPage: widget.book.BookNumberInSeries - 1,
+          initialPage: widget.book.BookNumberInSeries.guarantee() - 1,
           onPageChanged: (index, reason) {
             BookSeriesDetailsBloc bloc = context.read<BookSeriesDetailsBloc>();
             setState(() {
@@ -123,7 +125,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
       items: state.Books.map((book) {
         return Builder(
           builder: (BuildContext context) {
-            return getCover(book.FrontCoverImageUrl);
+            return getCover(book.FrontCoverImageUrl.guarantee());
           },
         );
       }).toList(),
@@ -180,7 +182,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        currentBook.SeriesTitle,
+                        currentBook.SeriesTitle.guarantee(),
                         style: TextStyle(
                           color: FlutterFlowTheme.of(context).secondaryColor,
                           fontSize: 16,
@@ -189,7 +191,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        currentBook.SeriesSubtitle,
+                        currentBook.SeriesSubtitle.guarantee(),
                         style: TextStyle(
                             color: FlutterFlowTheme.of(context).secondaryColor,
                             fontSize: 14,
@@ -282,7 +284,7 @@ class _BookSeriesDetailsWidgetState extends State<BookSeriesDetailsWidget> {
                       )
                   ),
                   Text(
-                    currentBook.FollowCount > 0 ? currentBook.FollowCount.toString() : "0",
+                    currentBook.FollowCount.guarantee() > 0 ? currentBook.FollowCount.toString() : "0",
                     style: style,
                   )
                 ]

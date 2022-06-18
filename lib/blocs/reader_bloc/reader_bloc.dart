@@ -1,9 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
+import 'package:mobi_reads/classes/UserFileStorage.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/classes/UserSecureStorage.dart';
+import 'package:mobi_reads/constants.dart';
+import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
 import 'package:mobi_reads/entities/outline_chapters/OutlineChaptersResponse.dart';
 import 'package:mobi_reads/repositories/outline_repository.dart';
 import 'reader_event.dart';
@@ -12,8 +17,10 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
 
   OutlineRepository outlineRepository;
   Map<String, Function(String? writing, double? fontSize)> funcs = Map();
-  Timer? _debounceReader;
+  Function(double scrollOffset)? setScrollOffset;
   Timer? _debounceScroll;
+  Timer? _debounceFont;
+  double currentFontSize = -1;
 
   ReaderBloc(this.outlineRepository) : super(ReaderState()){
     on<InitializeReader>((event, emit) async => await handleInitializeEvent(event, emit));
@@ -41,26 +48,43 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   }
   
   Future handleInitializeEvent(InitializeReader event, Emitter<ReaderState> emit) async {
+
+    currentFontSize = await UserKvpStorage.getFontSize(event.book.Id);
     emit(state.CopyWith(status: ReaderStatus.ChaptersLoading, book: event.book));
     if(event.changeBooks){
       emit(state.ClearChapters());
     }
 
     if(event.book.Id.length > 0){
-      ReaderState? memState = await UserSecureStorage.getReaderState(event.book.Id);
-      if(memState == null){
-        OutlineChaptersResponse chapters = await outlineRepository.getChapters(event.book.Id, 0, 5);
-        memState = state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded, book: event.book);
-        emit(memState);
-        saveReaderState();
+
+      List<OutlineChapter> chapters = await UserFileStorage.getChapters(event.book.Id);
+      int t = chapters.length;
+      if(chapters.length == 0){
+        OutlineChaptersResponse chapters = await outlineRepository.getChapters(event.book.Id, 0, 1000);
+        emit(state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded, book: event.book));
+        await UserFileStorage.saveChapters(event.book.Id, chapters.Chapters);
       }
       else{
-        double offset = await UserSecureStorage.getScrollOffset(event.book.Id);
-        ReaderState newState = state.CopyWith(updateChapters: memState.allChapters, scrollOffset: offset, fontSize: memState.fontSize);
-        OutlineChaptersResponse chapters = await outlineRepository.getChapters(event.book.Id, 0, 1);
-        newState = newState.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded, book: event.book);
+        // Load offset
+        double offset = await UserKvpStorage.getScrollOffset(event.book.Id);
+        double fontSize = await UserKvpStorage.getFontSize(event.book.Id);
+
+        // Save existing chapters
+        ReaderState newState = state.CopyWith(updateChapters: chapters);
+
+        // Check for new chapters
+        OutlineChaptersResponse newChapters = await outlineRepository.getChapters(event.book.Id, 0, 1000);
+
+        // if new chapters exist, add them to the new state
+        if(newChapters.Chapters.length > 0){
+          newState = newState.CopyWith(updateChapters: newChapters.Chapters, status: ReaderStatus.ChaptersLoaded, book: event.book);
+          await UserFileStorage.saveChapters(event.book.Id, newChapters.Chapters);
+        }
+
         emit(newState);
-        saveReaderState();
+
+        // Update UI elements
+        setScrollOffset!(offset);
       }
     }
     else{
@@ -71,7 +95,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   Future handleRefreshEvent(Refresh event, Emitter<ReaderState> emit) async {
 
     if(state.book != null){
-      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 2);
+      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 5);
       if(chapters.Chapters.length > 0){
         ReaderState newState = state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded);
         emit(newState);
@@ -81,7 +105,8 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
             f!(e.Writing, null);
           }
         });
-        saveReaderState();
+        
+        await UserFileStorage.saveChapters(state.book!.Id, chapters.Chapters);
       }
     }
   }
@@ -95,45 +120,43 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
       emit(state.CopyWith(status: ReaderStatus.ChaptersLoading));
       OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', state.allChapters.length, 5);
       ReaderState newState = state.CopyWith(status: ReaderStatus.Loaded, updateChapters:  chapters.Chapters);
+      await UserFileStorage.saveChapters(state.book?.Id ?? '', chapters.Chapters);
       emit(newState);
-      saveReaderState();
     }
   }
 
   Future handleScrollChanged(ScrollChanged event, Emitter<ReaderState> emit) async {
-    state.scrollOffset = event.offset;
-    saveScroll();
+    saveScroll(event.offset);
   }
 
   Future handleFontSizeChanged(FontSizeChanged event, Emitter<ReaderState> emit) async {
-    emit(state.CopyWith(status: ReaderStatus.ChaptersLoading, fontSize: event.fontSize));
+    currentFontSize = event.fontSize;
     funcs.forEach((key, value) {
       value(null, event.fontSize);
     });
-    ReaderState newState = state.CopyWith(status: ReaderStatus.Loaded);
-    saveReaderState();
-    emit(newState);
+    saveFontSize(event.fontSize);
   }
 
-  void saveReaderState() {
-    if (_debounceReader?.isActive ?? false){
-      _debounceReader?.cancel();
-    }
-    _debounceReader = Timer(const Duration(milliseconds: 1000), () async {
-      if(state.book != null){
-        await UserSecureStorage.storeReaderState(state.book!.Id, state);
-      }
-    });
-  }
-
-  void saveScroll() {
+  void saveScroll(double scrollOffset) async {
     if (_debounceScroll?.isActive ?? false){
       _debounceScroll?.cancel();
     }
     _debounceScroll = Timer(const Duration(milliseconds: 500), () async {
       if(state.book != null){
-        await UserSecureStorage.storeScrollOffset(state.book!.Id, state.scrollOffset);
+        await UserKvpStorage.setScrollOffset(state.book!.Id, scrollOffset);
       }
     });
   }
+
+  void saveFontSize(double fontSize) async {
+    if (_debounceFont?.isActive ?? false){
+      _debounceFont?.cancel();
+    }
+    _debounceFont = Timer(const Duration(milliseconds: 500), () async {
+      if(state.book != null){
+        await UserKvpStorage.setFontSize(state.book!.Id, fontSize);
+      }
+    });
+  }
+
 }

@@ -9,8 +9,8 @@ part of 'OutlineChapter.dart';
 OutlineChapter _$OutlineChapterFromJson(Map<String, dynamic> json) =>
     OutlineChapter(
       json['id'] as String,
-      json['title'] as String,
-      json['writing'] as String,
+      json['title'] as String?,
+      json['writing'] as String?,
       json['chapterNumber'] as int,
       json['deletedDateTimeUTC'] == null
           ? null

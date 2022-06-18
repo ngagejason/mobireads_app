@@ -8,6 +8,8 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart';
 import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
+import 'package:mobi_reads/extension_methods/int_extensions.dart';
+import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
@@ -66,7 +68,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
         //3
         SliverList(
           delegate: SliverChildListDelegate([
-            getCover(context, widget.book.FrontCoverImageUrl),
+            getCover(context, widget.book.FrontCoverImageUrl.guarantee()),
             getAuthor(context),
             getSeries(context),
             getMetadata(context),
@@ -130,7 +132,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        widget.book.SeriesTitle + ': ' + widget.book.SeriesSubtitle,
+                        widget.book.SeriesTitle.guarantee() + ': ' + widget.book.SeriesSubtitle.guarantee(),
                         style: TextStyle(
                           color: FlutterFlowTheme.of(context).secondaryColor,
                           fontSize: 16,
@@ -225,7 +227,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                       )
                   ),
                   Text(
-                    widget.book.FollowCount > 0 ? widget.book.FollowCount.toString() : "0",
+                    widget.book.FollowCount.guarantee() > 0 ? widget.book.FollowCount.toString() : "0",
                     style: style,
                   )
                 ]

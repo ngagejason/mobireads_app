@@ -19,17 +19,18 @@ class ReaderSettingsSnackbar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+
+          /*Text(
             'Font Size',
             textAlign: TextAlign.center,
             style: FlutterFlowTheme.of(context).bodyText1.override(
               fontFamily: 'Poppins',
               color: FlutterFlowTheme.of(context).secondaryColor,
-              fontSize: readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE,
+              fontSize: FontSizes.DEFAULT_FONT_SIZE,
             ),
           ),
           Slider(
-            value: readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE,
+            value: FontSizes.DEFAULT_FONT_SIZE,
             min: 10,
             max: 30,
             divisions: 10,
@@ -53,7 +54,7 @@ class ReaderSettingsSnackbar extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-          ),
+          )*/
         ],
       );
     });
