@@ -55,6 +55,24 @@ class BookRepository {
     throw Exception('Failed to Load Data');
   }
 
+  Future<TrendingBooksResponse> getMyBooks() async {
+    var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.MY_BOOKS);
+    if (response.statusCode == 200) {
+      try{
+        RequestResult<TrendingBooksResponse> result =  RequestResult<TrendingBooksResponse>.fromJson(jsonDecode(response.body), (data) => TrendingBooksResponse.fromJson(data as Map<String, dynamic>));
+        if(result.Success)
+          return result.Data ?? DefaultEntities.ErrorTrendingBooksResponse;
+        else
+          throw Exception(result.Message);
+      }
+      on Exception catch (e) {
+        print(e.toString());
+      }
+    }
+
+    throw Exception('Failed to Load Data');
+  }
+
   Future<SeriesDetailsResponse> getSeriesDetails(String? seriesId) async {
     var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.SERIES_DETAILS, args: {'seriesId': seriesId.toString()});
     if (response.statusCode == 200) {

@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/my_books_list_bloc/my_books_list_bloc.dart';
+import 'package:mobi_reads/blocs/my_books_list_bloc/my_books_list_state.dart';
+import 'package:mobi_reads/blocs/my_books_list_bloc/my_books_list_event.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
-import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
-import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_state.dart';
-import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_event.dart';
 import 'package:mobi_reads/entities/preferences/Preference.dart';
 import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
-import 'package:mobi_reads/views/widgets/standard_peek.dart';
+import 'package:mobi_reads/views/widgets/peek.dart';
 
-class StandardPeekList extends StatefulWidget {
-  const StandardPeekList(Key key, this.code, this.title, this.bottomNavbarKey) : super(key: key);
+class MyBooksList extends StatefulWidget {
+  const MyBooksList(Key key, this.bottomNavbarKey) : super(key: key);
 
-  final int code;
-  final String title;
   final GlobalKey bottomNavbarKey;
 
   @override
-  StandardPeekState createState() => StandardPeekState(code, title);
+  _MyBooksList createState() => _MyBooksList();
 }
 
-class StandardPeekState extends State<StandardPeekList> {
+class _MyBooksList extends State<MyBooksList> {
 
-  StandardPeekState(this.code, this.title);
+  _MyBooksList();
 
-  final int code;
-  final String title;
   late BuildContext localContext;
 
   @override
@@ -36,16 +32,16 @@ class StandardPeekState extends State<StandardPeekList> {
   }
 
   doRefresh(){
-    localContext.read<TrendingBooksListBloc>().add(Refresh(this.code, this.title));
+    localContext.read<MyBooksListBloc>().add(Refresh());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
-      return BlocListener<TrendingBooksListBloc, TrendingBooksListState>(
+    return BlocBuilder<MyBooksListBloc, MyBooksListState>(builder: (context, state) {
+      return BlocListener<MyBooksListBloc, MyBooksListState>(
           listener: (context, state) {
-            if(state.Status == TrendingBooksListStatus.PeeksLoaded){
-              context.read<TrendingBooksListBloc>().add(Loaded());
+            if(state.Status == MyBooksListStatus.MyBooksLoaded){
+              context.read<MyBooksListBloc>().add(Loaded());
             }
           },
           child: PreferencesBlocWrapper(context)
@@ -61,13 +57,13 @@ class StandardPeekState extends State<StandardPeekList> {
 
   Widget PeekUI(BuildContext context){
 
-    TrendingBooksListState state = context.read<TrendingBooksListBloc>().state;
-    if(state.Status == TrendingBooksListStatus.Constructed){
-      context.read<TrendingBooksListBloc>().add(Initialize(this.code, this.title));
+    MyBooksListState state = context.read<MyBooksListBloc>().state;
+    if(state.Status == MyBooksListStatus.Constructed){
+      context.read<MyBooksListBloc>().add(Initialize());
     }
 
     PreferencesState preferencesState = context.read<PreferencesBloc>().state;
-    Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == this.code);
+    Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == 1400);
     if(chip != null && !chip.IsSelected){
       return Container();
     }
@@ -81,7 +77,7 @@ class StandardPeekState extends State<StandardPeekList> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Text(
-                this.title,
+                'My Books',
                 style: FlutterFlowTheme.of(context).subtitle2.override(
                   fontFamily: 'Lexend Deca',
                   color: Colors.white,
@@ -100,9 +96,9 @@ class StandardPeekState extends State<StandardPeekList> {
     );
   }
 
-  Widget getBooks(BuildContext context, TrendingBooksListState state){
+  Widget getBooks(BuildContext context, MyBooksListState state){
 
-    if(state.Status == TrendingBooksListStatus.PeeksLoading){
+    if(state.Status == MyBooksListStatus.MyBooksLoading){
       return loading(context);
     }
 
@@ -125,7 +121,7 @@ class StandardPeekState extends State<StandardPeekList> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        children: state.Books.map((e) => StandardPeek(e, widget.bottomNavbarKey)).toList(growable: false)
+        children: state.Books.map((e) => Peek(e, widget.bottomNavbarKey)).toList(growable: false)
       ),
     );
   }

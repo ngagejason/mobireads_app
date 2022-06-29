@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/my_books_list_bloc/my_books_list_bloc.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_state.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
+import 'package:mobi_reads/views/widgets/my_books_list.dart';
 import 'package:mobi_reads/views/widgets/peek_list.dart';
 
-class PeekListFactory extends StatefulWidget {
-  const PeekListFactory(this.key2, this.code, this.title, this.bottomNavbarKey) : super();
+class MyBooksListFactory extends StatefulWidget {
+  const MyBooksListFactory(this.key2, this.bottomNavbarKey) : super();
 
   final Key key2;
-  final int code;
-  final String title;
   final GlobalKey bottomNavbarKey;
 
   @override
-  _PeekListFactory createState() => _PeekListFactory(key2, code, title);
+  _MyBooksListFactory createState() => _MyBooksListFactory(key2);
 }
 
-class _PeekListFactory extends State<PeekListFactory> {
+class _MyBooksListFactory extends State<MyBooksListFactory> {
 
-  _PeekListFactory(this.key2, this.code, this.title);
+  _MyBooksListFactory(this.key2);
 
   final Key key2;
-  final int code;
-  final String title;
 
   @override
   void initState() {
@@ -32,8 +30,8 @@ class _PeekListFactory extends State<PeekListFactory> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TrendingBooksListBloc>(
-        create: (context) => TrendingBooksListBloc(
+    return BlocProvider<MyBooksListBloc>(
+        create: (context) => MyBooksListBloc(
             RepositoryProvider.of<BookRepository>(context)
         ),
         child: PeekUI(context)
@@ -43,7 +41,7 @@ class _PeekListFactory extends State<PeekListFactory> {
 
   Widget PeekUI(BuildContext context){
     return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
-      return PeekList(this.key2, this.code, this.title, widget.bottomNavbarKey);
+      return MyBooksList(this.key2, widget.bottomNavbarKey);
     });
   }
 }

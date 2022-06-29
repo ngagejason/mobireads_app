@@ -15,17 +15,17 @@ import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
 
-class StandardPeek extends StatefulWidget {
-  const StandardPeek(this.book, this.bottomNavbarKey) : super();
+class Peek extends StatefulWidget {
+  const Peek(this.book, this.bottomNavbarKey) : super();
 
   final Book book;
   final GlobalKey bottomNavbarKey;
 
   @override
-  _StandardPeekState createState() => _StandardPeekState();
+  _PeekState createState() => _PeekState();
 }
 
-class _StandardPeekState extends State<StandardPeek> with Peekable {
+class _PeekState extends State<Peek> with Peekable {
 
   @override
   void initState() {

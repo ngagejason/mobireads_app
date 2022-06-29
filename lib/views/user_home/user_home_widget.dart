@@ -16,7 +16,7 @@ import 'package:mobi_reads/views/user_home/search_area.dart';
 import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
 import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
 import 'package:mobi_reads/views/widgets/expandable_section.dart';
-import 'package:mobi_reads/views/widgets/standard_peek_list.dart';
+import 'package:mobi_reads/views/widgets/peek_list.dart';
 import 'package:mobi_reads/views/widgets/standard_preference_chip.dart';
 
 
@@ -37,7 +37,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   bool pubTypesOpen = false;
   bool categoriesOpen = false;
   List<PeekListFactory> peeks = List.empty(growable: true);
-  HashMap<String, GlobalKey<StandardPeekState>> peekKeys = new HashMap();
+  HashMap<String, GlobalKey<PeekState>> peekKeys = new HashMap();
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
               if (state.Status == PreferencesStatus.PreferencesLoaded) {
                 Iterable<Preference> chips = state.Preferences.where((element) => element.Context == "GENRE");
                 for(var chip in chips) {
-                    GlobalKey<StandardPeekState> key = new GlobalKey();
+                    GlobalKey<PeekState> key = new GlobalKey();
                     peekKeys[chip.Id] = key;
                     peeks.add(PeekListFactory(key, chip.Code, chip.Label, widget.bottomNavbarKey));
                 }
@@ -127,10 +127,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 5),
             child: SearchArea(),
           ),
+          // Preferences
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: getPrefsRow(),
           ),
+          //Peeks
           for(var p in peeks)
             p,
         ])
@@ -172,14 +174,24 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                   children: [
                     StandardPreferenceChip(
                         'Genres',
-                            (selected) { setState(() { genresOpen = !genresOpen; }); },
+                            (selected) { setState(() {
+                              genresOpen = !genresOpen;
+                              agesOpen = false;
+                              pubTypesOpen = false;
+                              categoriesOpen = false;
+                            }); },
                             () { return genresOpen; }
                     ),
                     Padding(
                         padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: StandardPreferenceChip(
                             'Ages',
-                                (selected) { setState(() { agesOpen = !agesOpen; }); },
+                                (selected) { setState(() {
+                                  agesOpen = !agesOpen;
+                                  genresOpen = false;
+                                  pubTypesOpen = false;
+                                  categoriesOpen = false;
+                                }); },
                                 () { return agesOpen; }
                         )
                     ),
@@ -187,7 +199,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                         padding: EdgeInsets.fromLTRB(5,0,0,0),
                         child: StandardPreferenceChip(
                             'Pub Types',
-                                (selected) { setState(() { pubTypesOpen = !pubTypesOpen; }); },
+                                (selected) { setState(() {
+                                  pubTypesOpen = !pubTypesOpen;
+                                  agesOpen = false;
+                                  genresOpen = false;
+                                  categoriesOpen = false;
+                                }); },
                                 () { return pubTypesOpen; }
                         )
                     ),
@@ -195,7 +212,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                         padding: EdgeInsets.fromLTRB(5,0,0,0),
                         child: StandardPreferenceChip(
                             'Category',
-                                (selected) { setState(() { categoriesOpen = !categoriesOpen; }); },
+                                (selected) { setState(() {
+                                  categoriesOpen = !categoriesOpen;
+                                  pubTypesOpen = false;
+                                  agesOpen = false;
+                                  genresOpen = false;
+                                }); },
                                 () { return categoriesOpen; }
                         )
                     )
