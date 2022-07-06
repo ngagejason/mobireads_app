@@ -30,6 +30,8 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = List.empty(growable: true);
   late ReaderBloc _readerBloc;
+  late AppBloc _appBloc;
+
   Timer? _timer;
   int _timerCounter = 0;
   bool stopTimer = false;
@@ -38,6 +40,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   void initState() {
     super.initState();
     _readerBloc = context.read<ReaderBloc>();
+    _appBloc = context.read<AppBloc>();
   }
 
   @override
@@ -101,7 +104,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                     Icons.menu_book_outlined,
                     color: _selectedIndex == 2 ? FlutterFlowTheme.of(context).secondaryColor : Colors.white,
                   ),
-                  label: '',
+                  label: ''
                 )
               ],
               currentIndex: _selectedIndex,
@@ -115,7 +118,63 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   }
 
   Widget NavDrawer(BuildContext context) {
-    var appBloc = context.read<AppBloc>();
+
+    List<ListTile> extraTiles = List.empty(growable: true);
+    if(_readerBloc.state.canEdit){
+
+      extraTiles.add(
+        new ListTile(
+          leading: Icon(Icons.update),
+          title: Text('Start Auto Refresh'),
+          enabled: _readerBloc.state.book != null,
+          onTap: () {
+            // Stop existing timer
+            if(_timer != null){
+              _timer!.cancel();
+            }
+
+            // Start new timer
+            Timer a = new Timer.periodic(Duration(seconds:5), (Timer timer) {
+
+              // cancel after 10 minutes
+              if(this._timerCounter > 120 || stopTimer){
+                this._timerCounter = 0;
+                _timer!.cancel();
+                stopTimer = false;
+                return;
+              }
+              else{
+                _readerBloc.add(Refresh());
+                this._timerCounter = _timerCounter + 1;
+              }
+            });
+
+            // Save Timer
+            setState(() {
+              _timer = a;
+            });
+
+            scaffoldKey.currentState!.openEndDrawer();
+          },
+        )
+      );
+
+      extraTiles.add(
+        new ListTile(
+          leading: Icon(Icons.cancel),
+          title: Text('Stop Auto-Refresh'),
+          enabled: _readerBloc.state.book != null,
+          onTap: () {
+            setState(() {
+              stopTimer = true;
+            });
+
+            scaffoldKey.currentState!.openEndDrawer();
+          },
+        )
+      );
+    }
+
     return Drawer(
         child: Container(
           color: FlutterFlowTheme
@@ -131,9 +190,9 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                         .of(context)
                         .secondaryColor,
                   ),
-                  child: getAvatar(appBloc.state.Username)
+                  child: getAvatar(_appBloc.state.Username)
               ),
-              ListTile(
+              /*ListTile(
                 leading: Icon(Icons.verified_user),
                 title: Text('Profile'),
                 onTap: () => {Navigator.of(context).pop()},
@@ -142,7 +201,7 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 leading: Icon(Icons.supervised_user_circle_sharp),
                 title: Text('User Accounts'),
                 onTap: () => {Navigator.pushNamed(context, "/userAccounts")},
-              ),
+              ),*/
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Logout'),
@@ -153,63 +212,19 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
               ),
               ListTile(
                 leading: Icon(Icons.ramen_dining),
-                title: Text('Clear Memory'),
+                title: Text('Clear All Data'),
                 onTap: () async { await ClearAll(context); },
               ),
-              ListTile(
+              new ListTile(
                 leading: Icon(Icons.refresh),
-                title: Text('Refresh Book Once'),
+                title: Text('Refresh Book'),
                 onTap: () {
                   context.read<ReaderBloc>().add(Refresh());
                   scaffoldKey.currentState!.openEndDrawer();
-                  },
-              ),
-              ListTile(
-                leading: Icon(Icons.update),
-                title: Text('Start Auto Refresh'),
-                enabled: _readerBloc.state.book != null,
-                onTap: () {
-                  // Stop existing timer
-                  if(_timer != null){
-                    _timer!.cancel();
-                  }
-
-                  // Start new timer
-                  Timer a = new Timer.periodic(Duration(seconds:5), (Timer timer) {
-
-                    // cancel after 10 minutes
-                    if(this._timerCounter > 120 || stopTimer){
-                      this._timerCounter = 0;
-                      _timer!.cancel();
-                      stopTimer = false;
-                      return;
-                    }
-                    else{
-                      _readerBloc.add(Refresh());
-                      this._timerCounter = _timerCounter + 1;
-                    }
-                  });
-
-                  // Save Timer
-                  setState(() {
-                    _timer = a;
-                  });
-
-                  scaffoldKey.currentState!.openEndDrawer();
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.cancel),
-                title: Text('Stop Auto-Refresh'),
-                enabled: _readerBloc.state.book != null,
-                onTap: () {
-                  setState(() {
-                    stopTimer = true;
-                  });
-
-                  scaffoldKey.currentState!.openEndDrawer();
-                },
-              ),
+              for(var p in extraTiles)
+                p,
             ],
           ),
         )

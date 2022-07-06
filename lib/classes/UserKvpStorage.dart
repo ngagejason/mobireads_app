@@ -33,6 +33,16 @@ class UserKvpStorage {
     prefs?.setDouble(bookId + "_fontSize", offset);
   }
 
+  static Future<String> getCurrentBookId() async {
+    await setupReader();
+    return prefs?.getString('CURRENT_BOOK_ID') ?? '';
+  }
+
+  static Future<void> setCurrentBookId(String bookId) async {
+    await setupReader();
+    prefs?.setString('CURRENT_BOOK_ID', bookId);
+  }
+
   static Future<void> clearAll() async {
     setupReader();
     if(prefs != null){

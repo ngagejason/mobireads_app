@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/my_books_list_bloc/my_books_list_bloc.dart';
@@ -63,7 +65,7 @@ class _MyBooksList extends State<MyBooksList> {
     }
 
     PreferencesState preferencesState = context.read<PreferencesBloc>().state;
-    Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == 1400);
+    Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == (int.tryParse(dotenv.env['MY_WRITING_PREFERENCE_CODE'] ?? '1400')));
     if(chip != null && !chip.IsSelected){
       return Container();
     }

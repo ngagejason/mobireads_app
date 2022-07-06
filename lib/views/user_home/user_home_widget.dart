@@ -9,6 +9,8 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_event.dart' as preferences_events;
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/entities/preferences/Preference.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/loading_page.dart';
@@ -35,15 +37,23 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
   bool genresOpen = false;
   bool agesOpen = false;
   bool pubTypesOpen = false;
-  bool categoriesOpen = false;
   List<PeekListFactory> peeks = List.empty(growable: true);
   HashMap<String, GlobalKey<PeekState>> peekKeys = new HashMap();
+  late PreferencesBloc preferencesBloc;
+  late BookFollowsBloc bookFollowsBloc;
+  late AppBloc appBloc;
+  late ReaderBloc readerBloc;
 
   @override
   void initState() {
     super.initState();
-    context.read<PreferencesBloc>().add(preferences_events.InitializePreferences());
-    context.read<BookFollowsBloc>().add(book_follows_events.InitializeBookFollows());
+    preferencesBloc = context.read<PreferencesBloc>();
+    bookFollowsBloc = context.read<BookFollowsBloc>();
+    appBloc = context.read<AppBloc>();
+    readerBloc = context.read<ReaderBloc>();
+
+    preferencesBloc.add(preferences_events.InitializePreferences());
+    bookFollowsBloc.add(book_follows_events.InitializeBookFollows());
   }
 
   @override
@@ -71,7 +81,6 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           },
         ),
       ],
-
       child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
         return BlocBuilder<BookFollowsBloc, BookFollowsState>(builder: (context, state) {
           if(context.read<PreferencesBloc>().state.Status == PreferencesStatus.Loaded){
@@ -96,7 +105,10 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           collapsedHeight: _appBarHeight,
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           expandedHeight: 80,
-          onStretchTrigger: () async => { print('stretched') },
+          stretchTriggerOffset: 100,
+          onStretchTrigger: () async => {
+            print('stretched')
+          },
           leading: Container(),
           actions: [
             Padding(
@@ -123,10 +135,10 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
         ),
         SliverList(delegate: SliverChildListDelegate([
           // Search
-          Padding(
+         /* Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 5),
             child: SearchArea(),
-          ),
+          ),*/
           // Preferences
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
@@ -141,138 +153,92 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
     );
   }
 
-  Widget getAvatar(String username) {
-    return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        child: Text(
-          username.toString(),
-          style: TextStyle(
-              fontSize: 30,
-              color: Colors.black54
-          ),
-        )
-    );
-  }
-
   Widget getPrefsRow(){
     List<Preference> genrePreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'GENRE').toList();
     List<Preference> ageGroupsPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'AGE_GROUP').toList();
     List<Preference> pubTypesPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'PUB_TYPE').toList();
-    List<Preference> categoryPreferences = context.read<PreferencesBloc>().state.Preferences.where((element) => element.Context == 'CATEGORY').toList();
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: Column(
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    StandardPreferenceChip(
-                        'Genres',
-                            (selected) { setState(() {
-                              genresOpen = !genresOpen;
-                              agesOpen = false;
-                              pubTypesOpen = false;
-                              categoriesOpen = false;
-                            }); },
-                            () { return genresOpen; }
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                        child: StandardPreferenceChip(
-                            'Ages',
-                                (selected) { setState(() {
-                                  agesOpen = !agesOpen;
-                                  genresOpen = false;
-                                  pubTypesOpen = false;
-                                  categoriesOpen = false;
-                                }); },
-                                () { return agesOpen; }
-                        )
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(5,0,0,0),
-                        child: StandardPreferenceChip(
-                            'Pub Types',
-                                (selected) { setState(() {
-                                  pubTypesOpen = !pubTypesOpen;
-                                  agesOpen = false;
-                                  genresOpen = false;
-                                  categoriesOpen = false;
-                                }); },
-                                () { return pubTypesOpen; }
-                        )
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(5,0,0,0),
-                        child: StandardPreferenceChip(
-                            'Category',
-                                (selected) { setState(() {
-                                  categoriesOpen = !categoriesOpen;
-                                  pubTypesOpen = false;
-                                  agesOpen = false;
-                                  genresOpen = false;
-                                }); },
-                                () { return categoriesOpen; }
-                        )
-                    )
-                  ]
-              ),
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  StandardPreferenceChip(
+                      'Categories',
+                          (selected) { setState(() {
+                        genresOpen = !genresOpen;
+                        agesOpen = false;
+                        pubTypesOpen = false;
+                      }); },
+                          () { return genresOpen; }
+                  ),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      child: StandardPreferenceChip(
+                          'Ages',
+                              (selected) { setState(() {
+                                agesOpen = !agesOpen;
+                                genresOpen = false;
+                                pubTypesOpen = false;
+                              }); },
+                              () { return agesOpen; }
+                      )
+                  ),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(5,0,0,0),
+                      child: StandardPreferenceChip(
+                          'Pub Types',
+                              (selected) { setState(() {
+                                pubTypesOpen = !pubTypesOpen;
+                                agesOpen = false;
+                                genresOpen = false;
+                              }); },
+                              () { return pubTypesOpen; }
+                      )
+                  )
+                ]
             ),
-            ExpandableSection(
-                expand: genresOpen,
-                child: PreferenceChipList(
-                  onChanged: (chipData) {
-                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
-                  },
-                  options: genrePreferences,
-                )
-            ),
-            ExpandableSection(
-                expand: agesOpen,
-                child: PreferenceChipList(
-                  onChanged: (chipData) {
-                    // Create a list of functions to call
-                    List<void Function()> refreshFunctions = List.empty(growable: true);
-                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
-                    // toggle the preference chip, and when done each function will be called
-                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
-                  },
-                  options: ageGroupsPreferences,
-                )
-            ),
-            ExpandableSection(
-                expand: pubTypesOpen,
-                child: PreferenceChipList(
-                  onChanged: (chipData) {
-                    // Create a list of functions to call
-                    List<void Function()> refreshFunctions = List.empty(growable: true);
-                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
-                    // toggle the preference chip, and when done each function will be called
-                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
-                  },
-                  options: pubTypesPreferences,
-                )
-            ),
-            ExpandableSection(
-                expand: categoriesOpen,
-                child: PreferenceChipList(
-                  onChanged: (chipData) {
-                    // Create a list of functions to call
-                    List<void Function()> refreshFunctions = List.empty(growable: true);
-                    peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
-                    // toggle the preference chip, and when done each function will be called
-                    context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
-                  },
-                  options: categoryPreferences,
-                )
-            )
-          ]
+          ),
+          ExpandableSection(
+              expand: genresOpen,
+              child: PreferenceChipList(
+                onChanged: (chipData) {
+                  context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
+                },
+                options: genrePreferences,
+              )
+          ),
+          ExpandableSection(
+              expand: agesOpen,
+              child: PreferenceChipList(
+                onChanged: (chipData) {
+                  // Create a list of functions to call
+                  List<void Function()> refreshFunctions = List.empty(growable: true);
+                  peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
+                  // toggle the preference chip, and when done each function will be called
+                  context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
+                },
+                options: ageGroupsPreferences,
+              )
+          ),
+          ExpandableSection(
+              expand: pubTypesOpen,
+              child: PreferenceChipList(
+                onChanged: (chipData) {
+                  // Create a list of functions to call
+                  List<void Function()> refreshFunctions = List.empty(growable: true);
+                  peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
+                  // toggle the preference chip, and when done each function will be called
+                  context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
+                },
+                options: pubTypesPreferences,
+              )
+          )
+        ]
       )
     );
   }

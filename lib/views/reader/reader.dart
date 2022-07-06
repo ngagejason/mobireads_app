@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
+import 'package:mobi_reads/views/widgets/error_snackbar.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ReaderPageWidget extends StatefulWidget {
@@ -36,16 +39,28 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     super.initState();
     _readerBloc = context.read<ReaderBloc>();
     _scrollController.addListener(_onScroll);
-    context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
-    _readerBloc.setScrollOffset = this.setScrollOffset;
+
     selectedChapter = 0;
     scrollOffset = 0;
 
+    // This attempts to load the previous book if the reader has re-opened the app.
+    if(_readerBloc.state.book == null){
+      context.read<ReaderBloc>().add(InitializeReaderByBookId());
+    }
+    else {
+      context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
+    }
+
+    // Assign the setScrollOffset callback function
+    _readerBloc.setScrollOffset = this.setScrollOffset;
+
+    // Use the awesome life saving AutoScrollController
     controller = AutoScrollController(
         viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: Axis.vertical,
     );
 
+    // Set the AutoScrollController parentController for event chaining
     controller.parentController = _scrollController;
   }
 
@@ -56,13 +71,12 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
 
     return GestureDetector(
         onScaleUpdate: (details) {
-          // print('onScaleUpdate ' + details.scale.toString() + ", " + _readerBloc.currentFontSize.toString() + ", " + (details.scale * _readerBloc.currentFontSize).toString());
+          print('onScaleUpdate ' + details.scale.toString() + ", " + _readerBloc.currentFontSize.toString() + ", " + (details.scale * _readerBloc.currentFontSize).toString());
           if(details.scale > 1){
             _readerBloc.add(FontSizeChanged(1.05 * _readerBloc.currentFontSize));
           }
@@ -74,6 +88,12 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
             listener: (context, state) {
               if (state.status == ReaderStatus.ChaptersLoaded) {
                 _readerBloc.add(Loaded());
+              }
+              else if(state.status == ReaderStatus.Error){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: ErrorSnackbar(message: state.errorMessage)),
+                );
               }
             },
             child: userHomeUI(context)

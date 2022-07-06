@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_state.dart';
 import 'package:mobi_reads/blocs/trending_books_list_bloc/trending_books_list_block.dart';
@@ -110,12 +111,16 @@ class PeekState extends State<PeekList> {
       return Row(
         mainAxisSize: MainAxisSize.max,
         children:[
-          Text(
-              'There are no books for the selected preferences',
+          Flexible(
+            child: Text(
+              (int.tryParse(dotenv.env['MY_WRITING_PREFERENCE_CODE'] ?? '0') ?? 0) == code ?
+                  "You haven't authored any books. To start a book, go to mobireads.com and start writing!" :
+                  "There are no books for the selected preferences",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 14
               )
+            )
           ),
         ]
       );

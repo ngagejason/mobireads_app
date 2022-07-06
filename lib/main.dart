@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
         BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
-        BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(RepositoryProvider.of<OutlineRepository>(context))),
+        BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(RepositoryProvider.of<OutlineRepository>(context), RepositoryProvider.of<BookRepository>(context))),
       ],
       child: MaterialApp(
           title: 'MobiReads',

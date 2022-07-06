@@ -23,6 +23,8 @@ class ServerPaths{
   static const String ALL_BOOK_FOLLOWS = "api/v1/books/allBookFollows";
   static const String TRENDING_BOOKS = "api/v1/books/trendingBooks";
   static const String MY_BOOKS = "api/v1/books/getMyBooks";
+  static const String CAN_EDIT_BOOK = "api/v1/books/canEditBook";
+  static const String GET_BOOK = "api/v1/books/getBook";
 
   /* Chapters */
   static const String GET_CHAPTERS = "api/v1/outlines/getOutlineChapters";

@@ -15,8 +15,10 @@ class Preference {
   bool IsSelected;
   @JsonKey(name: 'code')
   int Code;
+  @JsonKey(name: 'isVisible')
+  bool IsVisible;
 
-  Preference(this.Id, this.Context, this.Label, this.IsSelected, this.Code);
+  Preference(this.Id, this.Context, this.Label, this.IsSelected, this.Code, this.IsVisible);
 
   factory Preference.fromJson(Map<String, dynamic> json) => _$PreferenceFromJson(json);
   Map<String, dynamic> toJson() => _$PreferenceToJson(this);

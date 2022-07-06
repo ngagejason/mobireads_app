@@ -3,8 +3,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
+import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
@@ -60,6 +65,11 @@ class _BookFollowsWidgetState2
         padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
         child: GestureDetector(
           onLongPress: () => openDialog(context, book, context.read<BookFollowsBloc>()),
+          onDoubleTap: () async {
+            context.read<ReaderBloc>().add(InitializeReader(book, true));
+            await UserKvpStorage.setCurrentBookId(book.Id);
+            (this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar).onTap!(2);
+          },
           onTap: () => {
             if(book.SeriesId != null && book.SeriesId!.length > 0){
               Navigator.pushNamed(context, "/bookSeriesDetails", arguments: book)

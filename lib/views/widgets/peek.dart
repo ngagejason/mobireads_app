@@ -9,6 +9,7 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_state.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/extension_methods/int_extensions.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
@@ -44,10 +45,10 @@ class _PeekState extends State<Peek> with Peekable {
       padding: EdgeInsetsDirectional.fromSTEB(0, 8, 16, 8),
       child: GestureDetector(
         onLongPress: () => openDialog(context, widget.book, context.read<BookFollowsBloc>()),
-        onDoubleTap: () {
+        onDoubleTap: () async {
           context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
-          var a = this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar;
-          a.onTap!(2);
+          await UserKvpStorage.setCurrentBookId(widget.book.Id);
+          (this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar).onTap!(2);
         },
         onTap: () => {
           if(widget.book.SeriesId != null && widget.book.SeriesId!.length > 0){

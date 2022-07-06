@@ -10,6 +10,10 @@ class InitializeReader extends ReaderEvent{
   InitializeReader(this.book, this.changeBooks);
 }
 
+class InitializeReaderByBookId extends ReaderEvent{
+  InitializeReaderByBookId();
+}
+
 class Refresh extends ReaderEvent{}
 
 class Loaded extends ReaderEvent{}

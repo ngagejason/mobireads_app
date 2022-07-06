@@ -131,7 +131,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   color: FlutterFlowTheme.of(context).secondaryColor,
                                 ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 12),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 50, 0, 12),
                                   child: FFButtonWidget(
                                     onPressed: () {
                                       Navigator.pushNamedAndRemoveUntil(context, "/createAccount", (r) => false);
@@ -155,7 +155,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 12),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 12),
                                   child: FFButtonWidget(
                                     onPressed: () {
                                       Navigator.pushNamedAndRemoveUntil(context, "/confirmAccount", (r) => false);
@@ -178,10 +178,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                     ),
                                   ),
                                 ),
-                                Padding(
+                                /*Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 12),
                                   child: createContinueAsGuestButton(context),
-                                ),
+                                ),*/
                               ],
                             );
                           })

@@ -12,6 +12,7 @@ Preference _$PreferenceFromJson(Map<String, dynamic> json) => Preference(
       json['label'] as String,
       json['isSelected'] as bool,
       json['code'] as int,
+      json['isVisible'] as bool,
     );
 
 Map<String, dynamic> _$PreferenceToJson(Preference instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$PreferenceToJson(Preference instance) =>
       'label': instance.Label,
       'isSelected': instance.IsSelected,
       'code': instance.Code,
+      'isVisible': instance.IsVisible,
     };

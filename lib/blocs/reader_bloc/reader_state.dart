@@ -20,6 +20,8 @@ class ReaderState extends Equatable {
   List<OutlineChapter> allChapters = List.empty(growable: true);
   final Book? book;
   bool reachedEnd = false;
+  bool canEdit = false;
+  String errorMessage = '';
 
   ReaderState ({ this.status = ReaderStatus.Constructed, this.book });
 
@@ -27,7 +29,9 @@ class ReaderState extends Equatable {
     ReaderStatus? status,
     Book? book, List<OutlineChapter>?
     updateChapters,
-    double? scrollOffset }) {
+    double? scrollOffset,
+    bool? canEdit,
+    String? errorMessage }) {
 
     // New list after all updates
     List<OutlineChapter>? newChapters = List.empty(growable: true);
@@ -63,6 +67,9 @@ class ReaderState extends Equatable {
 
     state.reachedEnd = book?.ChapterCount == newChapters.length;
     state.allChapters = newChapters;
+    state.canEdit = canEdit ?? this.canEdit;
+    state.errorMessage = errorMessage ?? this.errorMessage;
+
     return state;
   }
 
