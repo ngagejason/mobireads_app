@@ -75,7 +75,9 @@ class _PreferenceChipListState extends State<PreferenceChipList> {
 
                   selected: i.IsSelected,
                   labelPadding: i.IsSelected ? widget.selectedChipStyle.labelPadding : widget.unselectedChipStyle.labelPadding,
-                  onSelected: (isSelected) => { onChanged(i) },
+                  onSelected: (isSelected) {
+                    onChanged(i);
+                  },
                   selectedColor: i.IsSelected ? widget.selectedChipStyle.backgroundColor : null,
                   backgroundColor: i.IsSelected ? null : widget.unselectedChipStyle.backgroundColor,
                   elevation: i.IsSelected ? widget.selectedChipStyle.elevation : widget.unselectedChipStyle.elevation,

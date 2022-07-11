@@ -62,10 +62,11 @@ class PeekState extends State<PeekList> {
 
   Widget PeekUI(BuildContext context){
 
-    TrendingBooksListState state = context.read<TrendingBooksListBloc>().state;
+    TrendingBooksListState state = context. read<TrendingBooksListBloc>().state;
     if(state.Status == TrendingBooksListStatus.Constructed){
       context.read<TrendingBooksListBloc>().add(Initialize(this.code, this.title));
     }
+
 
     PreferencesState preferencesState = context.read<PreferencesBloc>().state;
     Preference? chip = preferencesState.Preferences.firstWhereOrNull((element) => element.Code == this.code);
@@ -103,7 +104,7 @@ class PeekState extends State<PeekList> {
 
   Widget getBooks(BuildContext context, TrendingBooksListState state){
 
-    if(state.Status == TrendingBooksListStatus.PeeksLoading){
+    if(state.Status == TrendingBooksListStatus.PeeksLoading || state.Status == TrendingBooksListStatus.PeeksRefreshing){
       return loading(context);
     }
 
@@ -137,6 +138,18 @@ class PeekState extends State<PeekList> {
 
   Widget loading(BuildContext context){
     return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children:[SizedBox(
+          height: 16,
+          width: 16,
+        )]
+    );
+  }
+
+  /*
+  Widget loading(BuildContext context){
+    return Row(
       mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children:[SizedBox(
@@ -149,4 +162,5 @@ class PeekState extends State<PeekList> {
       )]
     );
   }
+   */
 }

@@ -106,8 +106,9 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           expandedHeight: 80,
           stretchTriggerOffset: 100,
-          onStretchTrigger: () async => {
-            print('stretched')
+          onStretchTrigger: () async {
+            print('stretched');
+            peekKeys.forEach( (key, value) { value.currentState?.doRefresh(); });
           },
           leading: Container(),
           actions: [
@@ -145,8 +146,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
             child: getPrefsRow(),
           ),
           //Peeks
-          for(var p in peeks)
-            p,
+          Column(
+            children:[
+              for(var p in peeks)
+                p,
+            ]
+          )
         ])
         )
       ],
@@ -208,6 +213,11 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
               child: PreferenceChipList(
                 onChanged: (chipData) {
                   context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
+                  /*peekKeys.forEach( (key, value) {
+                    if(!chipData.IsSelected && value.currentState != null && value.currentState?.code == chipData.Code){
+                      value.currentState?.doRefresh();
+                    }
+                  });*/
                 },
                 options: genrePreferences,
               )
@@ -218,7 +228,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                 onChanged: (chipData) {
                   // Create a list of functions to call
                   List<void Function()> refreshFunctions = List.empty(growable: true);
-                  peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); });                            });
+                  peekKeys.forEach( (key, value) { refreshFunctions.add(() { value.currentState?.doRefresh(); }); });
                   // toggle the preference chip, and when done each function will be called
                   context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData, functions: refreshFunctions));
                 },

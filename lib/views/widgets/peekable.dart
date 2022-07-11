@@ -76,7 +76,7 @@ abstract class Peekable {
                                                         padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
                                                         child: (follows) ?
                                                         Icon(Icons.favorite,color: Colors.red,size: 24) :
-                                                        Icon(Icons.favorite_border,color: Colors.white,size: 24)
+                                                        Icon(Icons.favorite_border, color: FlutterFlowTheme.of(context).secondaryColor, size: 24)
                                                     ),
                                                   ),
                                                 ],
