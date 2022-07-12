@@ -6,11 +6,15 @@ import 'package:mobi_reads/blocs/book_details_bloc/book_details_event.dart' as b
 import 'package:mobi_reads/blocs/book_details_bloc/book_details_state.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
+import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/classes/NumberFormatterFactory.dart';
+import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/extension_methods/int_extensions.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
+import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 
@@ -255,54 +259,62 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
   Widget getCover(BuildContext buildContext, String url){
     BookFollowsBloc bloc = context.read<BookFollowsBloc>();
     bool follows = bloc.state.isBookFollowed(widget.book.Id);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 200,
-          height: 300,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: Image.network(url).image,
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 3,
-                color: Color(0x64000000),
-                offset: Offset(0, 2),
-              )
-            ],
-            borderRadius:BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
+    return GestureDetector(
+      onDoubleTap:  () async {
+        context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
+        await UserKvpStorage.setCurrentBookId(widget.book.Id);
+        (MasterScaffoldWidgetState.bottomNavBarKey.currentWidget as BottomNavigationBar).onTap!(2);
+        Navigator.pop(context);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              width: 200,
+              height: 300,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.fitWidth,
+                  image: Image.network(url).image,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 3,
+                    color: Color(0x64000000),
+                    offset: Offset(0, 2),
+                  )
+                ],
+                borderRadius:BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      bloc.add(ToggleFollow(widget.book));
-                      //setState(() => { follows = !follows });
-                    },
-                    child: Padding(
-                        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                        child: (follows) ?
-                        Icon(Icons.favorite,color: Colors.red,size: 26) :
-                        Icon(Icons.favorite_border,color: FlutterFlowTheme.of(context).secondaryColor ,size: 26)
-                    ),
-                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          bloc.add(ToggleFollow(widget.book));
+                          //setState(() => { follows = !follows });
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                            child: (follows) ?
+                            Icon(Icons.favorite,color: Colors.red,size: 26) :
+                            Icon(Icons.favorite_border,color: FlutterFlowTheme.of(context).secondaryColor ,size: 26)
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               )
-            ],
           )
-        )
-      ],
+        ],
+      ),
     );
   }
 }

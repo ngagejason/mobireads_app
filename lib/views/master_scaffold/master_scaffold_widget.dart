@@ -21,12 +21,13 @@ class MasterScaffoldWidget extends StatefulWidget {
   const MasterScaffoldWidget({Key? key}) : super(key: key);
 
   @override
-  _MasterScaffoldWidgetState createState() => _MasterScaffoldWidgetState();
+  MasterScaffoldWidgetState createState() => MasterScaffoldWidgetState();
 }
 
-class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
+class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
+  static final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
+
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = List.empty(growable: true);
   late ReaderBloc _readerBloc;
@@ -74,9 +75,9 @@ class _MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             body: IndexedStack(
               children: <Widget>[
-                UserHomeWidget(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey),
-                BookFollowsWidget2(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey),
-                ReaderPageWidget(scaffoldKey: this.scaffoldKey, bottomNavbarKey: this.bottomNavBarKey)
+                UserHomeWidget(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey),
+                BookFollowsWidget2(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey),
+                ReaderPageWidget(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey)
               ],
               index: _selectedIndex,
             ),

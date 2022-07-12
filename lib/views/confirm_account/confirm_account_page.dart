@@ -34,7 +34,7 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    email = ModalRoute.of(context)!.settings.arguments as String;
+    email = (ModalRoute.of(context)!.settings.arguments ?? '') as String;
     return Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primaryColor,
       body: BlocProvider(
