@@ -261,6 +261,6 @@ class _PeekState extends State<Peek> with Peekable {
     bool doesFollow = context.read<BookFollowsBloc>().state.isBookFollowed(widget.book.Id);
     return doesFollow ?
       Icon(Icons.favorite,color: Colors.red,size: 24) :
-      Icon(Icons.favorite_border,color: Colors.white,size: 24);
+      Icon(Icons.favorite_border,color: FlutterFlowTheme.of(context).secondaryColor,size: 24);
   }
 }
