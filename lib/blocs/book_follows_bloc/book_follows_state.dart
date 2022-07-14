@@ -14,8 +14,9 @@ class BookFollowsState {
 
   final List<Book> Books;
   final BookFollowsStatus Status;
+  String ErrorMessage;
 
-  BookFollowsState ({ this.Books = const[], this.Status = BookFollowsStatus.Constructed });
+  BookFollowsState ({ this.Books = const[], this.Status = BookFollowsStatus.Constructed, this.ErrorMessage = '' });
 
 
   isBookFollowed(String bookId){
@@ -27,10 +28,11 @@ class BookFollowsState {
     return true;
   }
 
-  BookFollowsState CopyWith({ List<Book>? books, BookFollowsStatus? status }) {
+  BookFollowsState CopyWith({ List<Book>? books, BookFollowsStatus? status, String? errorMessage }) {
     return BookFollowsState(
       Books: books ?? this.Books,
-      Status: status ?? this.Status
+      Status: status ?? this.Status,
+      ErrorMessage: errorMessage ?? this.ErrorMessage
     );
   }
 }

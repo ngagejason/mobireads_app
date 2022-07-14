@@ -256,7 +256,6 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    print('maxScroll = ' + maxScroll.toString() + ', currentScroll = ' + currentScroll.toString());
     return currentScroll >= (maxScroll);
   }
 

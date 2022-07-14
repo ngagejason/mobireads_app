@@ -13,6 +13,7 @@ import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/entities/preferences/Preference.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/loading_page.dart';
+import 'package:mobi_reads/views/widgets/error_snackbar.dart';
 import 'package:mobi_reads/views/widgets/peek_list_factory.dart';
 import 'package:mobi_reads/views/widgets/preference_chip_list.dart';
 import 'package:mobi_reads/views/widgets/expandable_section.dart';
@@ -75,6 +76,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           listener: (context, state) {
             if(state.Status == BookFollowsStatus.BookFollowsLoaded){
               context.read<BookFollowsBloc>().add(book_follows_events.Loaded());
+            }
+            else if(state.Status == BookFollowsStatus.Error){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: ErrorSnackbar(message: state.ErrorMessage)),
+              );
             }
           },
         ),
@@ -211,11 +218,11 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
               child: PreferenceChipList(
                 onChanged: (chipData) {
                   context.read<PreferencesBloc>().add(preferences_events.PreferenceToggled(chipData));
-                  /*peekKeys.forEach( (key, value) {
+                  peekKeys.forEach( (key, value) {
                     if(!chipData.IsSelected && value.currentState != null && value.currentState?.code == chipData.Code){
                       value.currentState?.doRefresh();
                     }
-                  });*/
+                  });
                 },
                 options: genrePreferences,
               )

@@ -20,9 +20,14 @@ class BookFollowsBloc extends Bloc<BookFollowsEvent, BookFollowsState> {
   }
 
   Future handleInitializedEvent(InitializeBookFollows event, Emitter<BookFollowsState> emit) async {
-    emit(state.CopyWith(status: BookFollowsStatus.BookFollowsLoading));
-    AllBookFollowsResponse response = await bookRepository.getAllBookFollows();
-    emit(state.CopyWith(books: response.FollowedBooks, status: BookFollowsStatus.BookFollowsLoaded));
+    try{
+      emit(state.CopyWith(status: BookFollowsStatus.BookFollowsLoading));
+      AllBookFollowsResponse response = await bookRepository.getAllBookFollows();
+      emit(state.CopyWith(books: response.FollowedBooks, status: BookFollowsStatus.BookFollowsLoaded));
+    }
+    on Exception catch(ex){
+      emit(state.CopyWith(status: BookFollowsStatus.Error, errorMessage: ex.toString()));
+    }
   }
 
   Future handleLoadedEvent(Loaded event, Emitter<BookFollowsState> emit) async {
