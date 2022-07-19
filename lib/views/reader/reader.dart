@@ -92,7 +92,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
               else if(state.status == ReaderStatus.Error){
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: ErrorSnackbar(message: state.errorMessage)),
+                      content: ErrorSnackbar(header: "Oops", message: state.errorMessage)),
                 );
               }
             },

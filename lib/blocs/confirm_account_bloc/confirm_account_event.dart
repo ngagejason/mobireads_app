@@ -15,3 +15,5 @@ class ConfirmAccountRequested extends ConfirmAccountEvent {}
 class ConfirmAccount extends ConfirmAccountEvent {}
 
 class RedirectToHome extends ConfirmAccountEvent {}
+
+class ResendRequested extends ConfirmAccountEvent {}

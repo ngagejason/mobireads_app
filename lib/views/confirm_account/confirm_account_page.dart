@@ -1,4 +1,5 @@
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
@@ -50,7 +51,7 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
               else if(state.Status == ConfirmAccountStatus.Error){
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: ErrorSnackbar(message: state.ErrorMessage)),
+                      content: ErrorSnackbar(header: "Oops", message: state.ErrorMessage)),
                 );
               }
               else if(state.Status == ConfirmAccountStatus.Confirmed && state.Login != null){
@@ -59,6 +60,12 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
               }
               else if(state.Status == ConfirmAccountStatus.RedirectToHome){
                 Navigator.pushNamedAndRemoveUntil(context, "/userHome", (r) => false);
+              }
+              else if(state.Status == ConfirmAccountStatus.Resent){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: ErrorSnackbar(header: "Success", message: "An email has been sent.")),
+                );
               }
               else{
                 _autoValidate = AutovalidateMode.disabled;
@@ -129,6 +136,7 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
                               color: FlutterFlowTheme.of(context).secondaryColor,
                             ),
                             cancelButton(),
+                            resendEmailButton(context)
                           ],
                         );
                       }),
@@ -226,6 +234,42 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
           Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
         },
         text: 'Cancel',
+        options: FFButtonOptions(
+          width: 170,
+          height: 40,
+          color: Color(0xD3FFFFFF),
+          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+            fontFamily: 'Poppins',
+            color: Color(0xFF3C3925),
+          ),
+          elevation: 0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1,
+          ),
+          borderRadius: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget resendEmailButton(BuildContext context){
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 12),
+      child: FFButtonWidget(
+        onPressed: () {
+          var bloc = context.read<ConfirmAccountBloc>();
+          if(EmailValidator.validate(bloc.state.Email)){
+            context.read<ConfirmAccountBloc>().add(ResendRequested());
+          }
+          else{
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: ErrorSnackbar(header: "Invalid Email", message: "Please insert a valid email.")),
+            );
+          }
+        },
+        text: 'Resend Code',
         options: FFButtonOptions(
           width: 170,
           height: 40,

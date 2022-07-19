@@ -50,7 +50,7 @@ class _PasswordResetConfirmWidgetState extends State<PasswordResetConfirmWidget>
               else if(state.Status == PasswordResetConfirmStatus.Error){
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: ErrorSnackbar(message: state.ErrorMessage)),
+                      content: ErrorSnackbar(header: "Oops", message: state.ErrorMessage)),
                 );
               }
               else if(state.Status == PasswordResetConfirmStatus.Confirmed && state.Login != null){

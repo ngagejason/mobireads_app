@@ -4,6 +4,7 @@ import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/entities/RequestResult.dart';
 import 'package:mobi_reads/entities/account/confirm_account_request.dart';
+import 'package:mobi_reads/entities/account/resend_confirmation_code_request.dart';
 import 'package:mobi_reads/entities/account/create_account_request.dart';
 import 'package:mobi_reads/entities/account/password_reset_confirm.dart';
 import 'package:mobi_reads/entities/account/password_reset_request.dart';
@@ -76,4 +77,18 @@ class AccountRepository {
 
     throw Exception('Failed to Create Account');
   }
+
+  Future<BoolResponse> resendConfirmationCode(ResendConfirmationCodeRequest request) async {
+    var response = await IOFactory.doPost(urlExtension: ServerPaths.RESEND_CONFIRMATION_CODE, data: request);
+    if (response.statusCode == 200) {
+      RequestResult<BoolResponse> result =  RequestResult<BoolResponse>.fromJson(jsonDecode(response.body), (data) => BoolResponse.fromJson(data as Map<String, dynamic>));
+      if(result.Success)
+        return result.Data ?? BoolResponse(false, 'Unknown Error');
+      else
+        throw Exception(result.Message);
+    }
+
+    throw Exception('Resend Failed');
+  }
+
 }

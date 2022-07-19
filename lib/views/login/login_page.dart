@@ -47,7 +47,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
               else if(state.Status == LoginStatus.Error){
                 ScaffoldMessenger.of(listenerContext).showSnackBar(
                   SnackBar(
-                      content: ErrorSnackbar(message: state.ErrorMessage)),
+                      content: ErrorSnackbar(header: "Oops", message: state.ErrorMessage)),
                 );
               }
               else if(state.Status == LoginStatus.LoggedIn && state.Login != null){
@@ -118,8 +118,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      createForgotPasswordButton(context),
-                                      createLoginButton(context),
+                                      forgotPasswordButton(context),
+                                      loginButton(context),
                                     ],
                                   ),
                                 ),
@@ -130,54 +130,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   endIndent: 20,
                                   color: FlutterFlowTheme.of(context).secondaryColor,
                                 ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(0, 50, 0, 12),
-                                  child: FFButtonWidget(
-                                    onPressed: () {
-                                      Navigator.pushNamedAndRemoveUntil(context, "/createAccount", (r) => false);
-                                    },
-                                    text: 'Create Account',
-                                    options: FFButtonOptions(
-                                      width: 170,
-                                      height: 40,
-                                      color: Color(0xD3FFFFFF),
-                                      textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                                        fontFamily: 'Poppins',
-                                        color: Color(0xFF3C3925),
-                                      ),
-                                      elevation: 0,
-                                      borderSide: BorderSide(
-                                        color: Colors.transparent,
-                                        width: 1,
-                                      ),
-                                      borderRadius: 12,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 12),
-                                  child: FFButtonWidget(
-                                    onPressed: () {
-                                      Navigator.pushNamedAndRemoveUntil(context, "/confirmAccount", (r) => false);
-                                    },
-                                    text: 'Confirmation Code',
-                                    options: FFButtonOptions(
-                                      width: 170,
-                                      height: 40,
-                                      color: Color(0xD3FFFFFF),
-                                      textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                                        fontFamily: 'Poppins',
-                                        color: Color(0xFF3C3925),
-                                      ),
-                                      elevation: 0,
-                                      borderSide: BorderSide(
-                                        color: Colors.transparent,
-                                        width: 1,
-                                      ),
-                                      borderRadius: 12,
-                                    ),
-                                  ),
-                                ),
+                                createAccountButton(context),
+                                confirmAccountButton(context),
                                 /*Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 12),
                                   child: createContinueAsGuestButton(context),
@@ -240,7 +194,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     );
   }
 
-  Widget createLoginButton(BuildContext context) {
+  Widget loginButton(BuildContext context) {
 
     if (context.read<LoginBloc>().state.Status == LoginStatus.LoggingIn) {
       return Padding(
@@ -278,7 +232,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     );
   }
 
-  Widget createForgotPasswordButton(BuildContext context) {
+  Widget forgotPasswordButton(BuildContext context) {
     return FFButtonWidget(
       onPressed: () {
         Navigator.pushNamedAndRemoveUntil(context, "/passwordResetRequest", (r) => false, arguments: context.read<LoginBloc>().state.Email);
@@ -303,7 +257,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     );
   }
 
-  Widget createContinueAsGuestButton(BuildContext context) {
+  Widget continueAsGuestButton(BuildContext context) {
     return FFButtonWidget(
       onPressed: () {
         context.read<LoginBloc>().add(ContinueAsGuest());
@@ -327,6 +281,60 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           width: 1,
         ),
         borderRadius: 12,
+      ),
+    );
+  }
+
+  Widget createAccountButton(BuildContext context){
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 50, 0, 12),
+      child: FFButtonWidget(
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(context, "/createAccount", (r) => false);
+        },
+        text: 'Create Account',
+        options: FFButtonOptions(
+          width: 170,
+          height: 40,
+          color: Color(0xD3FFFFFF),
+          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+            fontFamily: 'Poppins',
+            color: Color(0xFF3C3925),
+          ),
+          elevation: 0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1,
+          ),
+          borderRadius: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget confirmAccountButton(BuildContext context){
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 12),
+      child: FFButtonWidget(
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(context, "/confirmAccount", (r) => false);
+        },
+        text: 'Confirmation Code',
+        options: FFButtonOptions(
+          width: 170,
+          height: 40,
+          color: Color(0xD3FFFFFF),
+          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+            fontFamily: 'Poppins',
+            color: Color(0xFF3C3925),
+          ),
+          elevation: 0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1,
+          ),
+          borderRadius: 12,
+        ),
       ),
     );
   }

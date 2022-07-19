@@ -61,7 +61,7 @@ class _PreferenceChipListState extends State<PreferenceChipList> {
       padding:EdgeInsetsDirectional.fromSTEB(10, 0, 5, 0),
       child:Wrap(
         alignment: WrapAlignment.start,
-        children: options.where((el) => el.IsVisible).map((i) =>
+        children: options.where((el) => el.IsVisibleInApp).map((i) =>
             Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0, 5, 10, 0),
                 child: ChoiceChip(

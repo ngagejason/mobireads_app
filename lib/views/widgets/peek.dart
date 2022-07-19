@@ -71,31 +71,100 @@ class _PeekState extends State<Peek> with Peekable {
 
   Widget getBookImage(){
     if(widget.book.SeriesId != null)
-      return getSeriesImage(widget.book);
+      return getSeriesView(widget.book);
 
-    return getSingleBookImage();
+    return getSingleBookView();
   }
 
-  Widget getSingleBookImage(){
+  Widget getSingleBookView(){
+    double width = 125;
+    double height = 199;
+    BoxShadow boxShadow = BoxShadow(
+      blurRadius: 3,
+      color: Color(0x64000000),
+      offset: Offset(0, 2),
+    );
+
+    BorderRadius borderRadius = BorderRadius.only(
+      topLeft: Radius.circular(8),
+      topRight: Radius.circular(8),
+    );
+
+    if(widget.book.FrontCoverImageUrl == null){
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          boxShadow: [
+            boxShadow
+          ],
+          borderRadius: borderRadius,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment:MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
+                      child: Text(
+                        widget.book.Title.guarantee(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(8, 8, 8, 0),
+                    child: Text(
+                      widget.book.Subtitle.guarantee(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Follow Heart
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(8, 4, 8, 0),
+              child: Container(
+                  child: getFollowsIcon(context)
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
-      width: 125,
-      height: 188,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitWidth,
           image: Image.network(widget.book.FrontCoverImageUrl.guarantee()).image,
         ),
         boxShadow: [
-          BoxShadow(
-            blurRadius: 3,
-            color: Color(0x64000000),
-            offset: Offset(0, 2),
-          )
+          boxShadow
         ],
-        borderRadius:BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
-        ),
+        borderRadius: borderRadius,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -114,13 +183,13 @@ class _PeekState extends State<Peek> with Peekable {
     );
   }
 
-  Widget getSeriesImage(Book book){
+  Widget getSeriesView(Book book){
     List<Widget> containers = List.empty(growable: true);
     for(var i = 0; i < book.BookNumberInSeries.guarantee()-1; i++){
-      containers.add(getBookContainer(book, i));
+      containers.add(getSeriesBookContainer(book, i));
     }
     for(var i = book.BookCountInSeries.guarantee()-1; i > book.BookNumberInSeries.guarantee() - 1; i--){
-      containers.add(getBookContainer(book, i));
+      containers.add(getSeriesBookContainer(book, i));
     }
 
     return Stack(
@@ -169,35 +238,40 @@ class _PeekState extends State<Peek> with Peekable {
     );
   }
 
-  Widget getBookContainer(Book book, int index){
+  Widget getSeriesBookContainer(Book book, int index){
     return Padding(
       padding:
         index > (book.BookNumberInSeries.guarantee()-1) ?
           EdgeInsets.fromLTRB(14.0*index, (10.0 * (index - (book.BookNumberInSeries.guarantee()-1)))/2, 0, 0) :
           EdgeInsets.fromLTRB(14.0*index, (10.0 * ((book.BookNumberInSeries.guarantee()-1) - index))/2, 0, 0),
-      child: Container(
-          width: 125,
-          height: index > (book.BookNumberInSeries.guarantee()-1) ?
-                188 - (10.0 * (index - (book.BookNumberInSeries.guarantee()-1))):
-                188 - (10.0 * ((book.BookNumberInSeries.guarantee()-1) - index)),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.fitWidth,
-              image: Image.network(book.SeriesFrontCoverUrls[index]).image,
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 3,
-                color: Color(0x64000000),
-                offset: Offset(0, 2),
-              )
-            ],
-            borderRadius:BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-          )
-      )
+      child: getSeriesBookView(book, index)
+    );
+  }
+
+  Widget getSeriesBookView(Book book, int index){
+
+    return Container(
+        width: 125,
+        height: index > (book.BookNumberInSeries.guarantee()-1) ?
+        188 - (10.0 * (index - (book.BookNumberInSeries.guarantee()-1))):
+        188 - (10.0 * ((book.BookNumberInSeries.guarantee()-1) - index)),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.fitWidth,
+            image: Image.network(book.SeriesFrontCoverUrls[index]).image,
+          ),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 3,
+              color: Color(0x64000000),
+              offset: Offset(0, 2),
+            )
+          ],
+          borderRadius:BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        )
     );
   }
 

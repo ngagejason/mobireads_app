@@ -46,7 +46,7 @@ class _CreateAccountPageWidgetState extends State<CreateAccountPageWidget> {
             else if(state.Status == CreateAccountStatus.Error){
               ScaffoldMessenger.of(listenerContext).showSnackBar(
                   SnackBar(
-                    content: ErrorSnackbar(message: state.ErrorMessage)),
+                    content: ErrorSnackbar(header: "Oops", message: state.ErrorMessage)),
                   );
             }
             else if(state.Status == CreateAccountStatus.Created){

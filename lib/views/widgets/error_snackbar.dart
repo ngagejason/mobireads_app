@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 
 class ErrorSnackbar extends StatelessWidget {
-  ErrorSnackbar({required this.message});
+  ErrorSnackbar({required this.header, required this.message});
   final String message;
+  final String header;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class ErrorSnackbar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Oops!',
+          this.header,
           textAlign: TextAlign.center,
           style: FlutterFlowTheme.of(context).bodyText1.override(
             fontFamily: 'Poppins',
@@ -20,18 +21,6 @@ class ErrorSnackbar extends StatelessWidget {
             fontSize: 30,
           ),
         ),
-        /*Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(30, 30, 30, 0),
-          child: Text(
-            'Something went wrong',
-            textAlign: TextAlign.center,
-            style: FlutterFlowTheme.of(context).bodyText1.override(
-              fontFamily: 'Poppins',
-              color: FlutterFlowTheme.of(context).secondaryColor,
-              fontSize: 20,
-            ),
-          ),
-        ),*/
         Divider(
           indent: 20,
           endIndent: 20,

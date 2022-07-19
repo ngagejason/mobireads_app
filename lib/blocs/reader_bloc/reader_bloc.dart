@@ -108,10 +108,15 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   }
 
   Future handleInitializeByBookIdEvent(InitializeReaderByBookId event, Emitter<ReaderState> emit) async {
-    String currentBookId = await UserKvpStorage.getCurrentBookId();
-    if(currentBookId.length > 0){
-      Book book = await bookRepository.getBook(currentBookId);
-      await handleInitializeEvent(InitializeReader(book, true), emit);
+    try{
+      String currentBookId = await UserKvpStorage.getCurrentBookId();
+      if(currentBookId.length > 0){
+        Book book = await bookRepository.getBook(currentBookId);
+        await handleInitializeEvent(InitializeReader(book, true), emit);
+      }
+    }
+    on Exception catch(ex){
+      emit(state.CopyWith(status: ReaderStatus.Error, errorMessage: 'An error occurred loading the book.'));
     }
   }
 

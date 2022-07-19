@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/confirm_account_bloc/confirm_account_event.dart';
 import 'package:mobi_reads/blocs/confirm_account_bloc/confirm_account_state.dart';
 import 'package:mobi_reads/entities/account/confirm_account_request.dart';
+import 'package:mobi_reads/entities/account/resend_confirmation_code_request.dart';
+import 'package:mobi_reads/entities/bool_response/bool_response.dart';
 import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
 
@@ -15,6 +17,7 @@ class ConfirmAccountBloc extends Bloc<ConfirmAccountEvent, ConfirmAccountState> 
     on<ConfirmAccountRequested>((event, emit) async => await handleConfirmAccountRequestedEvent(emit));
     on<ConfirmAccount>((event, emit) async => await handleConfirmAccountEvent(emit));
     on<RedirectToHome>((event, emit) async => await handleRedirectToHomeEvent(emit));
+    on<ResendRequested>((event, emit) async => await handleResendRequested(emit));
   }
 
   Future handleEmailChangedEvent(EmailChanged event, Emitter<ConfirmAccountState> emit) async {
@@ -51,4 +54,24 @@ class ConfirmAccountBloc extends Bloc<ConfirmAccountEvent, ConfirmAccountState> 
   Future handleRedirectToHomeEvent(Emitter<ConfirmAccountState> emit) async {
     emit(state.CopyWith(status: ConfirmAccountStatus.RedirectToHome));
   }
+
+  Future handleResendRequested(Emitter<ConfirmAccountState> emit) async {
+    emit(state.CopyWith(status: ConfirmAccountStatus.Resending));
+    try {
+      BoolResponse response = await accountRepository.resendConfirmationCode(
+          ResendConfirmationCodeRequest(state.Email)
+      );
+
+      if(!response.Success){
+        emit(state.CopyWith(errorMessage: response.Message ?? 'Unknown Error', status: ConfirmAccountStatus.Error));
+        return;
+      }
+
+      emit(state.CopyWith(status: ConfirmAccountStatus.Resent));
+    }
+    on Exception catch (e) {
+      emit(state.CopyWith(errorMessage: "Failed to resend request", status: ConfirmAccountStatus.Error));
+    }
+  }
+
 }

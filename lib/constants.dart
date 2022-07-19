@@ -13,6 +13,7 @@ class ServerPaths{
   static const String CHECK_AVAILABILITY = "api/v1/accounts/checkAvailability";
   static const String PASSWORD_RESET_REQUEST = "api/v1/accounts/passwordResetRequest";
   static const String PASSWORD_RESET_CONFIRM = "api/v1/accounts/passwordResetConfirm";
+  static const String RESEND_CONFIRMATION_CODE = "api/v1/accounts/resendConfirmationCode";
 
   /* Preferences */
   static const String USER_PREFERENCES = "api/v1/preferences/getAccountPreferences";

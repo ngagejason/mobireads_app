@@ -80,7 +80,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
             else if(state.Status == BookFollowsStatus.Error){
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                    content: ErrorSnackbar(message: state.ErrorMessage)),
+                    content: ErrorSnackbar(header: "Oops", message: state.ErrorMessage)),
               );
             }
           },
