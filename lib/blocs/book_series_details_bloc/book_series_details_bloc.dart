@@ -59,7 +59,7 @@ class BookSeriesDetailsBloc extends Bloc<BookSeriesDetailsEvent, BookSeriesDetai
         "", //this.Id,
         "Coming Soon", //this.Title,
         "", //this.Subtitle,
-        dotenv.env['COMING_SOON_IMAGE'] ?? "http://10.0.2.2:4000/images/ComingSoon/ComingSoon_2_200x300.png", //this.FrontCoverImageUrl,
+        null, //this.FrontCoverImageUrl,
         "image/png", //FrontCoverImageMimeType
         "", //BackCoverImageUrl,
         "", //BackCoverImageMimeType
