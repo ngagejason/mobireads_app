@@ -59,7 +59,6 @@ class ReaderSettingsWidgetState extends State<ReaderSettingsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('selected = ' + selectedChapter.toString());
     return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -69,51 +68,6 @@ class ReaderSettingsWidgetState extends State<ReaderSettingsWidget> {
           ],
         )
     );
-/*
-    return BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-
-          Text(
-            'Font Size',
-            textAlign: TextAlign.center,
-            style: FlutterFlowTheme.of(context).bodyText1.override(
-              fontFamily: 'Poppins',
-              color: FlutterFlowTheme.of(context).secondaryColor,
-              fontSize: FontSizes.DEFAULT_FONT_SIZE,
-            ),
-          ),
-          Slider(
-            value: FontSizes.DEFAULT_FONT_SIZE,
-            min: 10,
-            max: 30,
-            divisions: 10,
-            onChanged: (double value) {
-              readerBloc.add(FontSizeChanged(value));
-            },
-          ),
-          Divider(
-            indent: 20,
-            endIndent: 20,
-            color: FlutterFlowTheme.of(context).tertiaryColor,
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(30, 30, 30, 20),
-            child: Text(
-              this.message,
-              textAlign: TextAlign.center,
-              style: FlutterFlowTheme.of(context).bodyText1.override(
-                fontFamily: 'Poppins',
-                color: FlutterFlowTheme.of(context).secondaryColor,
-                fontSize: 20,
-              ),
-            ),
-          )
-        ],
-      );
-    });*/
   }
 }
 

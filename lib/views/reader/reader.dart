@@ -273,7 +273,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
         height:250,
         child: CupertinoPicker(
             onSelectedItemChanged: (int value) {
-              setState(() => selectedChapter = value);
+              setState(() => selectedChapter = value + 1);
             },
             itemExtent: 48,
             children: _readerBloc.state.allChapters.map((element) =>
