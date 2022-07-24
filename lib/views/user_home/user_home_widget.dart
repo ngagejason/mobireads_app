@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
@@ -111,6 +112,11 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           expandedHeight: 80,
           stretchTriggerOffset: 100,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            // Status bar brightness (optional)
+            statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
+          ),
           onStretchTrigger: () async {
             print('stretched');
             peekKeys.forEach( (key, value) { value.currentState?.doRefresh(); });

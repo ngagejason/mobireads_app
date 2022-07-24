@@ -104,7 +104,7 @@ class PeekState extends State<PeekList> {
 
   Widget getBooks(BuildContext context, TrendingBooksListState state){
 
-    if(state.Status == TrendingBooksListStatus.PeeksLoading || state.Status == TrendingBooksListStatus.PeeksRefreshing){
+    if(state.Status == TrendingBooksListStatus.PeeksLoading){
       return loading(context);
     }
 

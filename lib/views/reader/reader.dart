@@ -43,6 +43,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     selectedChapter = 0;
     scrollOffset = 0;
 
+
     // This attempts to load the previous book if the reader has re-opened the app.
     if(_readerBloc.state.book == null){
       context.read<ReaderBloc>().add(InitializeReaderByBookId());
@@ -73,31 +74,19 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
-        onScaleUpdate: (details) {
-          print('onScaleUpdate ' + details.scale.toString() + ", " + _readerBloc.currentFontSize.toString() + ", " + (details.scale * _readerBloc.currentFontSize).toString());
-          if(details.scale > 1){
-            _readerBloc.add(FontSizeChanged(1.05 * _readerBloc.currentFontSize));
+    return BlocListener<ReaderBloc, ReaderState>(
+        listener: (context, state) {
+          if (state.status == ReaderStatus.ChaptersLoaded) {
+            _readerBloc.add(Loaded());
           }
-          else{
-            _readerBloc.add(FontSizeChanged(.95 * _readerBloc.currentFontSize));
+          else if(state.status == ReaderStatus.Error){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: ErrorSnackbar(header: "Oops", message: state.errorMessage)),
+            );
           }
         },
-        child: BlocListener<ReaderBloc, ReaderState>(
-            listener: (context, state) {
-              if (state.status == ReaderStatus.ChaptersLoaded) {
-                _readerBloc.add(Loaded());
-              }
-              else if(state.status == ReaderStatus.Error){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: ErrorSnackbar(header: "Oops", message: state.errorMessage)),
-                );
-              }
-            },
-            child: userHomeUI(context)
-        )
+        child: userHomeUI(context)
     );
   }
 
@@ -146,7 +135,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                                           controller.scrollToIndex(0, preferPosition: AutoScrollPosition.begin);
                                         }
                                         else{
-                                          controller.scrollToIndex(selectedChapter+1, preferPosition: AutoScrollPosition.begin);
+                                          controller.scrollToIndex(selectedChapter, preferPosition: AutoScrollPosition.begin);
                                         }
                                         Navigator.pop(context);
                                       },
@@ -245,7 +234,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   }
 
   void _onScroll() {
-    if (_isBottom && _readerBloc.state.status != ReaderStatus.ChaptersLoading){
+    if (_readerBloc.state.status != ReaderStatus.ChaptersLoading && _isBottom){
       _readerBloc.add(LoadChapters());
     }
 
@@ -259,33 +248,58 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     return currentScroll >= (maxScroll);
   }
 
-  Widget buildPicker () => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        getPicker()
-      ],
-    )
-  );
-
-  Widget getPicker(){
-    return SizedBox(
-        height:250,
-        child: CupertinoPicker(
-            onSelectedItemChanged: (int value) {
-              setState(() => selectedChapter = value + 1);
-            },
-            itemExtent: 48,
-            children: _readerBloc.state.allChapters.map((element) =>
-                Text(
-                  element.Title.guarantee(),
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
+  Widget buildPicker () {
+    return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: Text(
+                "Font Size",
+                style: TextStyle(
+                    fontSize: 20,
                     color: FlutterFlowTheme.of(context).secondaryColor,
-                    fontSize: 24,
-                  ),
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.normal
                 ),
-            ).toList()
+              ),
+            ),
+            Card(
+              child: StatefulBuilder(
+                builder: (context, state){
+                  return Slider(
+                    value: _readerBloc.currentFontSize,
+                    onChanged: (newRating) {
+                      _readerBloc.add(FontSizeChanged(newRating));
+                      state(() {  });
+                    },
+                    min:.5,
+                    max: 2
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+                height:250,
+                child: CupertinoPicker(
+                    onSelectedItemChanged: (int value) {
+                      setState(() => selectedChapter = value + 1);
+                    },
+                    itemExtent: 48,
+                    children: _readerBloc.state.allChapters.map((element) =>
+                        Text(
+                          element.Title.guarantee(),
+                          style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Poppins',
+                            color: FlutterFlowTheme.of(context).secondaryColor,
+                            fontSize: 18,
+                          ),
+                        ),
+                    ).toList()
+                )
+            )
+          ],
         )
     );
   }

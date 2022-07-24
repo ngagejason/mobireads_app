@@ -29,8 +29,9 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
 
   Future handlePreferenceToggledEvent(PreferenceToggled event, Emitter<PreferencesState> emit) async {
     Preference data = event.preference;
-    await preferencesRepository.togglePreference(TogglePreferenceRequest(data.Id, data.IsSelected));
     data.IsSelected = !data.IsSelected;
+    emit(state.CopyWith(preferences: state.Preferences));
+    await preferencesRepository.togglePreference(TogglePreferenceRequest(data.Id, !data.IsSelected));
     emit(state.CopyWith(preferences: state.Preferences));
     if(event.functions != null){
       event.functions!.forEach((element) {element();});
