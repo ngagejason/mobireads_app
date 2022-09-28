@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
 import 'package:mobi_reads/extension_methods/first_where_or_null.dart';
@@ -29,7 +28,6 @@ class ReaderState extends Equatable {
     ReaderStatus? status,
     Book? book, List<OutlineChapter>?
     updateChapters,
-    double? scrollOffset,
     bool? canEdit,
     String? errorMessage }) {
 

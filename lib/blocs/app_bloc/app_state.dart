@@ -35,8 +35,7 @@ class AppState {
         String? email,
         String? username,
         String? bearer,
-        AppStatus? status,
-        String? currentBookId,
+        AppStatus? status
       }) {
     return AppState(
         id,

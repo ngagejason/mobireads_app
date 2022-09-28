@@ -185,6 +185,4 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
       }
     });
   }
-
-
 }

@@ -33,6 +33,9 @@ class ServerPaths{
   /* Series */
   static const String SERIES_DETAILS = "api/v1/books/seriesDetails";
 
+  /* Series */
+  static const String LOG_EVENT = "api/v1/events/logEvent";
+
 }
 
 class PubTypes {
@@ -45,4 +48,10 @@ class FontSizes {
   static const double DEFAULT_TITLE_SIZE = 18;
   static const double MIN_FONT_SIZE = 8;
   static const double MAX_FONT_SIZE = 40;
+}
+
+class EventTypes {
+  static const int MESSAGE = 300;
+  static const int USER_ACTION = 100;
+  static const int ERROR = 200;
 }

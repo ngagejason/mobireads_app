@@ -57,6 +57,6 @@ class LoginRepository {
         return result.Data ?? DefaultEntities.ErrorBoolResponse;
     }
 
-    return BoolResponse(false, '');
+    return BoolResponse(false, 'Server failure');
   }
 }

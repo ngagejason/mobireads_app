@@ -13,6 +13,7 @@ import 'package:mobi_reads/classes/UserFileStorage.dart';
 import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
+import 'package:mobi_reads/repositories/event_log_repository.dart';
 import 'package:mobi_reads/views/reader/reader.dart';
 import 'package:mobi_reads/views/user_follows/book_follows_widget2.dart';
 import 'package:mobi_reads/views/user_home/user_home_widget.dart';
@@ -29,7 +30,6 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
   static final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
 
   int _selectedIndex = 0;
-  static List<Widget> _widgetOptions = List.empty(growable: true);
   late ReaderBloc _readerBloc;
   late AppBloc _appBloc;
 
@@ -216,11 +216,19 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 title: Text('Clear All Data'),
                 onTap: () async { await ClearAll(context); },
               ),
-              new ListTile(
+              ListTile(
                 leading: Icon(Icons.refresh),
                 title: Text('Refresh Book'),
                 onTap: () {
                   context.read<ReaderBloc>().add(Refresh());
+                  scaffoldKey.currentState!.openEndDrawer();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cloud_upload),
+                title: Text('Send State'),
+                onTap: () {
+                  EventLogRepository.shared.logState(context.read<ReaderBloc>().state);
                   scaffoldKey.currentState!.openEndDrawer();
                 },
               ),
