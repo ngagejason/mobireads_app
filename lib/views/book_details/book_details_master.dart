@@ -30,7 +30,10 @@ class _BookDetailsMasterWidgetState extends State<BookDetailsMasterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    book = ModalRoute.of(context)!.settings.arguments as Book;
+
+    if(book.Id == ''){
+      book = ModalRoute.of(context)?.settings.arguments as Book;
+    }
 
     return BlocProvider(
         create: (context) => BookDetailsBloc(RepositoryProvider.of<BookRepository>(context)),

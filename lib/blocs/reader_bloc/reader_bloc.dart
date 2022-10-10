@@ -117,6 +117,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     }
     on Exception catch(ex){
       emit(state.CopyWith(status: ReaderStatus.Error, errorMessage: 'An error occurred loading the book.'));
+      UserKvpStorage.clearCurrentBookId();
     }
   }
 

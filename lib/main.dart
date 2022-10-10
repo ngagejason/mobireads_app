@@ -5,9 +5,11 @@ import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
+import 'package:mobi_reads/repositories/book_note_repository.dart';
 import 'package:mobi_reads/repositories/book_repository.dart';
 import 'package:mobi_reads/repositories/outline_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
+import 'package:mobi_reads/views/add_book_note/add_book_note_master.dart';
 import 'package:mobi_reads/views/book_details/book_details_master.dart';
 import 'package:mobi_reads/views/book_series_details/book_series_details_master.dart';
 import 'package:mobi_reads/views/configure_page.dart';
@@ -15,9 +17,9 @@ import 'package:mobi_reads/views/confirm_account/confirm_account_page.dart';
 import 'package:mobi_reads/views/create_account/create_account_page.dart';
 import 'package:mobi_reads/views/login/login_page.dart';
 import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
+import 'package:mobi_reads/views/book_notes/book_notes_master.dart';
 import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_page.dart';
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
-import 'package:mobi_reads/views/reader/reader.dart';
 import 'blocs/app_bloc/app_bloc.dart';
 import 'repositories/preferences_repository.dart';
 
@@ -48,7 +50,8 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => AccountRepository()),
         RepositoryProvider(create: (context) => PreferencesRepository()),
         RepositoryProvider(create: (context) => BookRepository()),
-        RepositoryProvider(create: (context) => OutlineRepository())
+        RepositoryProvider(create: (context) => OutlineRepository()),
+        RepositoryProvider(create: (context) => BookNoteRepository()),
       ],
       child: appUI(),
     );
@@ -62,7 +65,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
         BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
         BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(RepositoryProvider.of<OutlineRepository>(context), RepositoryProvider.of<BookRepository>(context))),
-      ],
+        ],
       child: MaterialApp(
           title: 'MobiReads',
           supportedLocales: const [Locale('en', '')],
@@ -83,7 +86,9 @@ class _MyAppState extends State<MyApp> {
             '/passwordResetRequest': (context) => PasswordResetRequestWidget(),
             '/passwordResetConfirm': (context) => PasswordResetConfirmWidget(),
             '/bookDetails': (context) => BookDetailsMasterWidget(),
-            '/bookSeriesDetails': (context) => BookSeriesDetailsMasterWidget()
+            '/bookSeriesDetails': (context) => BookSeriesDetailsMasterWidget(),
+            '/bookNotes': (context) => BookNotesMasterWidget(),
+            '/addBookNote': (context) => AddBookNoteMasterWidget()
           }),
     );
   }

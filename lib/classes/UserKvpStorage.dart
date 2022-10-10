@@ -50,6 +50,11 @@ class UserKvpStorage {
     }
   }
 
+  static Future<void> clearCurrentBookId() async {
+    await setupReader();
+    prefs?.remove('CURRENT_BOOK_ID');
+  }
+
   static Future<void> setupReader() async {
     if(prefs == null){
       prefs = await SharedPreferences.getInstance();

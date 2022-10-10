@@ -31,15 +31,18 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> bookImages = List.empty(growable: true);
+  late BookDetailsBloc bloc;
 
   @override
   void initState() {
     super.initState();
-    context.read<BookDetailsBloc>().add(book_details_event.InitializeBookDetails());
+    bloc = context.read<BookDetailsBloc>();
+    bloc.add(book_details_event.InitializeBookDetails());
   }
 
   @override
   Widget build(BuildContext context) {
+
     return BlocListener<BookDetailsBloc, BookDetailsState>(
       listener: (context, state) {
         if (state.Status == BookDetailsStatus.BookDetailsLoaded) {
@@ -52,9 +55,7 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
 
   Widget BookDetailsUI(BuildContext context) {
 
-    BookDetailsState state = context.read<BookDetailsBloc>().state;
-
-    if(state.Status != BookDetailsStatus.Loaded){
+    if(bloc.state.Status != BookDetailsStatus.Loaded){
       return StandardLoadingWidget();
     }
 
@@ -193,29 +194,32 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
                   ),
                 ],
               ),
-              /*Column(
-                children: [
-                  Icon(
-                      Icons.question_answer,
-                      color: FlutterFlowTheme.of(context).secondaryColor,
-                      size: 18.0
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    child: Text(
-                      'Questions Answered',
-                      style: style,
-                    )
-                  ),
-                  Text(
-                      //widget.book.QuestionCount.toString()
-                    '24',
-                    style: style,
-                  )
-                ]
+              GestureDetector(
+                onTap: () => {
+                  Navigator.pushNamed(context, "/bookNotes", arguments: widget.book)
+                },
+                child: Column(
+                    children: [
+                      Icon(
+                          Icons.note,
+                          color: FlutterFlowTheme.of(context).secondaryColor,
+                          size: 18.0
+                      ),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          child: Text(
+                            'Notes',
+                            style: style,
+                          )
+                      ),
+                      Text(
+                        //widget.book.QuestionCount.toString()
+                        '24',
+                        style: style,
+                      )
+                    ]
+                ),
               ),
-
-               */
               Column(
                 children:[
                   Icon(

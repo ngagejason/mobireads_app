@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
-import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:flutter/material.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_event.dart' as book_follows_events;

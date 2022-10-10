@@ -33,7 +33,12 @@ class ServerPaths{
   /* Series */
   static const String SERIES_DETAILS = "api/v1/books/seriesDetails";
 
-  /* Series */
+  /* Notes */
+  static const String GET_BOOK_NOTES = "api/v1/book_notes/getBookNotes";
+  static const String ADD_BOOK_NOTE = "api/v1/book_notes/addBookNote";
+  static const String DELETE_BOOK_NOTE = "api/v1/book_notes/deleteBookNote";
+
+  /* Log */
   static const String LOG_EVENT = "api/v1/events/logEvent";
 
 }

@@ -1,4 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:mobi_reads/entities/book_notes/BookNote.dart';
 import 'package:mobi_reads/entities/books/AllBookFollowsResponse.dart';
 import 'package:mobi_reads/entities/books/Book.dart';
 import 'package:mobi_reads/entities/books/SeriesDetailsResponse.dart';
@@ -23,4 +24,5 @@ class DefaultEntities {
   static final EmptyAllBookFollowsResponse = AllBookFollowsResponse(List.empty(growable: false));
   static final EmptySeriesDetailsResponse = SeriesDetailsResponse('', '', '', 0, '', 0, '', '', []);
   static final Chapters = OutlineChaptersResponse(List<OutlineChapter>.empty(growable: false));
+  static final BookNotes = List<BookNote>.empty(growable: false);
 }

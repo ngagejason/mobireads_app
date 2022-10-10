@@ -2,17 +2,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'flutter_flow_theme.dart';
+
 class FFButtonOptions {
   const FFButtonOptions({
-    this.textStyle,
     this.elevation,
     this.height,
     this.width,
-    this.padding,
-    this.color,
-    this.disabledColor,
-    this.disabledTextColor,
-    this.splashColor,
+    this.isPrimaryActionButton,
     this.iconSize,
     this.iconColor,
     this.iconPadding,
@@ -20,15 +17,10 @@ class FFButtonOptions {
     this.borderSide,
   });
 
-  final TextStyle? textStyle;
-  final double? elevation;
   final double? height;
   final double? width;
-  final EdgeInsetsGeometry? padding;
-  final Color? color;
-  final Color? disabledColor;
-  final Color? disabledTextColor;
-  final Color? splashColor;
+  final double? elevation;
+  final bool? isPrimaryActionButton;
   final double? iconSize;
   final Color? iconColor;
   final EdgeInsetsGeometry? iconPadding;
@@ -61,23 +53,66 @@ class FFButtonWidget extends StatefulWidget {
 class _FFButtonWidgetState extends State<FFButtonWidget> {
   bool loading = false;
 
+  late ButtonStyle style;
+
+  @override void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if(widget.options.isPrimaryActionButton ?? true){
+      style = ElevatedButton.styleFrom(
+        foregroundColor: FlutterFlowTheme.of(context).secondaryColor,
+        backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+        elevation: widget.options.elevation ?? 2,
+        minimumSize: Size(widget.options.width ?? 130, widget.options.height ?? 50),
+        textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+          fontFamily: 'Poppins',
+          color: FlutterFlowTheme.of(context).secondaryColor,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius:  BorderRadius.circular(widget.options.borderRadius ?? 8),
+          side: widget.options.borderSide ?? BorderSide( color: FlutterFlowTheme.of(context).secondaryColor, width: 1, ),
+        ),
+      );
+    }
+    else{
+      style = ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: Color(0xD3FFFFFF),
+        elevation: widget.options.elevation ?? 12,
+        minimumSize: Size(widget.options.width ?? 130, widget.options.height ?? 50),
+        textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+          fontFamily: 'Poppins',
+          color: Colors.black,
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(widget.options.borderRadius ?? 8),
+          side:
+          widget.options.borderSide ?? BorderSide(color: Colors.transparent, width: 1,)
+        )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget textWidget = loading
-        ? Center(
-            child: Container(
-              width: 23,
-              height: 23,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  widget.options.textStyle?.color ?? Colors.white,
-                ),
+        ? Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Center(
+              child: Container(
+                width: 21,
+                height: 21,
+                child: CircularProgressIndicator(),
               ),
-            ),
-          )
+            )
+        )
+
         : AutoSizeText(
             widget.text,
-            style: widget.options.textStyle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           );
@@ -97,58 +132,12 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
           }
         : () => widget.onPressed();
 
-    if (widget.icon != null || widget.iconData != null) {
-      textWidget = Flexible(child: textWidget);
-      return Container(
-        height: widget.options.height,
-        width: widget.options.width,
-        child: RaisedButton.icon(
-          icon: Padding(
-            padding: widget.options.iconPadding ?? EdgeInsets.zero,
-            child: widget.icon ??
-                FaIcon(
-                  widget.iconData,
-                  size: widget.options.iconSize,
-                  color: widget.options.iconColor ??
-                      widget.options.textStyle?.color,
-                ),
-          ),
-          label: textWidget,
-          onPressed: onPressed,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(widget.options.borderRadius ?? 0),
-            side: widget.options.borderSide ?? BorderSide.none,
-          ),
-          color: widget.options.color,
-          colorBrightness:
-              ThemeData.estimateBrightnessForColor(widget.options.color ?? Colors.white),
-          textColor: widget.options.textStyle?.color ?? Colors.black,
-          disabledColor: widget.options.disabledColor,
-          disabledTextColor: widget.options.disabledTextColor,
-          elevation: widget.options.elevation,
-          splashColor: widget.options.splashColor,
-        ),
-      );
-    }
-
     return Container(
       height: widget.options.height,
       width: widget.options.width,
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: onPressed,
-        shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(widget.options.borderRadius ?? 28),
-          side: widget.options.borderSide ?? BorderSide.none,
-        ),
-        textColor: widget.options.textStyle?.color ?? Colors.black,
-        color: widget.options.color,
-        colorBrightness:
-            ThemeData.estimateBrightnessForColor(widget.options.color ?? Colors.white),
-        disabledColor: widget.options.disabledColor,
-        disabledTextColor: widget.options.disabledTextColor,
-        padding: widget.options.padding,
-        elevation: widget.options.elevation,
+        style: style,
         child: textWidget,
       ),
     );

@@ -223,19 +223,7 @@ class _CreateAccountPageWidgetState extends State<CreateAccountPageWidget> {
           options: FFButtonOptions(
             width: 130,
             height: 50,
-            color: FlutterFlowTheme.of(context).primaryColor,
-            textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-              fontFamily: 'Poppins',
-              color: FlutterFlowTheme.of(context).secondaryColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-            elevation: 2,
-            borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).secondaryColor,
-              width: 1,
-            ),
-            borderRadius: 8,
+            isPrimaryActionButton: true
           ),
         ),
       ]),
@@ -253,17 +241,7 @@ class _CreateAccountPageWidgetState extends State<CreateAccountPageWidget> {
         options: FFButtonOptions(
           width: 170,
           height: 40,
-          color: Color(0xD3FFFFFF),
-          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-            fontFamily: 'Poppins',
-            color: Color(0xFF3C3925),
-          ),
-          elevation: 0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1,
-          ),
-          borderRadius: 12,
+          isPrimaryActionButton: false
         ),
       ),
     );
