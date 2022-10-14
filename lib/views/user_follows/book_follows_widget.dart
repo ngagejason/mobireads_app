@@ -28,8 +28,6 @@ class _BookFollowsWidgetState
   @override
   bool get wantKeepAlive => true;
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();

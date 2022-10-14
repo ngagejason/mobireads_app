@@ -119,42 +119,66 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
   }
 
   Widget getGestureContainer(BuildContext context){
-    return Padding(
-      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(
-                color: Colors.grey,
+    return TextSelectionGestureDetector(
+      onDragSelectionStart: (DragStartDetails? details) => {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: Text('Delete'),
+            content: Text('Really delete this note?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
               ),
-              borderRadius: BorderRadius.all(Radius.circular(5))
-          ),
-          child:
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(5, 20, 0, 5),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children:[
-                      Flexible(
-                          child: Text(
-                            widget.chapter?.Title ?? '',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.bold,
-                                fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
-                            ),
-                          )
-                      )
-                    ]
-                ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'OK');
+                },
+                child: const Text('OK'),
               ),
-              getHtml(context)
             ],
-          )
-      ),
+          ),
+        )
+      },
+
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(5))
+            ),
+            child:
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(5, 20, 0, 5),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children:[
+                        Flexible(
+                            child: Text(
+                              widget.chapter?.Title ?? '',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
+                              ),
+                            )
+                        )
+                      ]
+                  ),
+                ),
+                getHtml(context)
+              ],
+            )
+        ),
+      )
     );
   }
 }
