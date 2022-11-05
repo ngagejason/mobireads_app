@@ -60,4 +60,19 @@ class UserKvpStorage {
       prefs = await SharedPreferences.getInstance();
     }
   }
+
+  static Future<void> setBookVersion(String bookId, int version) async {
+    await setupReader();
+    prefs?.setString('v_' + bookId, version.toString());
+  }
+
+  static Future<int> getBookVersion(String bookId) async {
+    await setupReader();
+    String? s = prefs?.getString('v_' + bookId);
+    if(s == null){
+      return -1;
+    }
+
+    return int.parse(s!);
+  }
 }

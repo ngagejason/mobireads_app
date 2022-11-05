@@ -13,9 +13,7 @@ import 'package:mobi_reads/views/widgets/peekable.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 
 class BookFollowsWidget extends StatefulWidget {
-  const BookFollowsWidget({Key? key, required this.scaffoldKey}) : super(key: key);
-
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  const BookFollowsWidget({Key? key}) : super(key: key);
 
   @override
   _BookFollowsWidgetState createState() => _BookFollowsWidgetState();

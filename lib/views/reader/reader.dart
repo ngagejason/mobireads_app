@@ -12,6 +12,7 @@ import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
+import 'package:mobi_reads/views/reader/rt_chapter.dart';
 import 'package:mobi_reads/views/widgets/error_snackbar.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -180,13 +181,18 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                       child: getCover()
                   );
                 }
+                // restrict to single chapter while developing RTChapterWidget
+                // Remove for all chapters
+                // if(index == 1){
+                  return AutoScrollTag(
+                      key: ValueKey(index),
+                      controller: controller,
+                      index: index,
+                      child: ChapterWidget(chapter: _readerBloc.state.allChapters[index-1]) // RTChapterWidget(chapter: _readerBloc.state.allChapters[index-1])
+                  );
+                // }
 
-                return AutoScrollTag(
-                    key: ValueKey(index),
-                    controller: controller,
-                    index: index,
-                    child: ChapterWidget(chapter: _readerBloc.state.allChapters[index-1])
-                );
+                return null;
               },
               childCount: _readerBloc.state.allChapters.length+1,
             ),

@@ -49,8 +49,14 @@ class UserFileStorage {
       FileSystemEntity file = files[i];
       if(file is File){
         String text = await (file as File).readAsString();
-        var a = json.decode(text);
-        chapters.add(OutlineChapter.fromJson(a));
+        if(text.length > 0){
+          var a = json.decode(text);
+          chapters.add(OutlineChapter.fromJson(a));
+        }
+        else{
+          // Invalid chapter.
+          file.delete();
+        }
       }
     }
 
@@ -85,4 +91,18 @@ class UserFileStorage {
       await element.delete(recursive: true);
     });
   }
+
+  static Future<void> clearBook(String folderName) async {
+    String path = await createFolderInAppDocDir(folderName);
+    final Directory _folder = Directory(path);
+
+    List<FileSystemEntity> files = _folder.listSync(recursive: false, followLinks: false);
+    for(int i = 0; i < files.length; i++) {
+      FileSystemEntity file = files[i];
+      if(file is File){
+        file.delete();
+      }
+    }
+  }
+
 }

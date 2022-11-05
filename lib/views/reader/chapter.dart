@@ -119,123 +119,42 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
   }
 
   Widget getGestureContainer(BuildContext context){
-    return TextSelectionGestureDetector(
-      onDragSelectionStart: (DragStartDetails? details) => {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text('Delete'),
-            content: Text('Really delete this note?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: const Text('Cancel'),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.grey,
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, 'OK');
-                },
-                child: const Text('OK'),
-              ),
-            ],
+              borderRadius: BorderRadius.all(Radius.circular(5))
           ),
-        )
-      },
-
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-        child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: Colors.grey,
+          child:
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 20, 0, 5),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children:[
+                      Flexible(
+                          child: Text(
+                            widget.chapter?.Title ?? '',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.bold,
+                                fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
+                            ),
+                          )
+                      )
+                    ]
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(5))
-            ),
-            child:
-            Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(5, 20, 0, 5),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children:[
-                        Flexible(
-                            child: Text(
-                              widget.chapter?.Title ?? '',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
-                              ),
-                            )
-                        )
-                      ]
-                  ),
-                ),
-                getHtml(context)
-              ],
-            )
-        ),
-      )
+              ),
+              getHtml(context)
+            ],
+          )
+      ),
     );
   }
 }
-
-
-/* customTextStyle: (dom.Node node, TextStyle baseStyle) {
-                  if (node is dom.Element) {
-                    switch (node.localName) {
-                      case "p":
-                        return baseStyle.merge(TextStyle(height: 2, fontSize: 20));
-                    }
-                  }
-                  return baseStyle;
-                },*/
-/*
-                customRender: {
-
-                  "span": (RenderContext context, Widget child) {
-                    return child;
-                  },
-                  tagMatcher("span"): CustomRender.inlineSpan(inlineSpan: (context, buildChildren) =>
-                    TextSpan(
-                      style: TextStyle(
-                        color: context.style.color ?? Colors.black,
-                        fontSize: context.style.fontSize != null ?
-                        GetFontSize(context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE) :
-                        GetFontSize(_readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE))
-                    )
-                  ),
-
-                  tagMatcher("p"): CustomRender.inlineSpan(inlineSpan: (context, buildChildren) =>
-                      TextSpan(
-                          style: TextStyle(
-                            color: context.style.color ?? Colors.black,
-                            fontSize: context.style.fontSize != null ?
-                                GetFontSize(context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE) :
-                                GetFontSize(_readerBloc.state.fontSize ?? FontSizes.DEFAULT_FONT_SIZE)
-                          ),
-                      )
-                  )
-*/
-/* style: (context.tree.element!.attributes['horizontal'] != null)
-                        ? FlutterLogoStyle.horizontal
-                        : FlutterLogoStyle.markOnly,
-                    textColor: context.style.color!,
-                    size: context.style.fontSize!.size! * 5,*//*
-                  )),
-
-                  birdMatcher(): CustomRender.inlineSpan(inlineSpan: (context, buildChildren) => TextSpan(text: "🐦")),
-                  modifyFontSize(): CustomRender.inlineSpan(inlineSpan: (context, buildChildren)
-                    {
-                      return TextSpan(text: "🐦");
-                    }),
-                  flutterMatcher(): CustomRender.widget(widget: (context, buildChildren) => FlutterLogo(
-                    style: (context.tree.element!.attributes['horizontal'] != null)
-                        ? FlutterLogoStyle.horizontal
-                        : FlutterLogoStyle.markOnly,
-                    textColor: context.style.color!,
-                    size: context.style.fontSize!.size! * 5,
-                  )),*/

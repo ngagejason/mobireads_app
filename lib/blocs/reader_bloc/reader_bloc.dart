@@ -25,12 +25,14 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   Timer? _debounceScroll;
   Timer? _debounceFont;
   double currentFontSize = -1;
+  int currentVersion = -1;
 
   ReaderBloc(this.outlineRepository, this.bookRepository) : super(ReaderState()){
     on<InitializeReader>((event, emit) async => await handleInitializeEvent(event, emit));
     on<Loaded>((event, emit) async => await handleLoadedEvent(event, emit));
     on<LoadChapters>((event, emit) async => await handleLoadChapters(event, emit));
-    on<Refresh>((event, emit) async => await handleRefreshEvent(event, emit));
+    on<LightRefresh>((event, emit) async => await handleLightRefreshEvent(event, emit));
+    on<HardRefresh>((event, emit) async => await handleHardRefreshEvent(event, emit));
     on<ScrollChanged>((event, emit) async => await handleScrollChanged(event, emit));
     on<FontSizeChanged>((event, emit) async => await handleFontSizeChanged(event, emit));
     on<InitializeReaderByBookId>((event, emit) async => await handleInitializeByBookIdEvent(event, emit));
@@ -58,6 +60,14 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
       if(event.book.Id.length == 0){
         emit(state.ClearChapters());
         return;
+      }
+
+      // If a new version exists, we need to delete all existing files because
+      // the getChapters will return all chapters
+      currentVersion = await UserKvpStorage.getBookVersion(event.book.Id);
+      if(currentVersion != event.book.Version){
+        await UserFileStorage.clearBook(event.book.Id);
+        await UserKvpStorage.setBookVersion(event.book.Id, event.book.Version);
       }
 
       currentFontSize = await UserKvpStorage.getFontSize(event.book.Id);
@@ -121,9 +131,9 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     }
   }
 
-  Future handleRefreshEvent(Refresh event, Emitter<ReaderState> emit) async {
+  Future handleLightRefreshEvent(LightRefresh event, Emitter<ReaderState> emit) async {
     if(state.book != null){
-      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 1);
+      OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 1000);
       if(chapters.Chapters.length > 0){
         ReaderState newState = state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded);
         emit(newState);
@@ -136,6 +146,30 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
         
         await UserFileStorage.saveChapters(state.book!.Id, chapters.Chapters);
       }
+    }
+  }
+
+  Future handleHardRefreshEvent(HardRefresh event, Emitter<ReaderState> emit) async {
+
+    var book = await bookRepository.getBook(state.book!.Id);
+    emit(state.CopyWith(status: ReaderStatus.ChaptersLoading, book: book));
+
+    await UserFileStorage.clearBook(state.book!.Id);
+    await UserKvpStorage.setBookVersion(state.book!.Id, book.Version);
+    await outlineRepository.resetLastPoll(state.book!.Id);
+
+    OutlineChaptersResponse chapters = await outlineRepository.getChapters(state.book?.Id ?? '', 0, 1000);
+    if(chapters.Chapters.length > 0){
+      ReaderState newState = state.CopyWith(updateChapters: chapters.Chapters, status: ReaderStatus.ChaptersLoaded);
+      emit(newState);
+      chapters.Chapters.forEach((e) {
+        if(funcs.containsKey(e.Id)){
+          var f = funcs[e.Id];
+          f!(e.Writing, null);
+        }
+      });
+
+      await UserFileStorage.saveChapters(state.book!.Id, chapters.Chapters);
     }
   }
 

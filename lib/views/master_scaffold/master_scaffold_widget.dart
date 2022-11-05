@@ -145,7 +145,7 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
                 return;
               }
               else{
-                _readerBloc.add(Refresh());
+                _readerBloc.add(LightRefresh());
                 this._timerCounter = _timerCounter + 1;
               }
             });
@@ -218,9 +218,17 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
               ),
               ListTile(
                 leading: Icon(Icons.refresh),
-                title: Text('Refresh Book'),
+                title: Text('Light Refresh Book'),
                 onTap: () {
-                  context.read<ReaderBloc>().add(Refresh());
+                  context.read<ReaderBloc>().add(LightRefresh());
+                  scaffoldKey.currentState!.openEndDrawer();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.local_pizza_rounded),
+                title: Text('Hard Refresh Book'),
+                onTap: () {
+                  context.read<ReaderBloc>().add(HardRefresh());
                   scaffoldKey.currentState!.openEndDrawer();
                 },
               ),

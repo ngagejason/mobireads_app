@@ -48,7 +48,7 @@ class _UserFollowsMasterWidgetState extends State<UserFollowsMasterWidget> {
          ),*/
        ],
        views: [
-         BookFollowsWidget(scaffoldKey: widget.scaffoldKey),
+         BookFollowsWidget(),
          //UserFollowsAuthorsWidget(),
        ],
        tabBarViewProperties: TabBarViewProperties(
