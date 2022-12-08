@@ -81,11 +81,11 @@ class BookRepository {
       }
       on Exception catch (e) {
         print(e.toString());
-        throw e;
+
       }
     }
 
-    throw Exception('Failed to Load Data');
+    return new BoolResponse(false, '');
   }
 
   Future<SeriesDetailsResponse> getSeriesDetails(String? seriesId) async {

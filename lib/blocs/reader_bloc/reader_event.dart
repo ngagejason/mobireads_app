@@ -20,8 +20,6 @@ class HardRefresh extends ReaderEvent{}
 
 class Loaded extends ReaderEvent{}
 
-class LoadChapters extends ReaderEvent{}
-
 class ScrollChanged extends ReaderEvent{
   double offset;
   ScrollChanged(this.offset);

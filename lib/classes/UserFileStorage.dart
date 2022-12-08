@@ -65,14 +65,11 @@ class UserFileStorage {
 
   static Future<void> saveChapters(String folderName, List<OutlineChapter> chapters) async {
 
-    //Remove dashes
-    folderName = folderName.replaceAll("-", "");
     if(folderName.length == 0){
       return;
     }
 
     String path = await createFolderInAppDocDir(folderName);
-
     chapters.forEach((element) async {
       String id = element.Id.replaceAll("-", "");
       File file = File(path + id);
@@ -82,6 +79,27 @@ class UserFileStorage {
       await file.create();
       await file.writeAsString(json.encode(element));
     });
+  }
+
+  static Future<void> deleteChapter(String folderName, String chapterId) async {
+    String path = await createFolderInAppDocDir(folderName);
+    String id = chapterId.replaceAll("-", "");
+    File file = File(path + id);
+    if(await file.exists()){
+      await file.delete();
+    }
+  }
+
+  static Future<void> saveChapter(String folderName, OutlineChapter chapter) async {
+    String path = await createFolderInAppDocDir(folderName);
+    String id = chapter.Id.replaceAll("-", "");
+    File file = File(path + id);
+    if(await file.exists()){
+      await file.delete();
+    }
+
+    await file.create();
+    await file.writeAsString(json.encode(chapter));
   }
 
   static Future<void> clearAll() async {

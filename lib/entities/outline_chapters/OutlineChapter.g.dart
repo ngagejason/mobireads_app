@@ -15,6 +15,7 @@ OutlineChapter _$OutlineChapterFromJson(Map<String, dynamic> json) =>
       json['deletedDateTimeUTC'] == null
           ? null
           : DateTime.parse(json['deletedDateTimeUTC'] as String),
+      json['hash'] as String?,
     );
 
 Map<String, dynamic> _$OutlineChapterToJson(OutlineChapter instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$OutlineChapterToJson(OutlineChapter instance) =>
       'writing': instance.Writing,
       'chapterNumber': instance.ChapterNumber,
       'deletedDateTimeUTC': instance.DeletedDateTimeUTC?.toIso8601String(),
+      'hash': instance.Hash,
     };

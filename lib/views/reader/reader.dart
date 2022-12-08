@@ -3,17 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
-import 'package:mobi_reads/classes/UserKvpStorage.dart';
 import 'package:mobi_reads/entities/DefaultEntities.dart';
 import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
-import 'package:mobi_reads/views/reader/rt_chapter.dart';
 import 'package:mobi_reads/views/widgets/error_snackbar.dart';
+import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ReaderPageWidget extends StatefulWidget {
@@ -30,9 +28,9 @@ class ReaderPageWidget extends StatefulWidget {
 class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   final _scrollController = ScrollController();
   late ReaderBloc _readerBloc;
-  bool loading = false, allLoaded = false;
+  bool loading = false;
   bool needsScroll = true;
-  late double scrollOffset = 0;
+  late double scrollOffset;
   late int selectedChapter;
   late AutoScrollController controller;
 
@@ -44,7 +42,6 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     selectedChapter = 0;
     scrollOffset = 0;
 
-
     // This attempts to load the previous book if the reader has re-opened the app.
     if(_readerBloc.state.book == null){
       context.read<ReaderBloc>().add(InitializeReaderByBookId());
@@ -53,8 +50,9 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
       context.read<ReaderBloc>().add(InitializeReader(_readerBloc.state.book ?? DefaultEntities.EmptyBook, false));
     }
 
-    // Assign the setScrollOffset callback function
+    // Assign callback funcs
     _readerBloc.setScrollOffset = this.setScrollOffset;
+    _readerBloc.forceRefresh =  this.doSetState;
 
     // Use the awesome life saving AutoScrollController
     controller = AutoScrollController(
@@ -66,11 +64,19 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
     controller.parentController = _scrollController;
   }
 
+  void doSetState(bool setDisplay){
+    this.setState(() {
+      loading = setDisplay;
+    });
+  }
+
   void setScrollOffset(double scrollOffset){
     this.scrollOffset = scrollOffset;
-    Timer(const Duration(milliseconds: 500), () async {
-      _scrollController.animateTo(this.scrollOffset, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-    });
+    if(_readerBloc.state.status == ReaderStatus.Loaded){
+      Timer(const Duration(milliseconds: 500), () async {
+        _scrollController.animateTo(this.scrollOffset, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+      });
+    }
   }
 
   @override
@@ -87,7 +93,9 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
             );
           }
         },
-        child: userHomeUI(context)
+        child: BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
+          return userHomeUI(context);
+        })
     );
   }
 
@@ -98,9 +106,13 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   }
 
   Widget userHomeUI(BuildContext context) {
+
     double _appBarHeight = 50;
 
-    return BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
+      if(_readerBloc.state.status != ReaderStatus.Loaded){
+        return StandardLoadingWidget();
+      }
+
       return CustomScrollView(
         physics: BouncingScrollPhysics(),
         controller: controller, // _scrollController,
@@ -188,7 +200,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                       key: ValueKey(index),
                       controller: controller,
                       index: index,
-                      child: ChapterWidget(chapter: _readerBloc.state.allChapters[index-1]) // RTChapterWidget(chapter: _readerBloc.state.allChapters[index-1])
+                      child: ChapterWidget(key: UniqueKey(), chapter: _readerBloc.state.allChapters[index-1]) // RTChapterWidget(chapter: _readerBloc.state.allChapters[index-1])
                   );
                 // }
 
@@ -199,7 +211,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
           )
         ],
       );
-    });
+
   }
 
   Widget getCover(){
@@ -240,18 +252,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
   }
 
   void _onScroll() {
-    if (_readerBloc.state.status != ReaderStatus.ChaptersLoading && _isBottom){
-      _readerBloc.add(LoadChapters());
-    }
-
     _readerBloc.add(ScrollChanged(_scrollController.offset));
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll);
   }
 
   Widget buildPicker () {

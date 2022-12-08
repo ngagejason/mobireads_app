@@ -17,12 +17,15 @@ class OutlineChapter {
   int ChapterNumber;
   @JsonKey(name: 'deletedDateTimeUTC')
   DateTime? DeletedDateTimeUTC;
+  @JsonKey(name: 'hash')
+  String? Hash;
 
   OutlineChapter(this.Id,
       this.Title,
       this.Writing,
       this.ChapterNumber,
-      this.DeletedDateTimeUTC
+      this.DeletedDateTimeUTC,
+      this.Hash
       );
 
   factory OutlineChapter.fromJson(Map<String, dynamic> json) => _$OutlineChapterFromJson(json);

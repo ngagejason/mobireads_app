@@ -22,6 +22,7 @@ import 'package:mobi_reads/views/password_reset_confirm/password_reset_confirm_p
 import 'package:mobi_reads/views/password_reset_request/password_reset_request_page.dart';
 import 'blocs/app_bloc/app_bloc.dart';
 import 'repositories/preferences_repository.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   runApp(MyApp());
@@ -58,6 +59,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget appUI(){
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
     return MultiBlocProvider(
       providers: [

@@ -28,8 +28,9 @@ class ServerPaths{
   static const String GET_BOOK = "api/v1/books/getBook";
 
   /* Chapters */
-  static const String GET_CHAPTERS = "api/v1/outlines/getOutlineChapters";
-  static const String RESET_LAST_POLL = "api/v1/outlines/resetLastPoll";
+  static const String GET_READER_CHAPTERS = "api/v1/outlines/getReaderChapters";
+  static const String GET_READER_CHAPTER = "api/v1/outlines/getReaderChapter";
+  static const String GET_OUTLINE_HASH = "api/v1/outlines/getOutlineHash";
 
   /* Series */
   static const String SERIES_DETAILS = "api/v1/books/seriesDetails";
