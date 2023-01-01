@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobi_reads/blocs/book_follows_bloc/book_follows_bloc.dart';
+import 'package:mobi_reads/blocs/loading_page_bloc/loading_page_bloc.dart';
 import 'package:mobi_reads/blocs/preferences_bloc/preferences_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
@@ -70,8 +71,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AppBloc>(create: (context) => AppBloc(RepositoryProvider.of<LoginRepository>(context))),
         BlocProvider<PreferencesBloc>(create: (context) => PreferencesBloc(RepositoryProvider.of<PreferencesRepository>(context))),
         BlocProvider<BookFollowsBloc>(create: (context) => BookFollowsBloc(RepositoryProvider.of<BookRepository>(context))),
-        BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(RepositoryProvider.of<OutlineRepository>(context), RepositoryProvider.of<BookRepository>(context))),
-        ],
+        BlocProvider<LoadingPageBloc>(create: (context) => LoadingPageBloc()),
+        BlocProvider<ReaderBloc>(create: (context) => ReaderBloc(
+            RepositoryProvider.of<OutlineRepository>(context),
+            RepositoryProvider.of<BookRepository>(context))
+        ),
+      ],
       child: MaterialApp(
           title: 'MobiReads',
           supportedLocales: const [Locale('en', '')],

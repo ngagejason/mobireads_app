@@ -9,6 +9,7 @@ enum ReaderStatus {
   ChaptersLoading,
   ChaptersLoaded,
   Loaded,
+  ChangingFont,
   Error
 }
 

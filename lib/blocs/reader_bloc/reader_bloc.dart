@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobi_reads/blocs/loading_page_bloc/loading_page_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
 import 'package:mobi_reads/classes/UserFileStorage.dart';
 import 'package:mobi_reads/classes/UserKvpStorage.dart';
@@ -23,9 +24,10 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
 
   OutlineRepository outlineRepository;
   BookRepository bookRepository;
-  Map<String, Function(String? writing, double? fontSize)> funcs = Map();
+  Map<String, Function(String? writing)> funcs = Map();
   Function(double scrollOffset)? setScrollOffset;
   Function(bool setDisplay)? forceRefresh;
+  Function(String setMessage)? _messageReceiver;
   Timer? _debounceScroll;
   Timer? _debounceFont;
   double currentFontSize = -1;
@@ -42,7 +44,15 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     on<InitializeReaderByBookId>((event, emit) async => await handleInitializeByBookIdEvent(event, emit));
   }
 
-  void AddSetState(String id, Function(String? id, double? fontSize) f){
+  void SetMessageReceiver(Function(String) messageReceiver){
+    _messageReceiver = messageReceiver;
+  }
+
+  void ClearMessageReceiver(){
+    _messageReceiver = null;
+  }
+
+  void AddSetState(String id, Function(String? id) f){
     if(id.length > 0){
       if(!funcs.containsKey(id)){
         funcs[id] = f;
@@ -124,11 +134,11 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   }
 
   Future handleFontSizeChanged(FontSizeChanged event, Emitter<ReaderState> emit) async {
-    currentFontSize = event.fontSize;
-    funcs.forEach((key, value) {
-      value(null, event.fontSize);
-    });
-    saveFontSize(event.fontSize);
+    if((event.fontSize - currentFontSize).abs() > .05) {
+      emit(state.CopyWith(status: ReaderStatus.ChangingFont));
+      currentFontSize = event.fontSize;
+      emit(state.CopyWith(status: ReaderStatus.Loaded));
+    }
   }
 
   Future<void> loadBook(Emitter<ReaderState> emit, Book book) async {
@@ -165,16 +175,17 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
       // Go ahead and attempt to delete the chapter so that we can add it after downloading it
       // without a conflicting filename
       if(chapter == null){
-        UserFileStorage.deleteChapter(state.book?.Id ?? '0', hashes[i].Id);
+        await UserFileStorage.deleteChapter(state.book?.Id ?? '0', hashes[i].Id);
       }
     }
 
     // Now we need to download any chapters that were not found
     for(int i = 0; i < hashes.length; i++){
       if(allChapters[i] == null){
+        _messageReceiver?.call("Downloading " + i.toString() + " of " + allChapters.length.toString() + " chapters");
         var chapter = await outlineRepository.getChapter((hashes[i].Id));
         allChapters[i] = chapter;
-        UserFileStorage.saveChapter(state.book?.Id ?? '0', chapter);
+        await UserFileStorage.saveChapter(state.book?.Id ?? '0', chapter);
       }
     }
 
@@ -184,7 +195,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     for(int i = 0; i < chapters.length; i++){
       var chapter = finalChapters.firstWhereOrNull((x) => x.Id == chapters[i].Id && x.Hash == chapters[i].Hash);
       if(chapter == null){
-        UserFileStorage.deleteChapter(state.book?.Id ?? '0', hashes[i].Id);
+        await UserFileStorage.deleteChapter(state.book?.Id ?? '0', chapters[i].Hash ?? '');
       }
     }
 
@@ -195,7 +206,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     state.allChapters.forEach((e) {
       if(funcs.containsKey(e.Id)){
         var f = funcs[e.Id];
-        f!(e.Writing, null);
+        f!(e.Writing);
       }
     });
   }

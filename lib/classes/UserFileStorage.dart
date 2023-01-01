@@ -40,9 +40,9 @@ class UserFileStorage {
   }
 
   static Future<List<OutlineChapter>> getChapters(String folderName) async {
+    print('retrieving chapters for ' + folderName);
     String path = await createFolderInAppDocDir(folderName);
     final Directory _folder = Directory(path);
-
     List<OutlineChapter> chapters = [];
     List<FileSystemEntity> files = _folder.listSync(recursive: false, followLinks: false);
     for(int i = 0; i < files.length; i++) {
@@ -50,10 +50,12 @@ class UserFileStorage {
       if(file is File){
         String text = await (file as File).readAsString();
         if(text.length > 0){
+          print('retrieving chapter ' + files[i].path);
           var a = json.decode(text);
           chapters.add(OutlineChapter.fromJson(a));
         }
         else{
+          print('empty chapter ' + file.path);
           // Invalid chapter.
           file.delete();
         }
@@ -78,6 +80,7 @@ class UserFileStorage {
       }
       await file.create();
       await file.writeAsString(json.encode(element));
+      print('saving file path = ' + file.path);
     });
   }
 
@@ -92,6 +95,7 @@ class UserFileStorage {
 
   static Future<void> saveChapter(String folderName, OutlineChapter chapter) async {
     String path = await createFolderInAppDocDir(folderName);
+    print('saving ' + path);
     String id = chapter.Id.replaceAll("-", "");
     File file = File(path + id);
     if(await file.exists()){

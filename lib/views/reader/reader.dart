@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,7 @@ import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/reader/chapter.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/views/widgets/error_snackbar.dart';
+import 'package:mobi_reads/views/widgets/reader_loading_widget.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -92,6 +92,9 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                   content: ErrorSnackbar(header: "Oops", message: state.errorMessage)),
             );
           }
+          else if(state.status == ReaderStatus.ChangingFont){
+            print('changing font');
+          }
         },
         child: BlocBuilder<ReaderBloc, ReaderState>(builder: (context, state) {
           return userHomeUI(context);
@@ -109,8 +112,8 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
 
     double _appBarHeight = 50;
 
-      if(_readerBloc.state.status != ReaderStatus.Loaded){
-        return StandardLoadingWidget();
+      if(_readerBloc.state.status != ReaderStatus.Loaded && _readerBloc.state.status != ReaderStatus.ChangingFont){
+        return ReaderLoadingWidget();
       }
 
       return CustomScrollView(

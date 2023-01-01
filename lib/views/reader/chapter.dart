@@ -3,13 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/reader_bloc/reader_bloc.dart';
-import 'package:mobi_reads/blocs/reader_bloc/reader_event.dart';
-import 'package:mobi_reads/blocs/reader_bloc/reader_state.dart';
 import 'package:mobi_reads/constants.dart';
 import 'package:mobi_reads/entities/outline_chapters/OutlineChapter.dart';
-import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:html/dom.dart' as dom;  // that is
 
 class ChapterWidget extends StatefulWidget {
   final OutlineChapter? chapter;
@@ -25,7 +21,6 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
   GlobalKey key = GlobalKey(debugLabel: '_html');
   String writing = '';
   bool disposeCalled = false;
-  double selectedFontSize = 0;
 
   @override
   void initState() {
@@ -33,7 +28,6 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
     _readerBloc = context.read<ReaderBloc>();
     _readerBloc.AddSetState(widget.chapter?.Id ?? '', doSetState);
     writing = widget.chapter?.Writing ?? '';
-    selectedFontSize = _readerBloc.currentFontSize;
     disposeCalled = false;
   }
 
@@ -44,12 +38,11 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
     super.dispose();
   }
 
-  void doSetState(String? a, double? fontSize){
+  void doSetState(String? a){
     if(!disposeCalled){
       var state = () {
         key = new GlobalKey();
         writing = a ?? writing;
-        selectedFontSize = fontSize ?? selectedFontSize;
       };
 
       setState(state);
@@ -70,46 +63,49 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
   }
 
   Widget getHtml(BuildContext context){
+
+    print('getHtml');
+
     return Html(
       key: key,
       data: writing,
 
       customRender: {
         "span": (RenderContext context, Widget child) {
-          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          var fs =  min(max(_readerBloc.currentFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
+            context.style.fontSize = FontSize(_readerBloc.currentFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
         },
         "p": (RenderContext context, Widget child) {
-          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          var fs =  min(max(_readerBloc.currentFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
+            context.style.fontSize = FontSize(_readerBloc.currentFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
         },
         "em": (RenderContext context, Widget child) {
-          var fs =  min(max(selectedFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
+          var fs =  min(max(_readerBloc.currentFontSize * (context.style.fontSize?.size ?? FontSizes.DEFAULT_FONT_SIZE), FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE);
           if(context.style.fontSize != null){
             context.style.fontSize = FontSize(fs);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
           else{
-            context.style.fontSize = FontSize(selectedFontSize * FontSizes.DEFAULT_FONT_SIZE);
+            context.style.fontSize = FontSize(_readerBloc.currentFontSize * FontSizes.DEFAULT_FONT_SIZE);
             context.style.lineHeight = LineHeight(1.5);
             context.style.fontFamily = 'Poppins';
           }
@@ -144,7 +140,7 @@ class _ReaderPageWidgetState extends State<ChapterWidget> {
                             style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.bold,
-                                fontSize:  min(max(selectedFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
+                                fontSize:  min(max(_readerBloc.currentFontSize * FontSizes.DEFAULT_TITLE_SIZE, FontSizes.MIN_FONT_SIZE), FontSizes.MAX_FONT_SIZE)
                             ),
                           )
                       )
