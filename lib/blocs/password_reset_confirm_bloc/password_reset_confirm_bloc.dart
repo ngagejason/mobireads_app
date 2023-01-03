@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobi_reads/blocs/password_reset_confirm_bloc/password_reset_confirm_event.dart';
 import 'package:mobi_reads/blocs/password_reset_confirm_bloc/password_reset_confirm_state.dart';
 import 'package:mobi_reads/classes/ExceptionFormatter.dart';
+import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/entities/account/password_reset_confirm.dart';
 import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
 import 'package:mobi_reads/repositories/account_repository.dart';
@@ -43,6 +44,7 @@ class PasswordResetConfirmBloc extends Bloc<PasswordResetConfirmEvent, PasswordR
         return;
       }
 
+      await UserSecureStorage.setBearerToken(response.Bearer);
       emit(state.CopyWith(status: PasswordResetConfirmStatus.Confirmed, login: response));
     }
     on Exception catch (e) {

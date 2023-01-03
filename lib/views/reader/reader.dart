@@ -11,15 +11,13 @@ import 'package:mobi_reads/views/reader/chapter.dart';
 import 'package:mobi_reads/extension_methods/string_extensions.dart';
 import 'package:mobi_reads/views/widgets/error_snackbar.dart';
 import 'package:mobi_reads/views/widgets/reader_loading_widget.dart';
-import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ReaderPageWidget extends StatefulWidget {
 
-  const ReaderPageWidget({Key? key, required this.scaffoldKey, required this.bottomNavbarKey}) : super(key: key);
+  const ReaderPageWidget({Key? key, required this.openDrawer }) : super(key: key);
 
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final GlobalKey bottomNavbarKey;
+  final Function(int index) openDrawer;
 
   @override
   _ReaderPageWidgetState createState() => _ReaderPageWidgetState();
@@ -175,7 +173,7 @@ class _ReaderPageWidgetState extends State<ReaderPageWidget> {
                   child: IconButton(
                       icon: const Icon(Icons.settings_outlined, color: Color(0xD8EACD29)),
                       tooltip: 'Settings',
-                      onPressed: () => { widget.scaffoldKey.currentState!.openDrawer() })
+                      onPressed: () => { widget.openDrawer(2) })
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(

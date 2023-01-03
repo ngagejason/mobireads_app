@@ -14,6 +14,8 @@ class InitializeReaderByBookId extends ReaderEvent{
   InitializeReaderByBookId();
 }
 
+class ClearBook extends ReaderEvent{}
+
 class LightRefresh extends ReaderEvent{}
 
 class HardRefresh extends ReaderEvent{}

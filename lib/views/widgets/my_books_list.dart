@@ -13,9 +13,9 @@ import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peek.dart';
 
 class MyBooksList extends StatefulWidget {
-  const MyBooksList(Key key, this.bottomNavbarKey) : super(key: key);
+  const MyBooksList(Key key, this.openBookView) : super(key: key);
 
-  final GlobalKey bottomNavbarKey;
+  final Function() openBookView;
 
   @override
   _MyBooksList createState() => _MyBooksList();
@@ -123,7 +123,7 @@ class _MyBooksList extends State<MyBooksList> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        children: state.Books.map((e) => Peek(e, widget.bottomNavbarKey)).toList(growable: false)
+        children: state.Books.map((e) => Peek(e, widget.openBookView)).toList(growable: false)
       ),
     );
   }

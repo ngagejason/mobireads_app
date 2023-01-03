@@ -9,7 +9,6 @@ enum ConfirmAccountStatus {
   Confirming,
   Confirmed,
   Error,
-  RedirectToHome,
   Resending,
   Resent
 }

@@ -8,10 +8,10 @@ import 'package:mobi_reads/views/widgets/my_books_list.dart';
 import 'package:mobi_reads/views/widgets/peek_list.dart';
 
 class MyBooksListFactory extends StatefulWidget {
-  const MyBooksListFactory(this.key2, this.bottomNavbarKey) : super();
+  const MyBooksListFactory(this.key2, this.openBookView) : super();
 
   final Key key2;
-  final GlobalKey bottomNavbarKey;
+  final Function() openBookView;
 
   @override
   _MyBooksListFactory createState() => _MyBooksListFactory(key2);
@@ -41,7 +41,7 @@ class _MyBooksListFactory extends State<MyBooksListFactory> {
 
   Widget PeekUI(BuildContext context){
     return BlocBuilder<TrendingBooksListBloc, TrendingBooksListState>(builder: (context, state) {
-      return MyBooksList(this.key2, widget.bottomNavbarKey);
+      return MyBooksList(this.key2, widget.openBookView);
     });
   }
 }

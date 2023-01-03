@@ -29,7 +29,6 @@ class BookDetailsWidget extends StatefulWidget {
 
 class _BookDetailsWidgetState extends State<BookDetailsWidget> {
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> bookImages = List.empty(growable: true);
   late BookDetailsBloc bloc;
 
@@ -266,8 +265,8 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
     return GestureDetector(
       onDoubleTap:  () async {
         context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
-        await UserKvpStorage.setCurrentBookId(widget.book.Id);
-        (MasterScaffoldWidgetState.bottomNavBarKey.currentWidget as BottomNavigationBar).onTap!(2);
+        // await UserKvpStorage.setCurrentBookId(widget.book.Id);
+        // (MasterScaffoldWidgetState.bottomNavBarKey.currentWidget as BottomNavigationBar).onTap!(2);
         Navigator.pop(context);
       },
       child: Row(

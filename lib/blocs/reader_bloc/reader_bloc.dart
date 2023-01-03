@@ -37,6 +37,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
   ReaderBloc(this.outlineRepository, this.bookRepository) : super(ReaderState()){
     on<InitializeReader>((event, emit) async => await handleInitializeEvent(event, emit));
     on<Loaded>((event, emit) async => await handleLoadedEvent(event, emit));
+    on<ClearBook>((event, emit) async => await handleClearBook(event, emit));
     on<LightRefresh>((event, emit) async => await handleLightRefreshEvent(event, emit));
     on<HardRefresh>((event, emit) async => await handleHardRefreshEvent(event, emit));
     on<ScrollChanged>((event, emit) async => await handleScrollChanged(event, emit));
@@ -98,6 +99,11 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
     }
   }
 
+  Future handleClearBook(ClearBook event, Emitter<ReaderState> emit) async {
+    emit(state.ClearBook());
+  }
+
+
   Future handleLightRefreshEvent(LightRefresh event, Emitter<ReaderState> emit) async {
     var book = state.book ?? await bookRepository.getBook(state.book!.Id);
     List<OutlineChapter> existingChapters = await UserFileStorage.getChapters(book.Id);
@@ -143,7 +149,7 @@ class ReaderBloc extends Bloc<ReaderEvent, ReaderState> {
 
   Future<void> loadBook(Emitter<ReaderState> emit, Book book) async {
 
-    emit(state.CopyWith(status: ReaderStatus.ChaptersLoading));
+    emit(state.CopyWith(status: ReaderStatus.ChaptersLoading, book: book));
 
     // Get local book config data
     currentOffset = await UserKvpStorage.getScrollOffset(book.Id);

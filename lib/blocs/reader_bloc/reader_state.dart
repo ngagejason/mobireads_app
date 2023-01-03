@@ -43,6 +43,16 @@ class ReaderState extends Equatable {
     return state;
   }
 
+  ReaderState ClearBook(){
+    ReaderState state = ReaderState(
+        status: ReaderStatus.Constructed,
+        book: null
+    );
+
+    state.allChapters = [];
+    return state;
+  }
+
   ReaderState ClearChapters(){
     ReaderState state = ReaderState(
       status: this.status,

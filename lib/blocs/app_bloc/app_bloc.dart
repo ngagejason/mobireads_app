@@ -11,13 +11,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc(this.loginRepository) : super(AppState('')){
     on<UserLoggedInEvent>((event, emit) async => await handleUserLoggedInEvent(event, emit));
     on<UserLoggedOutEvent>((event, emit) async => await handleUserLoggedOutEvent(event, emit));
-    on<AppInitializedEvent>((event, emit) async => await handleAppInitializedEvent(event, emit));
-    on<AppInitializingEvent>((event, emit) async => await handleAppInitializingEvent(event, emit));
   }
 
   Future handleUserLoggedInEvent(UserLoggedInEvent event, Emitter<AppState> emit) async {
-    AppState newState = state.CopyWith(event.id, isGuest: event.isGuest, email: event.email, username: event.username, bearer: event.bearer, status: AppStatus.LoggedIn);
-    await UserSecureStorage.storeAppStateAndSetCurrent(newState);
+    AppState newState = state.CopyWith(event.id, email: event.email, username: event.username, status: AppStatus.LoggedIn);
     emit(newState);
   }
 
@@ -25,16 +22,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     if(state.Id.length > 0){
       await loginRepository.logout();
     }
-    await UserSecureStorage.clearKey(state);
-    emit(state.CopyWith('', isGuest: true, email: '', username: '', status: AppStatus.LoggedOut));
-  }
 
-  Future handleAppInitializedEvent(AppInitializedEvent event, Emitter<AppState> emit ) async {
-    await UserSecureStorage.clearKey(state);
-    emit(state.CopyWith(state.Id, status: AppStatus.Initialized));
-  }
-
-  Future handleAppInitializingEvent(AppInitializingEvent event, Emitter<AppState> emit ) async {
-    emit(state.CopyWith(state.Id, status: AppStatus.Initializing));
+    await UserSecureStorage.clearAll();
+    emit(state.CopyWith('', email: '', username: '', status: AppStatus.LoggedOut));
   }
 }

@@ -18,14 +18,14 @@ class IOFactory {
 
   static Future<Map<String,String>> getGetHeadersWithBearer() async {
     Map<String,String> h = getGetHeaders();
-    String bearer = await UserSecureStorage.getBearer() ?? '';
+    String bearer = await UserSecureStorage.getBearerToken() ?? '';
     h.addAll({'Authorization': bearer}) ;
     return h;
   }
 
   static Future<Map<String,String>> getPostHeadersWithBearer() async {
     Map<String,String> h = getPostHeaders();
-    h.addAll({'Authorization': await UserSecureStorage.getBearer() ?? ''}) ;
+    h.addAll({'Authorization': await UserSecureStorage.getBearerToken() ?? ''}) ;
     return h;
   }
 

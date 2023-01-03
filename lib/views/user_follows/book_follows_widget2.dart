@@ -17,10 +17,10 @@ import 'package:mobi_reads/views/widgets/peekable.dart';
 import 'package:mobi_reads/views/widgets/standard_loading_widget.dart';
 
 class BookFollowsWidget2 extends StatefulWidget {
-  const BookFollowsWidget2({Key? key, required this.scaffoldKey, required this.bottomNavbarKey}) : super(key: key);
+  const BookFollowsWidget2({Key? key, required this.openDrawer, required this.openBookView}) : super(key: key);
 
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final GlobalKey bottomNavbarKey;
+  final Function(int index) openDrawer;
+  final Function() openBookView;
 
   @override
   _BookFollowsWidgetState2 createState() => _BookFollowsWidgetState2();
@@ -68,7 +68,7 @@ class _BookFollowsWidgetState2
           onDoubleTap: () async {
             context.read<ReaderBloc>().add(InitializeReader(book, true));
             await UserKvpStorage.setCurrentBookId(book.Id);
-            (this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar).onTap!(2);
+            widget.openBookView();
           },
           onTap: () => {
             if(book.SeriesId != null && book.SeriesId!.length > 0){

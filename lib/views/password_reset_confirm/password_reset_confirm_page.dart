@@ -54,7 +54,8 @@ class _PasswordResetConfirmWidgetState extends State<PasswordResetConfirmWidget>
                 );
               }
               else if(state.Status == PasswordResetConfirmStatus.Confirmed && state.Login != null){
-                context.read<AppBloc>().add(UserLoggedInEvent(state.Login!.Id, state.Login!.Email, state.Login!.Username, state.Login!.Bearer, state.Login!.IsGuest));
+
+                context.read<AppBloc>().add(UserLoggedInEvent(state.Login!.Id, state.Login!.Email, state.Login!.Username));
                 listenerContext.read<PasswordResetConfirmBloc>().add(RedirectToHome());
               }
               else if(state.Status == PasswordResetConfirmStatus.RedirectToHome){

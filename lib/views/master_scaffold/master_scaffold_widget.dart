@@ -25,8 +25,8 @@ class MasterScaffoldWidget extends StatefulWidget {
 }
 
 class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
-  static final scaffoldKey = GlobalKey<ScaffoldState>();
-  static final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final bottomNavBarKey = GlobalKey(debugLabel: 'bottom_nav_bar_key');
 
   int _selectedIndex = 0;
   bool stopTimer = false;
@@ -41,7 +41,6 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
     return BlocListener<AppBloc, AppState>(
         listener: (context, state) {
           if (state.Status == AppStatus.LoggedOut) {
-            context.read<AppBloc>().add(AppInitializingEvent());
             Navigator.pushNamedAndRemoveUntil(context, "/login", (r) => false);
           }
         },
@@ -63,9 +62,9 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             body: IndexedStack(
               children: <Widget>[
-                UserHomeWidget(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey),
-                BookFollowsWidget2(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey),
-                ReaderPageWidget(scaffoldKey: MasterScaffoldWidgetState.scaffoldKey, bottomNavbarKey: MasterScaffoldWidgetState.bottomNavBarKey)
+                UserHomeWidget(openDrawer: this.openDrawer, openBookView: this.openBookView),
+                BookFollowsWidget2(openDrawer: this.openDrawer, openBookView: this.openBookView),
+                ReaderPageWidget(openDrawer: this.openDrawer)
               ],
               index: _selectedIndex,
             ),
@@ -172,6 +171,7 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
     await UserFileStorage.clearAll();
     await UserKvpStorage.clearAll();
     context.read<AppBloc>().add(UserLoggedOutEvent());
+    context.read<ReaderBloc>().add(ClearBook());
   }
 
   Widget getAvatar(String username) {
@@ -196,4 +196,11 @@ class MasterScaffoldWidgetState extends State<MasterScaffoldWidget> {
     });
   }
 
+  void openDrawer(int index){
+    scaffoldKey.currentState!.openDrawer();
+  }
+
+  void openBookView(){
+    (bottomNavBarKey.currentWidget as BottomNavigationBar).onTap!(2);
+  }
 }

@@ -4,13 +4,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_bloc.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_event.dart';
 import 'package:mobi_reads/blocs/app_bloc/app_state.dart';
+import 'package:mobi_reads/classes/UserSecureStorage.dart';
 import 'package:mobi_reads/constants.dart';
+import 'package:mobi_reads/entities/login/LoginUserResponse.dart';
 import 'package:mobi_reads/repositories/event_log_repository.dart';
 import 'package:mobi_reads/repositories/login_repository.dart';
 import 'package:mobi_reads/views/login/login_page.dart';
 import 'package:mobi_reads/views/master_scaffold/master_scaffold_widget.dart';
 import '../entities/events/EventLogRequest.dart';
-import 'package:mobi_reads/constants.dart';
 import 'loading_page.dart';
 
 class ConfigurePage extends StatefulWidget {
@@ -34,34 +35,18 @@ class ConfigurePageState extends State<ConfigurePage> {
   _initializeApp(AppBloc appBloc, LoginRepository loginRepo) {
     dotenv.load(fileName: ".env").then((value) {
       if (appBloc.state.Status == AppStatus.Initializing) {
-        loginRepo.isLoggedIn()
-            .then((authUser) {
-                if (authUser.Success) {
-                  appBloc.add(UserLoggedInEvent(authUser.Id, authUser.Email, authUser.Username, authUser.Bearer, authUser.IsGuest));
-                }
-                else {
-                  appBloc.add(UserLoggedOutEvent());
-                }
-
-                setState(() {
-                  isInitialized = true;
-                });
-            },
-            onError:(error, stackTrace) {
-              EventLogRepository.shared.logEvent(new EventLogRequest(EventTypes.ERROR, "configure_page", "_initializeApp", error.toString()));
-              print(error);
-              appBloc.add(AppInitializedEvent());
-              setState(() {
-                appBloc.add(UserLoggedOutEvent());
-                isInitialized = true;
-              });
-            });
+        setIsLoggedIn(appBloc, loginRepo);
       }
       else {
-        setState(() {
-          isInitialized = true;
-        });
+        setInitialized();
       }
+    },
+    onError:(error, stackTrace) {
+      print(error);
+      EventLogRepository.shared.logEvent(new EventLogRequest(EventTypes.ERROR, "configure_page", "_initializeApp", error.toString())).then((value) {
+        appBloc.add(UserLoggedOutEvent());
+        setInitialized();
+      });
     });
   }
 
@@ -82,6 +67,45 @@ class ConfigurePageState extends State<ConfigurePage> {
 
       return
         LoadingPage();
+    });
+  }
+
+  void setIsLoggedIn(AppBloc appBloc, LoginRepository loginRepo){
+    loginRepo.isLoggedIn().then((authUser) {
+      if (authUser.Success) {
+        setBearerToken(appBloc, authUser);
+      }
+      else {
+        appBloc.add(UserLoggedOutEvent());
+        setInitialized();
+      }
+    },
+    onError:(error, stackTrace) {
+      print(error);
+      EventLogRepository.shared.logEvent(new EventLogRequest(EventTypes.ERROR, "configure_page", "_initializeApp", error.toString())).then((value) {
+        appBloc.add(UserLoggedOutEvent());
+        setInitialized();
+      });
+    });
+  }
+
+  void setBearerToken(AppBloc appBloc, LoginUserResponse authUser){
+    UserSecureStorage.setBearerToken(authUser.Bearer).then((value) {
+      appBloc.add(UserLoggedInEvent(authUser.Id, authUser.Email, authUser.Username));
+      setInitialized();
+    },
+    onError:(error, stackTrace) {
+      print(error);
+      EventLogRepository.shared.logEvent(new EventLogRequest(EventTypes.ERROR, "configure_page", "_initializeApp", error.toString())).then((value) {
+        appBloc.add(UserLoggedOutEvent());
+        setInitialized();
+      });
+    });
+  }
+
+  void setInitialized(){
+    setState(() {
+      isInitialized = true;
     });
   }
 }

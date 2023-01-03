@@ -17,10 +17,10 @@ import 'package:mobi_reads/flutter_flow/flutter_flow_theme.dart';
 import 'package:mobi_reads/views/widgets/peekable.dart';
 
 class Peek extends StatefulWidget {
-  const Peek(this.book, this.bottomNavbarKey) : super();
+  const Peek(this.book, this.openBookView) : super();
 
   final Book book;
-  final GlobalKey bottomNavbarKey;
+  final Function() openBookView;
 
   @override
   _PeekState createState() => _PeekState();
@@ -48,7 +48,7 @@ class _PeekState extends State<Peek> with Peekable {
         onDoubleTap: () async {
           context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
           await UserKvpStorage.setCurrentBookId(widget.book.Id);
-          (this.widget.bottomNavbarKey.currentWidget as BottomNavigationBar).onTap!(2);
+          widget.openBookView();
         },
         onTap: () => {
           if(widget.book.SeriesId != null && widget.book.SeriesId!.length > 0){

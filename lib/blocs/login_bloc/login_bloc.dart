@@ -17,7 +17,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<PasswordChanged>((event, emit) async => await handlePasswordChangedEvent(event, emit));
     on<LoginRequested>((event, emit) async => await handleLoginRequestedEvent(emit));
     on<Login>((event, emit) async => await handleLoginEvent(emit));
-    on<RedirectToHome>((event, emit) async => await handleRedirectToHomeEvent(event, emit));
     on<ContinueAsGuest>((event, emit) async => await handleContinueAsGuestEvent(emit));
   }
 
@@ -35,6 +34,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future handleLoginEvent(Emitter<LoginState> emit) async {
     emit(state.CopyWith(status: LoginStatus.LoggingIn));
+
     try {
       LoginUserResponse response = await loginRepository.login(
         LoginUserRequest(state.Email, state.Password)
@@ -45,6 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return;
       }
 
+      await UserSecureStorage.setBearerToken(response.Bearer);
       emit(state.CopyWith(status: LoginStatus.LoggedIn, login: response));
     }
     on Exception catch (e) {
@@ -52,26 +53,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Future handleRedirectToHomeEvent(RedirectToHome event, Emitter<LoginState> emit) async {
-    await ensureAppStateSaved(event.userId);
-    emit(state.CopyWith(status: LoginStatus.RedirectToHome));
-  }
-
-  // There is a race condition that exists. The storage mechanism begins to store the data,
-  // however it doesn't complete by the time that the login page triggers a redirect to home
-  // which immediately tries to load preferences using the saved state. Because the state
-  // isn't saved we get an exception. We have to wait until the UserSecureStorage saves.
-  // I hate this, but eh, it's my party so I'll cry if I want to.
-  Future ensureAppStateSaved(String userId) async {
-    int counter = 0;
-    while(await UserSecureStorage.getAppState(userId) == null) {
-      await Future.delayed(Duration(milliseconds: 100));
-      counter += 1;
-      if(counter > 10){
-        throw Exception("Failed to load user");
-      }
-    }
-  }
 
   Future handleContinueAsGuestEvent(Emitter<LoginState> emit) async {
     emit(state.CopyWith(status: LoginStatus.LoggingIn));

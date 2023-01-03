@@ -22,10 +22,10 @@ import 'package:mobi_reads/views/widgets/standard_preference_chip.dart';
 
 
 class UserHomeWidget extends StatefulWidget {
-  const UserHomeWidget({Key? key, required this.scaffoldKey, required this.bottomNavbarKey}) : super(key: key);
+  const UserHomeWidget({Key? key, required this.openDrawer, required this.openBookView}) : super(key: key);
 
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  final GlobalKey bottomNavbarKey;
+  final Function() openBookView;
+  final Function(int index) openDrawer;
 
   @override
   _UserHomeWidgetState createState() => _UserHomeWidgetState();
@@ -66,7 +66,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                 for(var chip in chips) {
                     GlobalKey<PeekState> key = new GlobalKey();
                     peekKeys[chip.Id] = key;
-                    peeks.add(PeekListFactory(key, chip.Code, chip.Label, widget.bottomNavbarKey));
+                    peeks.add(PeekListFactory(key, chip.Code, chip.Label, widget.openBookView));
                 }
                 context.read<PreferencesBloc>().add(preferences_events.Loaded());
               }
@@ -86,14 +86,12 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
           },
         ),
       ],
-      child: BlocBuilder<PreferencesBloc, PreferencesState>(builder: (context, state) {
-        return BlocBuilder<BookFollowsBloc, BookFollowsState>(builder: (context, state) {
-          if(context.read<PreferencesBloc>().state.Status == PreferencesStatus.Loaded){
-            return userHomeUI(context);
-          }
+      child: BlocBuilder<BookFollowsBloc, BookFollowsState>(builder: (context, state) {
+        if(context.read<PreferencesBloc>().state.Status == PreferencesStatus.Loaded){
+          return userHomeUI(context);
+        }
 
-          return LoadingPage();
-        });
+        return LoadingPage();
       })
     );
   }
@@ -127,7 +125,7 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
                 child: IconButton(
                     icon: const Icon(Icons.settings_outlined, color: Color(0xD8EACD29)),
                     tooltip: 'Settings',
-                    onPressed: () => { widget.scaffoldKey.currentState!.openDrawer() })
+                    onPressed: () => { widget.openDrawer(0) })
             )
           ],
           pinned: false,
@@ -262,4 +260,5 @@ class _UserHomeWidgetState extends State<UserHomeWidget> {
       )
     );
   }
+
 }

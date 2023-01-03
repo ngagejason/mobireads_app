@@ -55,10 +55,8 @@ class _ConfirmAccountPageWidgetState extends State<ConfirmAccountPageWidget> {
                 );
               }
               else if(state.Status == ConfirmAccountStatus.Confirmed && state.Login != null){
-                context.read<AppBloc>().add(UserLoggedInEvent(state.Login!.Id, state.Login!.Email, state.Login!.Username, state.Login!.Bearer, state.Login!.IsGuest));
-                context.read<ConfirmAccountBloc>().add(RedirectToHome());
-              }
-              else if(state.Status == ConfirmAccountStatus.RedirectToHome){
+
+                context.read<AppBloc>().add(UserLoggedInEvent(state.Login!.Id, state.Login!.Email, state.Login!.Username));
                 Navigator.pushNamedAndRemoveUntil(context, "/userHome", (r) => false);
               }
               else if(state.Status == ConfirmAccountStatus.Resent){
