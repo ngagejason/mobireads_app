@@ -71,12 +71,7 @@ class _BookFollowsWidgetState2
             widget.openBookView();
           },
           onTap: () => {
-            if(book.SeriesId != null && book.SeriesId!.length > 0){
-              Navigator.pushNamed(context, "/bookSeriesDetails", arguments: book)
-            }
-            else{
-              Navigator.pushNamed(context, "/bookDetails", arguments: book)
-            }
+            Navigator.pushNamed(context, "/bookDetails", arguments: book)
           },
           child: Padding(
               padding: EdgeInsets.fromLTRB(5, 5, 5, 5),

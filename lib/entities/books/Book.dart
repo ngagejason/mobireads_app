@@ -40,18 +40,6 @@ class Book {
   int ChapterCount = 0;
   @JsonKey(name: 'followCount')
   int? FollowCount = 0;
-  @JsonKey(name: 'seriesId')
-  String? SeriesId = '';
-  @JsonKey(name: 'seriesTitle')
-  String? SeriesTitle = '';
-  @JsonKey(name: 'seriesSubtitle')
-  String? SeriesSubtitle = '';
-  @JsonKey(name: 'bookCountInSeries')
-  int? BookCountInSeries = 0;
-  @JsonKey(name: 'bookNumberInSeries')
-  int? BookNumberInSeries = 0;
-  @JsonKey(name: 'seriesFrontCoverUrls')
-  List<String> SeriesFrontCoverUrls = [];
   @JsonKey(name: 'preferences')
   List<Preference> Preferences = [];
 
@@ -72,12 +60,6 @@ class Book {
       this.WordCount,
       this.ChapterCount,
       this.FollowCount,
-      this.SeriesId,
-      this.SeriesTitle,
-      this.SeriesSubtitle,
-      this.BookCountInSeries,
-      this.BookNumberInSeries,
-      this.SeriesFrontCoverUrls,
       this.Preferences);
 
   String AuthorName() {
@@ -97,12 +79,7 @@ class Book {
       return true;
     }
     return Title.guarantee().contains(text) ||
-        (Subtitle != null &&
-            Subtitle.guarantee().toUpperCase().contains(text)) ||
-        (SeriesTitle != null &&
-            SeriesTitle.guarantee().toUpperCase().contains(text)) ||
-        (SeriesSubtitle != null &&
-            SeriesSubtitle.guarantee().toUpperCase().contains(text));
+        (Subtitle != null && Subtitle.guarantee().toUpperCase().contains(text));
   }
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);

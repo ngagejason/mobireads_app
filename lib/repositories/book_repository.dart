@@ -88,19 +88,6 @@ class BookRepository {
     return new BoolResponse(false, '');
   }
 
-  Future<SeriesDetailsResponse> getSeriesDetails(String? seriesId) async {
-    var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.SERIES_DETAILS, args: {'seriesId': seriesId.toString()});
-    if (response.statusCode == 200) {
-      RequestResult<SeriesDetailsResponse> result =  RequestResult<SeriesDetailsResponse>.fromJson(jsonDecode(response.body), (data) => SeriesDetailsResponse.fromJson(data as Map<String, dynamic>));
-      if(result.Success)
-        return result.Data ?? DefaultEntities.EmptySeriesDetailsResponse;
-      else
-        throw Exception(result.Message);
-    }
-
-    throw Exception('Failed to Load Series');
-  }
-
   Future<Book> getBook(String bookId) async {
     var response = await IOFactory.doGetWithBearer(urlExtension: ServerPaths.GET_BOOK, args: {'bookId': bookId});
     if (response.statusCode == 200) {

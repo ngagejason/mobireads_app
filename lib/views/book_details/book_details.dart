@@ -74,7 +74,6 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
           delegate: SliverChildListDelegate([
             getCover(context, widget.book.FrontCoverImageUrl.guarantee()),
             getAuthor(context),
-            getSeries(context),
             getMetadata(context),
             getAbout()
           ]),
@@ -107,56 +106,6 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
               curve: Curves.easeIn,
             )
           ]
-        )
-    );
-  }
-
-  Widget getSeries(BuildContext buildContext){
-    if(widget.book.SeriesId == null){
-      return Container();
-    }
-
-    TextStyle style = TextStyle(
-      color: FlutterFlowTheme.of(context).secondaryColor,
-      fontSize: 16
-    );
-
-    return Padding(
-        padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-        child: Wrap(
-            children:[
-              FadeIn(
-                child: Container(
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Text(
-                        '# ' + widget.book.BookNumberInSeries.toString() + ' of ' + widget.book.BookCountInSeries.toString() + ' in the ',
-                        style: style,
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        widget.book.SeriesTitle.guarantee() + ': ' + widget.book.SeriesSubtitle.guarantee(),
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).secondaryColor,
-                          fontSize: 16,
-                          decoration: TextDecoration.underline
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        'Series',
-                        style: style,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  )
-                ),
-                // Optional paramaters
-                duration: Duration(milliseconds: 3000),
-                curve: Curves.easeIn,
-              )
-            ]
         )
     );
   }
@@ -265,8 +214,6 @@ class _BookDetailsWidgetState extends State<BookDetailsWidget> {
     return GestureDetector(
       onDoubleTap:  () async {
         context.read<ReaderBloc>().add(InitializeReader(widget.book, true));
-        // await UserKvpStorage.setCurrentBookId(widget.book.Id);
-        // (MasterScaffoldWidgetState.bottomNavBarKey.currentWidget as BottomNavigationBar).onTap!(2);
         Navigator.pop(context);
       },
       child: Row(

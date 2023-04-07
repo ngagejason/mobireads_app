@@ -23,14 +23,6 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
       json['wordCount'] as int,
       json['chapterCount'] as int,
       json['followCount'] as int?,
-      json['seriesId'] as String?,
-      json['seriesTitle'] as String?,
-      json['seriesSubtitle'] as String?,
-      json['bookCountInSeries'] as int?,
-      json['bookNumberInSeries'] as int?,
-      (json['seriesFrontCoverUrls'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
       (json['preferences'] as List<dynamic>)
           .map((e) => Preference.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -53,11 +45,5 @@ Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
       'wordCount': instance.WordCount,
       'chapterCount': instance.ChapterCount,
       'followCount': instance.FollowCount,
-      'seriesId': instance.SeriesId,
-      'seriesTitle': instance.SeriesTitle,
-      'seriesSubtitle': instance.SeriesSubtitle,
-      'bookCountInSeries': instance.BookCountInSeries,
-      'bookNumberInSeries': instance.BookNumberInSeries,
-      'seriesFrontCoverUrls': instance.SeriesFrontCoverUrls,
       'preferences': instance.Preferences,
     };
